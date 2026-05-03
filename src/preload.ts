@@ -43,10 +43,14 @@ new MutationObserver((mutations, observer) => {
 // that slips through so it never gets the IPC bridge or the app's scripts
 const isTrustedPage = isTrustedAppUrl(location.href);
 
-loadI18n().then(async () => {
-  await setLanguage(config.get('options.language') ?? 'en');
-  if (isTrustedPage) await loadAllPreloadPlugins();
-});
+loadI18n()
+  .then(async () => {
+    await setLanguage(config.get('options.language') ?? 'en');
+    if (isTrustedPage) await loadAllPreloadPlugins();
+  })
+  .catch((err) => {
+    console.error('Failed to load preload plugins:', err);
+  });
 
 ipcRenderer.on('plugin:unload', async (_, id: string) => {
   await forceUnloadPreloadPlugin(id);
@@ -113,6 +117,7 @@ if (isTrustedPage) {
     webFrame.executeJavaScript(script, true, () => (blocked = false));
   }
 
-  // HACK: Wait for the script to be executed
-  while (blocked);
+  // HACK: Wait for the script to be executed, but never hang the page forever
+  const startTime = Date.now();
+  while (blocked && Date.now() - startTime < 10_000);
 }

@@ -141,6 +141,8 @@ function supportsPlatform({ platform }: { platform: string }) {
   const is = (globalThis as typeof globalThis & {
     electronIs: typeof import('electron-is');
   }).electronIs;
+  // Renderer context has no electron-is: allow all platforms
+  if (!is) return true;
 
   if (is.windows()) return (platform & Platform.Windows) !== 0;
   if (is.macOS()) return (platform & Platform.macOS) !== 0;

@@ -10,12 +10,18 @@ import { APPLICATION_NAME, t } from '@/i18n';
 import * as config from './config';
 import { restart } from './providers/app-controls';
 import { getSongControls } from './providers/song-controls';
-import { registerCallback, SongInfoEvent } from './providers/song-info';
+import {
+  registerCallback,
+  SongInfoEvent,
+  type SongInfoCallback,
+  unregisterCallback,
+} from './providers/song-info';
 
 import type { MenuTemplate } from './menu';
 
 // Prevent tray being garbage collected
 let tray: Electron.Tray | undefined;
+let traySongInfoCallback: SongInfoCallback | null = null;
 
 type TrayEvent = (
   event: Electron.KeyboardEvent,
@@ -43,8 +49,18 @@ export const setTrayOnDoubleClick = (fn: TrayEvent) => {
 
 export const setUpTray = (app: Electron.App, win: Electron.BrowserWindow) => {
   if (!config.get('options.tray')) {
+    tray?.destroy();
     tray = undefined;
+    if (traySongInfoCallback) {
+      unregisterCallback(traySongInfoCallback);
+      traySongInfoCallback = null;
+    }
     return;
+  }
+
+  // Unregister previous callback before re-registering
+  if (traySongInfoCallback) {
+    unregisterCallback(traySongInfoCallback);
   }
 
   const { playPause, next, previous } = getSongControls(win);
@@ -130,7 +146,7 @@ export const setUpTray = (app: Electron.App, win: Electron.BrowserWindow) => {
   const trayMenu = Menu.buildFromTemplate(template);
   tray.setContextMenu(trayMenu);
 
-  registerCallback((songInfo, event) => {
+  traySongInfoCallback = (songInfo, event) => {
     if (event === SongInfoEvent.TimeChanged) return;
 
     if (tray) {
@@ -149,5 +165,7 @@ export const setUpTray = (app: Electron.App, win: Electron.BrowserWindow) => {
 
       tray.setImage(songInfo.isPaused ? pausedTrayIcon : defaultTrayIcon);
     }
-  });
+  };
+
+  registerCallback(traySongInfoCallback);
 };
