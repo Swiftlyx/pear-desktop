@@ -36,21 +36,21 @@ let firstDataLoaded = false;
 
 registerWindowDefaultTrustedTypePolicy();
 
-async function listenForApiLoad() {
+function listenForApiLoad() {
   if (!isApiLoaded) {
     api = document.querySelector('#movie_player');
     if (api) {
-      // Latch before the async setup, so the DOM observer in initObserver
+      // Latch before the setup, so the DOM observer in initObserver
       // cannot run onApiLoaded a second time and register every handler twice
       isApiLoaded = true;
-      await onApiLoaded();
+      onApiLoaded();
 
       return;
     }
   }
 }
 
-async function onApiLoaded() {
+function onApiLoaded() {
   // Workaround for macOS traffic lights
   {
     let osType = 'Unknown';
@@ -314,7 +314,7 @@ async function onApiLoaded() {
 
   for (const [id, plugin] of Object.entries(getAllLoadedRendererPlugins())) {
     if (typeof plugin.renderer !== 'function') {
-      await plugin.renderer?.onPlayerApiReady?.call(
+      plugin.renderer?.onPlayerApiReady?.call(
         plugin.renderer,
         api!,
         createContext(id),
@@ -453,7 +453,7 @@ const main = async () => {
   );
 
   // Wait for complete load of the api
-  await listenForApiLoad();
+  listenForApiLoad();
 
   // Blocks the "Are You Still There?" popup by setting the last active time to Date.now every 15min
   setInterval(() => (window._lact = Date.now()), 900_000);

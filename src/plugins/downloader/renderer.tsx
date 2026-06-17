@@ -84,9 +84,7 @@ export const onRendererLoad = ({
     const targetHtml = feedback || t('plugins.downloader.templates.button');
     setDownloadButtonText(targetHtml);
   });
-};
 
-export const onPlayerApiReady = () => {
   setDownloadButtonText(t('plugins.downloader.templates.button'));
 
   buttonContainer = document.createElement('div');
@@ -106,15 +104,15 @@ export const onPlayerApiReady = () => {
   );
 
   (async () => {
-    let popupContainer = document.querySelector('ytmusic-popup-container')
+    let popupContainer = document.querySelector('ytmusic-popup-container');
     while (!popupContainer) {
-      await new Promise(resolve => setTimeout(resolve, 100))
-      popupContainer = document.querySelector('ytmusic-popup-container')
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      popupContainer = document.querySelector('ytmusic-popup-container');
     }
-    
+
     menuObserver.observe(popupContainer, {
       childList: true,
       subtree: true,
     });
-  })()
+  })();
 };
