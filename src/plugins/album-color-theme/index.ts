@@ -141,16 +141,7 @@ export default createPlugin({
           document.documentElement.style.setProperty(DARK_COLOR_KEY, '0, 0, 0');
         }
 
-        let alpha: number | null = null;
-        if (await window.mainConfig.plugins.isEnabled('transparent-player')) {
-          const value: unknown = window.mainConfig.get(
-            'plugins.transparent-player.opacity',
-          );
-          if (typeof value === 'number' && value >= 0 && value <= 1) {
-            alpha = value;
-          }
-        }
-        (this as Renderer).updateColor(alpha ?? 1);
+        (this as Renderer).updateColor(1);
       });
     },
     onConfigChange(config) {

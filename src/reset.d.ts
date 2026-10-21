@@ -8,13 +8,7 @@ import type is from 'electron-is';
 import type { trustedTypes } from 'trusted-types';
 
 declare global {
-  interface Compressor {
-    audioSource: MediaElementAudioSourceNode;
-    audioContext: AudioContext;
-  }
-
   interface DocumentEventMap {
-    'peard:audio-can-play': CustomEvent<Compressor>;
     'videodatachange': CustomEvent<VideoDataChanged>;
   }
 
@@ -30,22 +24,9 @@ declare global {
     _lact: number;
     navigation: Navigation;
     download: () => void;
-    togglePictureInPicture: () => void;
     reload: () => void;
     i18n: {
       t: typeof t;
     };
-  }
-}
-
-// import { Howl as _Howl } from 'howler';
-declare module 'howler' {
-  interface Howl {
-    _sounds: {
-      _paused: boolean;
-      _ended: boolean;
-      _id: string;
-      _node: HTMLMediaElement;
-    }[];
   }
 }

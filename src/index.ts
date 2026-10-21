@@ -39,7 +39,6 @@ import {
 } from '@/loader/main';
 import { refreshMenu, setApplicationMenu } from '@/menu';
 import musicPlayerCss from '@/music-player.css?inline';
-import { defaultAuthProxyConfig } from '@/plugins/auth-proxy-adapter/config';
 import { fileExists, injectCSS, injectCSSAsFile } from '@/plugins/utils/main';
 import { restart, setupAppControls } from '@/providers/app-controls';
 import {
@@ -117,18 +116,6 @@ let disableHardwareAcceleration = config.get(
 
 // Linux specific fixes
 if (is.linux()) {
-  // Stops chromium from launching its own MPRIS service
-  if (await config.plugins.isEnabled('shortcuts')) {
-    disabledFeatures.push('MediaSessionService');
-  }
-
-  // https://github.com/electron/electron/issues/15947
-  if (await config.plugins.isEnabled('transparent-player')) {
-    disableHardwareAcceleration = true;
-    app.commandLine.appendSwitch('enable-transparent-visuals');
-    app.commandLine.appendSwitch('enable-unsafe-swiftshader');
-  }
-
   // Overrides WM_CLASS for X11 to correspond to icon filename
   app.setName(
     'com.github.th-ch.\u0079\u006f\u0075\u0074\u0075\u0062\u0065\u002d\u006d\u0075\u0073\u0069\u0063',
@@ -148,23 +135,8 @@ if (disableHardwareAcceleration) {
 // Apply disabled features
 app.commandLine.appendSwitch('disable-features', disabledFeatures.join(','));
 
-if (config.get('options.proxy')) {
-  const authProxyEnabled = await config.plugins.isEnabled('auth-proxy-adapter');
-
-  let proxyToUse = '';
-  if (authProxyEnabled) {
-    // Use proxy from Auth-Proxy-Adapter plugin
-    const authProxyConfig = deepmerge(
-      defaultAuthProxyConfig,
-      config.get('plugins.auth-proxy-adapter') ?? {},
-    ) as typeof defaultAuthProxyConfig;
-
-    const { hostname, port } = authProxyConfig;
-    proxyToUse = `socks5://${hostname}:${port}`;
-  } else if (config.get('options.proxy')) {
-    // Use global proxy settings
-    proxyToUse = config.get('options.proxy');
-  }
+const proxyToUse = config.get('options.proxy');
+if (proxyToUse) {
   console.log(LoggerPrefix, `Using proxy: ${proxyToUse}`);
   app.commandLine.appendSwitch('proxy-server', proxyToUse);
 }

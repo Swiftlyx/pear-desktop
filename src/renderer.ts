@@ -309,11 +309,6 @@ async function onApiLoaded() {
     },
   );
 
-  const video = document.querySelector('video')!;
-  const audioContext = new AudioContext();
-  const audioSource = audioContext.createMediaElementSource(video);
-  audioSource.connect(audioContext.destination);
-
   for (const [id, plugin] of Object.entries(getAllLoadedRendererPlugins())) {
     if (typeof plugin.renderer !== 'function') {
       await plugin.renderer?.onPlayerApiReady?.call(
@@ -329,30 +324,6 @@ async function onApiLoaded() {
       new CustomEvent('videodatachange', { detail: { name: 'dataloaded' } }),
     );
   }
-
-  const audioCanPlayEventDispatcher = () => {
-    document.dispatchEvent(
-      new CustomEvent('peard:audio-can-play', {
-        detail: {
-          audioContext,
-          audioSource,
-        },
-      }),
-    );
-  };
-
-  const loadstartListener = () => {
-    // Emit "audioCanPlay" for each video
-    video.addEventListener('canplaythrough', audioCanPlayEventDispatcher, {
-      once: true,
-    });
-  };
-
-  if (video.readyState === 4 /* HAVE_ENOUGH_DATA (loaded) */) {
-    audioCanPlayEventDispatcher();
-  }
-
-  video.addEventListener('loadstart', loadstartListener, { passive: true });
 
   window.ipcRenderer.send('peard:player-api-loaded');
 
