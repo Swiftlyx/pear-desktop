@@ -6,7 +6,7 @@ import {
 } from 'electron';
 import is from 'electron-is';
 
-import { loadI18n, setLanguage } from '@/i18n';
+import { loadI18n } from '@/i18n';
 
 import * as config from './config';
 import {
@@ -39,7 +39,6 @@ new MutationObserver((mutations, observer) => {
 }).observe(document, { subtree: true, childList: true });
 
 loadI18n().then(async () => {
-  await setLanguage(config.get('options.language') ?? 'en');
   await loadAllPreloadPlugins();
 });
 
