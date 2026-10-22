@@ -226,7 +226,7 @@
       "name": "Album Color Theme"
     },
     "audio-only": {
-      "description": "Always plays the song (audio) version instead of the music video: keeps the player in song mode, hides the video and uses the lowest video quality when a video cannot be avoided",
+      "description": "Always plays the song (audio) version instead of the music video: keeps the player in song mode, switches music videos to their song version; when there is none, hides the video behind its cover and uses the lowest video quality",
       "name": "Audio Only"
     },
     "blur-nav-bar": {
@@ -537,33 +537,6 @@
     "unobtrusive-player": {
       "description": "Prevents the player from popping up when playing a song",
       "name": "Unobtrusive Player"
-    },
-    "video-toggle": {
-      "description": "Adds a button to switch between Video/Song mode. can also optionally remove the whole video tab",
-      "menu": {
-        "align": {
-          "label": "Alignment",
-          "submenu": {
-            "left": "Left",
-            "middle": "Middle",
-            "right": "Right"
-          }
-        },
-        "force-hide": "Force remove video tab",
-        "mode": {
-          "label": "Mode",
-          "submenu": {
-            "custom": "Custom toggle",
-            "disabled": "Disabled",
-            "native": "Native toggle"
-          }
-        }
-      },
-      "name": "Video Toggle",
-      "templates": {
-        "button-song": "Song",
-        "button-video": "Video"
-      }
     }
   }
 }

@@ -14,6 +14,8 @@ import style from './style.css?inline';
 import type { VideoDataChanged } from '@/types/video-data-changed';
 
 const ROOT_CLASS = 'pear-m3e';
+// Turns on colour transitions between schemes (style.css)
+const ANIMATE_CLASS = 'pear-m3e-animate';
 
 export default createPlugin({
   name: () => t('plugins.material-expressive.name'),
@@ -32,6 +34,10 @@ export default createPlugin({
       const root = document.documentElement;
       root.classList.add(ROOT_CLASS);
       applyScheme(createScheme(FALLBACK_SOURCE));
+      // Later schemes (a new song) fade in; the first one applies at once
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => root.classList.add(ANIMATE_CLASS)),
+      );
 
       // Surfaces let the Transparent Player window show through
       let surfaceAlpha = 1;
@@ -73,7 +79,7 @@ export default createPlugin({
         document.removeEventListener('videodatachange', this.onVideoDataChange);
       }
       const root = document.documentElement;
-      root.classList.remove(ROOT_CLASS);
+      root.classList.remove(ROOT_CLASS, ANIMATE_CLASS);
       root.style.removeProperty('--m3e-surface-alpha');
       root.style.removeProperty('--m3e-container-alpha');
       clearScheme();

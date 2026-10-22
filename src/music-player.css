@@ -141,6 +141,21 @@ ytmusic-two-column-browse-results-renderer,
   background-color: transparent !important;
 }
 
+/*
+ * Popup menus scroll vertically when long; the vertical scrollbar then takes
+ * width from the items, which overflowed sideways into a horizontal scroll
+ */
+ytmusic-menu-popup-renderer,
+ytmusic-multi-select-menu-renderer,
+ytmusic-menu-popup-renderer tp-yt-paper-listbox {
+  overflow-x: hidden !important;
+}
+
+/* A click on a queue row plays it (renderer.ts); rows still drag to reorder */
+ytmusic-player-queue-item {
+  cursor: pointer !important;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

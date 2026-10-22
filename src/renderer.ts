@@ -471,8 +471,45 @@ const keepAutoscrollStoppable = () => {
   window.addEventListener('blur', end);
 };
 
+// Queue rows start their song only from the play button on the cover; the
+// rest of the row did nothing on click. A click elsewhere on a row now does
+// the same, except on its own controls, on the current song (the button
+// would pause it) and after a drag (rows are reordered by dragging).
+const playQueueRowsOnClick = () => {
+  let start: { x: number; y: number } | null = null;
+
+  document.addEventListener(
+    'mousedown',
+    (event) => {
+      start = { x: event.clientX, y: event.clientY };
+    },
+    true,
+  );
+  document.addEventListener('click', (event) => {
+    const target = event.target as Element | null;
+    const row = target?.closest('ytmusic-player-queue-item');
+    if (
+      !row ||
+      event.button !== 0 ||
+      !start ||
+      Math.abs(event.clientX - start.x) + Math.abs(event.clientY - start.y) >
+        4 ||
+      target?.closest(
+        'ytmusic-menu-renderer, ytmusic-play-button-renderer, button, a[href]',
+      ) ||
+      ['playing', 'paused'].includes(
+        row.getAttribute('play-button-state') ?? '',
+      )
+    ) {
+      return;
+    }
+    row.querySelector<HTMLElement>('ytmusic-play-button-renderer')?.click();
+  });
+};
+
 const main = async () => {
   keepAutoscrollStoppable();
+  playQueueRowsOnClick();
   await loadAllRendererPlugins();
   isPluginLoaded = true;
 

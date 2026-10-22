@@ -89,12 +89,18 @@ html.pear-m3e {
   --yt-sys-color-baseline--base-background: var(--m3e-surface) !important;
   --yt-sys-color-baseline--solid-background-inverse: var(--m3e-surface) !important;
 
+  /*
+   * The title bar, header, page and player bar are one surface, as with
+   * Transparent Player: the seek bar separates the player bar
+   */
+  --titlebar-background-color: var(--m3e-surface) !important;
+  --ytmusic-player-bar-background: var(--m3e-surface) !important;
+
   /* Containers */
   --ytmusic-color-black2: var(--m3e-surface-container-low) !important;
   --ytmusic-general-background-a: var(--m3e-surface-container-low) !important;
   --yt-spec-general-background-a: var(--m3e-surface-container-low) !important;
   --ytmusic-color-black1: var(--m3e-surface-container) !important;
-  --ytmusic-player-bar-background: var(--m3e-surface-container) !important;
   --yt-spec-raised-background: var(--m3e-surface-container) !important;
   --yt-sys-color-baseline--raised-background: var(--m3e-surface-container) !important;
   --ytmusic-color-black3: var(--m3e-surface-container-high) !important;
@@ -209,7 +215,22 @@ html.pear-m3e {
   }
 
   ytmusic-player-page {
-    --ytmusic-player-bar-background: var(--m3e-surface-container) !important;
+    --ytmusic-player-bar-background: var(--m3e-surface) !important;
+  }
+
+  /*
+   * No divider beside the navigation drawer, and no page artwork (a dimmed
+   * cover glow at the top of some pages): it starts under the header, which
+   * then read as a panel of another colour. The scheme carries the cover's
+   * colour instead.
+   */
+  #guide-wrapper,
+  #mini-guide-background {
+    border: 0 !important;
+  }
+
+  #browse-page #background {
+    display: none !important;
   }
 
   /* Times use tabular figures so they do not shift while counting */
@@ -268,6 +289,15 @@ html.pear-m3e {
     &:active {
       border-radius: 22% !important;
     }
+  }
+
+  /*
+   * In the drawer the button shows only on hover or while playing; a song
+   * started elsewhere showed the round loading button for a moment first
+   */
+  ytmusic-guide-entry-renderer:not(:hover)
+    ytmusic-play-button-renderer[state='loading'] {
+    opacity: 0 !important;
   }
 
   .ytmusicPlayerControlsPlayPauseButton button.ytSpecButtonShapeNextHost {
@@ -365,8 +395,12 @@ html.pear-m3e {
     }
   }
 
-  /* Song/Video: connected button group */
-  ytmusic-av-toggle .av-toggle {
+  /*
+   * Song/Video: a pill track with a pill indicator, so the capsule keeps
+   * one shape inside and out. Two classes outrank Transparent Player's
+   * clear track.
+   */
+  ytmusic-av-toggle .av-toggle.ytmusic-av-toggle {
     padding: 2px;
     gap: 2px;
     border-radius: var(--md-sys-shape-corner-full) !important;
@@ -377,28 +411,39 @@ html.pear-m3e {
       border-radius: var(--md-sys-shape-corner-full) !important;
       background-color: transparent !important;
       color: var(--md-sys-color-on-surface-variant) !important;
-      transition:
-        var(--m3e-shape-morph),
-        var(--m3e-color-change);
+      transition: var(--m3e-color-change);
+
+      &:hover {
+        background-color: var(--m3e-state-hover) !important;
+        color: var(--md-sys-color-on-surface) !important;
+      }
     }
 
     button[aria-pressed='true'] {
-      border-radius: var(--md-sys-shape-corner-medium) !important;
       background-color: var(--md-sys-color-secondary-container) !important;
       color: var(--md-sys-color-on-secondary-container) !important;
     }
   }
 
-  /* Chips: small corners, outlined until selected */
+  /*
+   * Chips: small corners, outlined until selected. A faint fill and the
+   * stronger outline keep them legible over artwork and imagery.
+   */
   ytmusic-chip-cloud-chip-renderer a.yt-simple-endpoint {
     border-radius: var(--md-sys-shape-corner-small) !important;
-    background-color: transparent !important;
-    box-shadow: inset 0 0 0 1px var(--md-sys-color-outline-variant);
-    color: var(--md-sys-color-on-surface-variant) !important;
+    background-color: rgb(
+      from var(--md-sys-color-surface-container-high) r g b / 0.55
+    ) !important;
+    box-shadow: inset 0 0 0 1px var(--md-sys-color-outline);
+    color: var(--md-sys-color-on-surface) !important;
     transition: var(--m3e-color-change);
 
     &:hover {
-      background-color: var(--m3e-state-hover) !important;
+      background-color: color-mix(
+        in srgb,
+        var(--md-sys-color-surface-container-high) 85%,
+        var(--md-sys-color-on-surface)
+      ) !important;
     }
   }
 
@@ -456,21 +501,25 @@ html.pear-m3e {
     }
   }
 
-  /* The play overlay sits over the thumbnail and needs the same corners */
-  ytmusic-responsive-list-item-renderer
-    ytmusic-thumbnail-renderer:not(
-      [thumbnail-crop='MUSIC_THUMBNAIL_CROP_CIRCLE']
-    ),
-  ytmusic-responsive-list-item-renderer .left-items > .thumbnail-overlay {
+  /*
+   * Row covers are clipped once, by the container they fill: a cover and
+   * the play overlay on top of it, each clipped to the same corners, let the
+   * cover's edge pixels show through as light dots at the corners
+   */
+  :is(ytmusic-responsive-list-item-renderer, ytmusic-player-queue-item)
+    .left-items {
     overflow: hidden;
-    border-radius: var(--md-sys-shape-corner-small);
+    border-radius: var(--md-sys-shape-corner-small) !important;
+
+    > *,
+    yt-img-shadow {
+      border-radius: 0 !important;
+    }
   }
 
   ytmusic-responsive-list-item-renderer
-    .left-items
-    > [thumbnail-crop='MUSIC_THUMBNAIL_CROP_CIRCLE']
-    ~ .thumbnail-overlay {
-    border-radius: 50%;
+    .left-items:has(> [thumbnail-crop='MUSIC_THUMBNAIL_CROP_CIRCLE']) {
+    border-radius: 50% !important;
   }
 
   ytmusic-responsive-header-renderer
@@ -503,6 +552,37 @@ html.pear-m3e {
     &[play-button-state='playing'],
     &[play-button-state='paused'] {
       background-color: var(--md-sys-color-secondary-container) !important;
+    }
+  }
+
+  /* Rows answer hover with the M3 state layer */
+  ytmusic-responsive-list-item-renderer,
+  ytmusic-player-queue-item:not(
+      [play-button-state='playing'],
+      [play-button-state='paused']
+    ) {
+    transition: background-color var(--md-sys-motion-spring-fast-effects-duration)
+      var(--md-sys-motion-spring-fast-effects);
+
+    &:hover {
+      background-color: var(--m3e-state-hover) !important;
+    }
+  }
+
+  /*
+   * Row actions share one colour: the site's buttons, its selection
+   * checkbox and Playlist Reorder's arrows each had their own
+   */
+  ytmusic-responsive-list-item-renderer
+    :is(
+      .ytSpecButtonShapeNextHost,
+      .pear-playlist-reorder button,
+      yt-checkbox-renderer yt-icon
+    ) {
+    color: var(--md-sys-color-on-surface-variant) !important;
+
+    &:hover {
+      color: var(--md-sys-color-on-surface) !important;
     }
   }
 
@@ -554,4 +634,128 @@ html.pear-m3e {
       from var(--md-sys-color-on-surface-variant) r g b / 0.6
     ) !important;
   }
+}
+
+/*
+ * The colour roles this sheet uses are registered as colours, so a new
+ * scheme (the next song) fades in instead of switching at once. Renderer
+ * code turns the transition on after the first scheme, so the app does not
+ * fade in from the initial values.
+ */
+@property --md-sys-color-primary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --md-sys-color-on-primary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --md-sys-color-secondary-container {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --md-sys-color-on-secondary-container {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --md-sys-color-tertiary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --md-sys-color-surface {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --md-sys-color-surface-container-low {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --md-sys-color-surface-container {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --md-sys-color-surface-container-high {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --md-sys-color-surface-container-highest {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --md-sys-color-on-surface {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --md-sys-color-on-surface-variant {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --md-sys-color-outline {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --md-sys-color-outline-variant {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --md-sys-color-inverse-surface {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+@property --md-sys-color-inverse-on-surface {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
+html.pear-m3e.pear-m3e-animate {
+  transition-property:
+    --md-sys-color-primary,
+    --md-sys-color-on-primary,
+    --md-sys-color-secondary-container,
+    --md-sys-color-on-secondary-container,
+    --md-sys-color-tertiary,
+    --md-sys-color-surface,
+    --md-sys-color-surface-container-low,
+    --md-sys-color-surface-container,
+    --md-sys-color-surface-container-high,
+    --md-sys-color-surface-container-highest,
+    --md-sys-color-on-surface,
+    --md-sys-color-on-surface-variant,
+    --md-sys-color-outline,
+    --md-sys-color-outline-variant,
+    --md-sys-color-inverse-surface,
+    --md-sys-color-inverse-on-surface;
+  transition-duration: 600ms;
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
 }

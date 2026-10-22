@@ -1,10 +1,80 @@
-#nav-bar-background,
+/*
+ * The header stays clear and the page fades out under it along an eased
+ * gradient that starts below it, so the header has no visible lower edge.
+ * Rows also blur on their way under it, driven by their own scroll position.
+ * This works the same with an opaque window and with Transparent Player,
+ * where backdrop-filter cannot blur text: the blurred copy of white text on
+ * a clear window is itself nearly clear, so the sharp original shows through.
+ *
+ * Content scrolls in #content in the contained layout; the height is
+ * resolved there: the layout overrides the root's nav bar height.
+ */
+body.blur-nav-bar ytmusic-app-layout[is-contained-content-layout-enabled] {
+  #nav-bar-background {
+    background: transparent !important;
+    backdrop-filter: none !important;
+  }
+
+  > #content {
+    clip-path: inset(var(--menu-bar-height, 0px) 0 0 0);
+    mask-image: linear-gradient(
+      to bottom,
+      transparent var(--menu-bar-height, 0px),
+      rgb(0 0 0 / 0.08)
+        calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) * 0.4),
+      rgb(0 0 0 / 0.35)
+        calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) * 0.75),
+      rgb(0 0 0 / 0.75)
+        calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) + 12px),
+      #000
+        calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) + 40px)
+    );
+
+    /*
+     * Rows of vertical lists, chip rows and shelf titles. A view timeline
+     * follows the nearest scroller, so items inside horizontal carousels
+     * would track those instead; they only fade. Tall elements stay out: the
+     * blur covers the whole element at once.
+     */
+    :is(
+      ytmusic-playlist-shelf-renderer #contents > ytmusic-responsive-list-item-renderer,
+      ytmusic-shelf-renderer #contents > ytmusic-responsive-list-item-renderer,
+      ytmusic-grid-renderer #items > ytmusic-two-row-item-renderer,
+      ytmusic-chip-cloud-renderer,
+      ytmusic-carousel-shelf-basic-header-renderer
+    ) {
+      animation: blur-nav-bar-under-header linear forwards;
+      animation-timeline: view(
+        block calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height))
+          0px
+      );
+      animation-range: exit 0% exit 100%;
+    }
+  }
+}
+
+@keyframes blur-nav-bar-under-header {
+  from {
+    filter: blur(0);
+    opacity: 1;
+  }
+
+  to {
+    filter: blur(14px);
+    opacity: 0.6;
+  }
+}
+
+/* The classic layout scrolls the window, which a mask cannot follow */
+body.blur-nav-bar
+  ytmusic-app-layout:not([is-contained-content-layout-enabled])
+  #nav-bar-background,
 #header.ytmusic-item-section-renderer {
   background: rgba(0, 0, 0, 0.3) !important;
   backdrop-filter: blur(8px) !important;
 }
 
-/* The blurred header already separates the content; no line under it */
+/* The header has no visible lower edge */
 #nav-bar-background {
   border-bottom: 0 !important;
 }

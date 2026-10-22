@@ -7,11 +7,11 @@ An independent project, not affiliated with, authorized or endorsed by Google LL
 
 ## How it differs from upstream
 
-**Plugins.** 19 instead of 40: the ones that work and are worth keeping. On by default: Album Color Theme, Blur Navigation Bar, Discord, Downloader, In-App Menu, Link Sanitizer, Material 3 Expressive, Navigation, Performance Improvement, Playlist Reorder, Precise Volume, Prefer Song, Synced Lyrics, Taskbar Media Control and Transparent Player (Windows and macOS).
+**Plugins.** 18 instead of 40: the ones that work and are worth keeping. On by default: Album Color Theme, Blur Navigation Bar, Discord, Downloader, In-App Menu, Link Sanitizer, Material 3 Expressive, Navigation, Performance Improvement, Playlist Reorder, Precise Volume, Prefer Song, Synced Lyrics, Taskbar Media Control and Transparent Player (Windows and macOS).
 
 | Plugin | Notes |
 |---|---|
-| Album Color Theme, Blur Navigation Bar, Discord, Downloader, In-App Menu, Navigation, Performance Improvement, Precise Volume, Synced Lyrics, Taskbar Media Control, Unobtrusive Player, Video Toggle | From upstream, with the fixes below |
+| Album Color Theme, Blur Navigation Bar, Discord, Downloader, In-App Menu, Navigation, Performance Improvement, Precise Volume, Synced Lyrics, Taskbar Media Control, Unobtrusive Player | From upstream, with the fixes below |
 | Do Not Track | Ad/tracker blocker, off by default; filter list index pinned in the source |
 | Transparent Player | On by default: mica on Windows, native vibrancy on macOS. Reworked: one even tint, content clipped under the header (with Blur Navigation Bar it blurs and fades there instead), readable menus; no stale frames on macOS/Linux |
 | **Link Sanitizer** (new) | Strips the account-bound `si` and share tracking (`feature`, `pp`, `utm_*`) from shared and copied links |

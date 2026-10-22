@@ -67,17 +67,20 @@ body.transparent-player {
   }
 
   /*
-   * Content scrolls in #content; keep it out of the clear header. The height
-   * is resolved here: the layout overrides the root's nav bar height.
+   * Content scrolls in #content; keep it out of the clear header (Blur
+   * Navigation Bar fades it out there instead). The height is resolved here:
+   * the layout overrides the root's nav bar height.
    */
-  ytmusic-app-layout[is-contained-content-layout-enabled] {
+  &:not(.blur-nav-bar)
+    ytmusic-app-layout[is-contained-content-layout-enabled]
     > #content,
-    #guide-wrapper {
-      clip-path: inset(
-        calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height)) 0 0 0
-      );
-    }
+  ytmusic-app-layout[is-contained-content-layout-enabled] #guide-wrapper {
+    clip-path: inset(
+      calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height)) 0 0 0
+    );
+  }
 
+  ytmusic-app-layout[is-contained-content-layout-enabled] {
     #player-page {
       background: transparent !important;
     }
@@ -85,10 +88,10 @@ body.transparent-player {
     /*
      * The player page slides over the content and the site hides the content
      * only once the slide ends, so it showed through the clear page. Hide it
-     * as the page starts to open; bring it back as the page fades out.
+     * as the page starts to open; bring it back as the page leaves.
      */
     > #content {
-      transition: opacity 200ms ease 60ms;
+      transition: opacity 200ms ease 100ms;
     }
 
     &[player-page-open] > #content {
@@ -97,71 +100,22 @@ body.transparent-player {
     }
 
     /*
-     * The page also slides down behind the clear player bar when it closes:
-     * it fades in while opening, and on closing it fades out before it
-     * starts to move, so it is gone before it reaches the bar.
+     * The page also slides behind the clear player bar, whose top is the
+     * page's bottom edge when open. A clip moves with the slide so that edge
+     * stays put: the bottom inset equals the page's offset (100vh when
+     * closed) at every frame, as both share the duration and easing.
      */
-    &[player-page-open] #player-page {
+    #player-page:not(:has(ytmusic-player[player-ui-state='MINIPLAYER'])) {
+      clip-path: inset(-100vh -100vw 100vh -100vw);
       transition:
-        transform 0.3s,
-        background-color 0.3s cubic-bezier(0.2, 0, 0.6, 1),
-        opacity 200ms cubic-bezier(0.2, 0, 0, 1) !important;
+        transform 0.3s ease,
+        clip-path 0.3s ease,
+        background-color 0.3s cubic-bezier(0.2, 0, 0.6, 1) !important;
     }
 
-    &:not([player-page-open])
+    &[player-page-open]
       #player-page:not(:has(ytmusic-player[player-ui-state='MINIPLAYER'])) {
-      opacity: 0;
-      transition:
-        transform 0.3s cubic-bezier(0.3, 0, 0.8, 0.15),
-        background-color 0.3s cubic-bezier(0.2, 0, 0.6, 1),
-        opacity 70ms cubic-bezier(0, 0, 0.2, 1) !important;
-    }
-  }
-
-  /*
-   * Blur Navigation Bar. backdrop-filter cannot blur text here: the blurred
-   * copy of white text on a clear window is itself nearly clear, so the sharp
-   * original shows through it. Instead the content blurs itself while it
-   * slides under the clear header, driven by its own scroll position.
-   */
-  &.blur-nav-bar ytmusic-app-layout[is-contained-content-layout-enabled] > #content {
-    clip-path: inset(var(--menu-bar-height, 0px) 0 0 0);
-    /*
-     * Everything fades out under the header along an eased gradient that
-     * starts below it, so the header has no visible lower edge
-     */
-    mask-image: linear-gradient(
-      to bottom,
-      transparent var(--menu-bar-height, 0px),
-      rgb(0 0 0 / 0.08)
-        calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) * 0.4),
-      rgb(0 0 0 / 0.35)
-        calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) * 0.75),
-      rgb(0 0 0 / 0.75)
-        calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) + 12px),
-      #000
-        calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) + 40px)
-    );
-
-    /*
-     * Rows of vertical lists, chip rows and shelf titles also blur on their
-     * way under it. A view timeline follows the nearest scroller, so items
-     * inside horizontal carousels would track those instead; they only fade.
-     * Tall elements stay out: the blur covers the whole element at once.
-     */
-    :is(
-      ytmusic-playlist-shelf-renderer #contents > ytmusic-responsive-list-item-renderer,
-      ytmusic-shelf-renderer #contents > ytmusic-responsive-list-item-renderer,
-      ytmusic-grid-renderer #items > ytmusic-two-row-item-renderer,
-      ytmusic-chip-cloud-renderer,
-      ytmusic-carousel-shelf-basic-header-renderer
-    ) {
-      animation: transparent-player-under-header linear forwards;
-      animation-timeline: view(
-        block calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height))
-          0px
-      );
-      animation-range: exit 0% exit 100%;
+      clip-path: inset(-100vh -100vw 0px -100vw);
     }
   }
 
@@ -182,6 +136,16 @@ body.transparent-player {
   /* Sticky search tabs sit over scrolled results */
   #search-page #tabs.stuck {
     background: var(--ytmd-transparent-player-overlay-background) !important;
+  }
+
+  /*
+   * Synced Lyrics keeps its provider picker over the scrolling lines with a
+   * backdrop blur, which cannot work here: it gets a solid card instead
+   */
+  div:has(> .lyrics-picker) > .lyrics-picker {
+    border-radius: 16px;
+    background: var(--ytmd-transparent-player-overlay-background) !important;
+    backdrop-filter: none !important;
   }
 
   /* Album Color Theme keeps the page artwork, dimmed */
@@ -207,14 +171,3 @@ body.transparent-player {
   }
 }
 
-@keyframes transparent-player-under-header {
-  from {
-    filter: blur(0);
-    opacity: 1;
-  }
-
-  to {
-    filter: blur(14px);
-    opacity: 0.6;
-  }
-}

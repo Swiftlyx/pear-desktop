@@ -21,7 +21,7 @@ export default createPlugin({
         ...document.adoptedStyleSheets,
         this.styleSheet,
       ];
-      // Transparent Player shows the effect differently (no blur there)
+      // Scopes the clear header and the page fading out under it
       document.body.classList.add('blur-nav-bar');
     },
     async stop() {
