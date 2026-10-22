@@ -46,7 +46,9 @@ win:
       arch:
         - x64
         - arm64
-  compression: maximum
+  # maximum took minutes longer (NSIS compresses on one thread) for the same
+  # size: about 111 MB per x64 portable either way
+  compression: normal
 nsisWeb:
   runAfterFinish: false
 # One portable exe per architecture instead of a combined, twice as large one

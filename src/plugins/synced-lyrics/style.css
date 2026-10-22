@@ -243,14 +243,37 @@
 div:has(> .lyrics-picker) {
   z-index: 100;
   position: sticky !important;
+  /* The virtual list writes each item's offset into top, which a sticky
+     element reads as its threshold: the picker stuck above or below the top */
+  top: 0 !important;
 
   & > .lyrics-picker {
     position: relative;
 
     top: var(--lyrics-picker-top, 0) !important;
     transition: top 325ms ease-in-out;
+  }
+}
 
-    backdrop-filter: blur(5px);
+/*
+ * Lines fade and blur on their way under the picker (5em tall), as the page
+ * does under Blur Navigation Bar's header; a backdrop blur cannot reach text
+ * in a transparent window. The lines' own wrappers animate, as the lines
+ * carry their highlight animations.
+ */
+.synced-lyrics-vlist > div > div:has(> :is(.synced-line, .text-lyrics)) {
+  /* Through a variable: the minifier folds a literal timeline into the
+     animation shorthand, where browsers do not accept it */
+  --lyrics-under-picker: view(block 70px 0px);
+  animation: lyrics-under-picker linear both;
+  animation-timeline: var(--lyrics-under-picker);
+  animation-range: exit -40px exit 0%;
+}
+
+@keyframes lyrics-under-picker {
+  to {
+    opacity: 0;
+    filter: blur(8px);
   }
 }
 

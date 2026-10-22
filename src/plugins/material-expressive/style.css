@@ -426,23 +426,21 @@ html.pear-m3e {
   }
 
   /*
-   * Chips: small corners, outlined until selected. A faint fill and the
-   * stronger outline keep them legible over artwork and imagery.
+   * Chips: small corners, outlined until selected, on a faint light tint. A
+   * dark fill read as holes in the clear window.
    */
   ytmusic-chip-cloud-chip-renderer a.yt-simple-endpoint {
     border-radius: var(--md-sys-shape-corner-small) !important;
     background-color: rgb(
-      from var(--md-sys-color-surface-container-high) r g b / 0.55
+      from var(--md-sys-color-on-surface) r g b / 0.06
     ) !important;
-    box-shadow: inset 0 0 0 1px var(--md-sys-color-outline);
+    box-shadow: inset 0 0 0 1px var(--md-sys-color-outline-variant);
     color: var(--md-sys-color-on-surface) !important;
     transition: var(--m3e-color-change);
 
     &:hover {
-      background-color: color-mix(
-        in srgb,
-        var(--md-sys-color-surface-container-high) 85%,
-        var(--md-sys-color-on-surface)
+      background-color: rgb(
+        from var(--md-sys-color-on-surface) r g b / 0.12
       ) !important;
     }
   }
@@ -567,6 +565,18 @@ html.pear-m3e {
     &:hover {
       background-color: var(--m3e-state-hover) !important;
     }
+  }
+
+  /*
+   * Rows of list shelves sit flush in their grid, so the hover layer hugged
+   * the cover. They grow into the 16px gaps around them, the padding taken
+   * back by negative margins so nothing moves; the shelf's scroller, which
+   * clips vertically, makes room for its first and last row the same way.
+   */
+  ytmusic-carousel ul#items:has(> ytmusic-responsive-list-item-renderer),
+  ytmusic-carousel ul#items > ytmusic-responsive-list-item-renderer {
+    padding-block: 6px;
+    margin-block: -6px;
   }
 
   /*

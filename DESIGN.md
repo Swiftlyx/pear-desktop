@@ -1,0 +1,115 @@
+# Design system
+
+Rules every visual change in this fork follows. Material 3 Expressive
+(`src/plugins/material-expressive/`) is the source of truth; Transparent Player
+and Blur Navigation Bar adapt it to the clear window. Check a change against
+this list before building, and extend the list when a new rule is settled.
+
+## Colour
+
+- The scheme grows from the current cover: `SchemeContent` (dark, spec 2025).
+  A cover with no colour fit for a theme (black and white) gets
+  `SchemeMonochrome`: greys only, never the library's blue fallback. Until the
+  first cover is read, the source is `#ff0033`.
+- Components use roles (`--md-sys-color-*`, written by `colors.ts`) or the
+  tokens derived from them (`--m3e-*`), never literal colours. The site's own
+  tokens (`--yt-sys-color-baseline--*`, `--ytmusic-*`, `--yt-spec-*`) are
+  mapped onto roles in one place, at the top of `style.css`.
+- Every role used in CSS is registered with `@property` (`<color>`), so the
+  next song's scheme fades in (600 ms). A role newly used in CSS is
+  registered too.
+- One surface: title bar, header, page, drawer and player bar paint
+  `--m3e-surface` (opaque window) or nothing (transparent window). No panels,
+  bands or edges between them, before or after scrolling. The seek bar is the
+  only separator of the player bar. Page artwork (cover glows) stays off: it
+  starts under the header and turns it into a panel.
+- Containers: menus, dialogs and cards use the surface-container roles. In
+  the transparent window, overlays that sit on content (menus, dialogs, search
+  suggestions) use `--ytmd-transparent-player-overlay-background` (dense).
+- Accents: primary for the main action (Play), the seek bar and the active
+  tab; secondary-container / on-secondary-container for selection (current
+  drawer item, current queue row, selected segment, liked); tertiary only at
+  the end of the progress gradient.
+- Text: on-surface for primary text, on-surface-variant for secondary text
+  and for icons in rows.
+
+## Shape
+
+- Corner scale (`--md-sys-shape-corner-*`): 4, 8, 12, 16, 20, 28, full.
+- Covers in rows and the queue 8, rows 12, artwork cards 16 (28 on hover),
+  page header art and the player 28, menus 16, dialogs 28, chips 8, buttons
+  full. Round avatars stay round.
+- Grouped controls (Song/Video, like/dislike, any segmented control) keep one
+  outer shape in every state: selecting or pressing changes colour, never
+  corners. Connected groups: 2 px gap, 4 px inner corners; a pill track has a
+  pill indicator.
+- Play: round, a rounded square (30 %) while playing, 22 % while pressed;
+  proportional radii keep the shape at every size. It never shows a spinner
+  or a loading shape of its own.
+- Clip once. When an overlay sits on an image, only their common container
+  rounds and clips (`overflow: hidden` and the radius); two nested clips with
+  equal corners leak the image's edge pixels as light dots.
+
+## Outlines and dividers
+
+- No dividers between rows: rows are separated by space (a line under a
+  rounded row bends up at its corners). No borders on the drawer, header or
+  player bar.
+- A 1 px `outline` marks outlined buttons; `outline-variant` is for quiet
+  borders, unselected chips included. Chips sit on a faint light tint
+  (on-surface 6 %, 12 % on hover): a dark fill reads as a hole in the clear
+  window.
+
+## States
+
+- Hover is the state layer `--m3e-state-hover` (on-surface 8 %), pressed is
+  `--m3e-state-pressed` (10 %). Every row, segment, chip and button shows
+  hover.
+- A hover area is larger than its content: rows keep at least 6 px above and
+  below the cover. Where rows sit flush, they grow into the gaps with padding
+  taken back by negative margins, so nothing moves.
+- Icons in a row share one colour: on-surface-variant, on-surface on hover.
+  Controls added by plugins follow it.
+- Anything that acts on a click shows the pointer cursor (queue rows play on
+  click).
+
+## Motion
+
+- Scroll-driven animations pass their timeline through a custom property
+  (`animation-timeline: var(--x)`): the minifier folds a literal `view()` into
+  the `animation` shorthand, where browsers reject it.
+- Springs as `linear()` curves: fast spatial (360 ms) for shape changes,
+  default effects (231 ms) for colour, fast effects (150 ms) for state layers.
+- Large surfaces animate only compositor properties: opacity and transform.
+  No animated clip-path, mask, filter or layout on pages (an animated clip on
+  the player page made it stutter). Scroll-driven blur is for small elements
+  only (rows, chip rows, shelf titles, lyric lines).
+- Page transitions fade with a small scale or rise (M3 fade through / shared
+  axis): enter up to 350 ms with emphasized decelerate, exit up to 150 ms with
+  emphasized accelerate. Nothing may pass visibly under the clear player bar.
+
+## Transparent window
+
+- backdrop-filter cannot blur in the clear window (it only darkens): never
+  rely on it, and reset it explicitly where a plugin sets it with a stronger
+  selector.
+- Content under clear chrome fades out instead: Blur Navigation Bar's mask
+  gradient on `#content` plus a scroll-driven `view()` blur on vertical rows;
+  lyric lines fade the same way under the provider picker. The opaque window
+  uses the same look. View timelines bind to the nearest scroller, so items in
+  horizontal carousels only fade.
+
+## Typography
+
+- The site's own fonts (Roboto, YouTube Sans); a replacement was tried and
+  rejected. Times use tabular figures.
+
+## Checking a change
+
+- Build the portable and look at it in the real window, with Transparent
+  Player on and off. Screenshots taken through DevTools do not show the window
+  material; capture the window itself.
+- Bands and edges: read the pixel brightness down one column of a scrolled
+  capture; it must not step at the header or bar edges.
+- Hover: force it with DevTools (`CSS.forcePseudoState`); bringing the window
+  forward resets synthetic hover to the real cursor.
