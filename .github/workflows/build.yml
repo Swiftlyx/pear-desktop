@@ -50,11 +50,27 @@ jobs:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
         run: pnpm playwright test clean-url matching lrc
 
+  draft:
+    name: Create draft release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # Parallel electron-builder jobs would each create their own draft for the tag
+      - name: Create the draft once
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view "$GITHUB_REF_NAME" -R "$GITHUB_REPOSITORY" > /dev/null 2>&1 ||
+            gh release create "$GITHUB_REF_NAME" -R "$GITHUB_REPOSITORY" --draft --title "$GITHUB_REF_NAME" --notes ""
+
   release:
     name: Release (${{ matrix.os }})
     # Only tagged versions are built and published
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: check
+    needs: draft
     runs-on: ${{ matrix.os }}
     permissions:
       contents: write
