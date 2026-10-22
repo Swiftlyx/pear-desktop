@@ -76,6 +76,11 @@ html.pear-m3e {
   );
   --m3e-state-hover: rgb(from var(--md-sys-color-on-surface) r g b / 0.08);
   --m3e-state-pressed: rgb(from var(--md-sys-color-on-surface) r g b / 0.1);
+  /* Neutral tonal container for secondary buttons and groups */
+  --m3e-neutral-container: rgb(from var(--md-sys-color-on-surface) r g b / 0.1);
+  --m3e-neutral-container-hover: rgb(
+    from var(--md-sys-color-on-surface) r g b / 0.16
+  );
 
   /* Site tokens: page and bars */
   --ytmusic-background: var(--m3e-surface) !important;
@@ -341,7 +346,7 @@ html.pear-m3e {
     }
 
     button.ytSpecButtonShapeNextHost {
-      background-color: var(--m3e-state-pressed) !important;
+      background-color: var(--m3e-neutral-container) !important;
       color: var(--md-sys-color-on-surface) !important;
       transition: var(--m3e-color-change);
 
@@ -392,6 +397,57 @@ html.pear-m3e {
 
     dislike-button-view-model button[aria-pressed='true'] .ytSpecButtonShapeNextIcon {
       mask-image: var(--m3e-icon-thumb-down-filled) !important;
+    }
+  }
+
+  /*
+   * Shelf headers: More (and Play all) are neutral tonal pills instead of
+   * outlined ones; the previous/next arrows form one connected capsule like
+   * like/dislike. Borders stay, transparent, so nothing changes size.
+   */
+  ytmusic-carousel-shelf-basic-header-renderer
+    button.ytSpecButtonShapeNextHost.ytSpecButtonShapeNextOutline {
+    border-color: transparent !important;
+    background-color: var(--m3e-neutral-container) !important;
+    color: var(--md-sys-color-on-surface) !important;
+    transition:
+      var(--m3e-shape-morph),
+      var(--m3e-color-change);
+
+    &:hover {
+      background-color: var(--m3e-neutral-container-hover) !important;
+    }
+  }
+
+  ytmusic-carousel-shelf-renderer .button-group:has(> .next-items-button) {
+    gap: 2px !important;
+
+    > :is(.previous-items-button, .next-items-button) {
+      margin-inline: 0 !important;
+      border-color: transparent !important;
+      background-color: var(--m3e-neutral-container) !important;
+      color: var(--md-sys-color-on-surface) !important;
+      opacity: 1 !important;
+      transition: var(--m3e-color-change);
+
+      &:not([disabled]):hover {
+        background-color: var(--m3e-neutral-container-hover) !important;
+      }
+
+      &[disabled] {
+        background-color: rgb(
+          from var(--md-sys-color-on-surface) r g b / 0.04
+        ) !important;
+        color: rgb(from var(--md-sys-color-on-surface) r g b / 0.38) !important;
+      }
+    }
+
+    > .previous-items-button {
+      border-radius: 18px 4px 4px 18px !important;
+    }
+
+    > .next-items-button {
+      border-radius: 4px 18px 18px 4px !important;
     }
   }
 

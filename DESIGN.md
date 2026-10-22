@@ -67,6 +67,10 @@ this list before building, and extend the list when a new rule is settled.
 
 ## States
 
+- Secondary buttons and button groups (More, Play all, carousel arrows,
+  like/dislike) are neutral tonal: `--m3e-neutral-container` (on-surface
+  10 %, 16 % on hover), no outline; disabled ones keep a 4 % container and a
+  38 % icon. Arrows that belong together form one connected capsule.
 - Hover is the state layer `--m3e-state-hover` (on-surface 8 %), pressed is
   `--m3e-state-pressed` (10 %). Every row, segment, chip and button shows
   hover.
