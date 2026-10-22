@@ -187,25 +187,39 @@ export default createPlugin({
   stylesheets: [style],
   renderer: {
     observer: null as MutationObserver | null,
+    pending: new Set<RowElement>(),
     scheduled: false,
 
     start() {
       document.addEventListener('click', onClick, true);
 
-      // Rows are added lazily (continuations) and re-rendered on navigation.
-      // Mutations outside browse pages (e.g. the player clock) are ignored.
+      // Rows are added lazily (continuations) and recycled on re-render, so
+      // only rows a mutation touched are checked again: rescanning every row
+      // of a long playlist on each image load stalled its scrolling
       this.observer = new MutationObserver((mutations) => {
-        if (this.scheduled) return;
-        const touchesBrowsePage = mutations.some(
-          ({ target }) =>
-            target instanceof Element &&
-            target.closest('ytmusic-browse-response') !== null,
-        );
-        if (!touchesBrowsePage) return;
+        for (const { target, addedNodes } of mutations) {
+          if (!(target instanceof Element)) continue;
+          const row = target.closest<RowElement>(ROW_SELECTOR);
+          if (row) {
+            this.pending.add(row);
+            continue;
+          }
+          for (const node of addedNodes) {
+            if (!(node instanceof Element)) continue;
+            if (node.matches(ROW_SELECTOR)) this.pending.add(node as RowElement);
+            for (const added of node.querySelectorAll<RowElement>(ROW_SELECTOR)) {
+              this.pending.add(added);
+            }
+          }
+        }
+        if (this.scheduled || this.pending.size === 0) return;
         this.scheduled = true;
         requestAnimationFrame(() => {
           this.scheduled = false;
-          decorateAllRows();
+          for (const row of this.pending) {
+            if (row.isConnected) decorateRow(row);
+          }
+          this.pending.clear();
         });
       });
       this.observer.observe(document.body, { childList: true, subtree: true });
@@ -215,6 +229,7 @@ export default createPlugin({
       document.removeEventListener('click', onClick, true);
       this.observer?.disconnect();
       this.observer = null;
+      this.pending.clear();
       for (const element of document.querySelectorAll(`.${BUTTONS_CLASS}`)) {
         element.remove();
       }
