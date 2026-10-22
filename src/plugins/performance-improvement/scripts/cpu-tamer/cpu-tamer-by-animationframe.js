@@ -147,51 +147,10 @@ export const injectCpuTamerByAnimationFrame = ((__CONTEXT__) => {
     /** @type {Function|null} */
     let afInterupter = null;
 
-    const getRAFHelper = () => {
-      const asc = document.createElement('a-f');
-      if (!('onanimationiteration' in asc)) {
-        return (resolve) => requestAnimationFrame(afInterupter = resolve);
-      }
-      asc.id = 'a-f';
-      let qr = null;
-      asc.onanimationiteration = function () {
-        if (qr !== null) qr = (qr(), null);
-      }
-      if (!document.getElementById('afscript')) {
-        const style = document.createElement('style');
-        style.id = 'afscript';
-        style.textContent = `
-          @keyFrames aF1 {
-            0% {
-              order: 0;
-            }
-            100% {
-              order: 1;
-            }
-          }
-          #a-f[id] {
-            visibility: collapse !important;
-            position: fixed !important;
-            display: block !important;
-            top: -100px !important;
-            left: -100px !important;
-            margin:0 !important;
-            padding:0 !important;
-            outline:0 !important;
-            border:0 !important;
-            z-index:-1 !important;
-            width: 0px !important;
-            height: 0px !important;
-            contain: strict !important;
-            pointer-events: none !important;
-            animation: 1ms steps(2, jump-none) 0ms infinite alternate forwards running aF1 !important;
-          }
-        `;
-        (document.head || document.documentElement).appendChild(style);
-      }
-      document.documentElement.insertBefore(asc, document.documentElement.firstChild);
-      return (resolve) => (qr = afInterupter = resolve);
-    };
+    // Frames are requested only while a timer waits for one. The upstream helper
+    // drives an infinite CSS animation instead, which forces a style recalc on
+    // every display refresh (240 per second on a 240 Hz screen) even when idle.
+    const getRAFHelper = () => (resolve) => requestAnimationFrame(afInterupter = resolve);
 
     /** @type {(resolve: () => void)}  */
     const rafPN = getRAFHelper(); // rAF will not execute if document is hidden
