@@ -151,7 +151,7 @@ export default createPlugin({
         }
       }
     },
-    async onPlayerApiReady(api, { getConfig }) {
+    async onPlayerApiReady(api, { getConfig, setConfig }) {
       const [showButton, setShowButton] = createSignal(true);
 
       const config = await getConfig();
@@ -202,7 +202,8 @@ export default createPlugin({
         if (this.config) {
           this.config.hideVideo = !showVideo;
         }
-        window.mainConfig.plugins.setOptions('video-toggle', this.config);
+        // The sandboxed preload exposes a read-only config; writes go through IPC
+        setConfig({ hideVideo: !showVideo });
 
         const checkbox = document.querySelector<HTMLInputElement>(
           '.video-switch-button-checkbox',
