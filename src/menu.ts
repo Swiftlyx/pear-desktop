@@ -12,6 +12,7 @@ import { satisfies } from 'semver';
 import { allPlugins } from 'virtual:plugins';
 
 import { APPLICATION_NAME, t } from '@/i18n';
+import { cleanUrl } from '@/utils/clean-url';
 
 import * as config from './config';
 import { getAllMenuTemplate, loadAllMenuPlugins } from './loader/menu';
@@ -633,7 +634,7 @@ export const mainMenuTemplate = async (
           label: t('main.menu.navigation.submenu.copy-current-url'),
           click() {
             const currentURL = win.webContents.getURL();
-            clipboard.writeText(currentURL);
+            clipboard.writeText(cleanUrl(currentURL));
           },
         },
         {

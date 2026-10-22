@@ -338,6 +338,10 @@
       },
       "name": "In-App Menu"
     },
+    "link-sanitizer": {
+      "description": "Removes account and tracking identifiers (si, feature, utm_*) from copied and shared links",
+      "name": "Link Sanitizer"
+    },
     "navigation": {
       "description": "Next/Back navigation arrows directly integrated in the interface, like in your favorite browser",
       "name": "Navigation",
