@@ -7,13 +7,13 @@ An independent project, not affiliated with, authorized or endorsed by Google LL
 
 ## How it differs from upstream
 
-**Plugins.** 18 instead of 40: the ones that work and are worth keeping.
+**Plugins.** 18 instead of 40: the ones that work and are worth keeping. On by default: Album Color Theme, Discord, Downloader, In-App Menu, Link Sanitizer, Navigation, Performance Improvement, Playlist Reorder, Precise Volume, Prefer Song, Synced Lyrics, Taskbar Media Control and Transparent Player (Windows).
 
 | Plugin | Notes |
 |---|---|
 | Album Color Theme, Blur Navigation Bar, Discord, Downloader, In-App Menu, Navigation, Performance Improvement, Precise Volume, Synced Lyrics, Taskbar Media Control, Unobtrusive Player, Video Toggle | From upstream, with the fixes below |
 | Do Not Track | Ad/tracker blocker, off by default; filter list index pinned in the source |
-| Transparent Player | Fixed: no stale frames on macOS/Linux, no double tint |
+| Transparent Player | On by default on Windows (acrylic). Reworked: one even tint, content clipped under the header, readable menus; no stale frames on macOS/Linux |
 | **Link Sanitizer** (new) | Strips the account-bound `si` and share tracking (`feature`, `pp`, `utm_*`) from shared and copied links |
 | **Playlist Reorder** (new) | Move a song to the top or bottom of your own playlist in one click |
 | **Prefer Song**, **Audio Only** | From [michei69/pear-desktop](https://github.com/michei69/pear-desktop): song instead of music video |
@@ -29,6 +29,11 @@ An independent project, not affiliated with, authorized or endorsed by Google LL
 - Performance Improvement kept the page redrawing on every display frame (about a third of a CPU core
   even when idle); Synced Lyrics kept animating under a closed player page and repainted its glow on
   every frame. Idle CPU dropped from 39% to 2.5% of a core, playback with lyrics from 42% to 15%.
+- Long playlists scrolled with stutters: In-App Menu made the browser track the visibility of every
+  element inside every row. Now about half the layout work and no hitches on repeat scrolls.
+- The seek bar of the new player bar only reacted to a 3px line; the whole 23px strip seeks now.
+- In-App Menu: the sidebar no longer starts under the header, and the empty scrollbar strip on the
+  right is gone. Scrollbars are thin and translucent everywhere.
 
 **Security**
 - Electron 44 (upstream ships 42, now out of support) and no known vulnerable dependencies.
