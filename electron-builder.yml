@@ -13,6 +13,17 @@ files:
   - '!node_modules/**/*.ts'
 asarUnpack:
   - assets
+publish:
+  provider: github
+  owner: Swiftlyx
+  repo: pear-desktop
+electronFuses:
+  runAsNode: false
+  enableCookieEncryption: true
+  enableNodeOptionsEnvironmentVariable: false
+  enableNodeCliInspectArguments: false
+  enableEmbeddedAsarIntegrityValidation: true
+  onlyLoadAppFromAsar: true
 mac:
   identity: null
   target:
@@ -25,18 +36,14 @@ mac:
 win:
   icon: assets/generated/icons/win/icon.ico
   target:
-    - target: nsis-web
+    - target: nsis
       arch:
         - x64
-        - ia32
-        - arm64
     - target: portable
       arch:
         - x64
-        - ia32
-        - arm64
   compression: maximum
-nsisWeb:
+nsis:
   runAfterFinish: false
 linux:
   icon: assets/generated/icons/png
