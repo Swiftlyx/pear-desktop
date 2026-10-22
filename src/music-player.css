@@ -88,6 +88,24 @@ tp-yt-paper-dialog {
   -webkit-app-region: no-drag;
 }
 
+/* No window dragging while middle-click autoscroll may run (see renderer.ts) */
+html.pear-autoscroll,
+html.pear-autoscroll *,
+html.pear-autoscroll *::before {
+  -webkit-app-region: no-drag !important;
+}
+
+/*
+ * Long playlists: rows out of view skip style, layout and paint. Each loaded
+ * batch of 100 rows froze scrolling for less, and steady scrolling got
+ * smoother (Liked music, 445 rows: 155 -> 180 fps). The placeholder height
+ * is a row's height; `auto` keeps each row's real size once rendered.
+ */
+ytmusic-playlist-shelf-renderer #contents > ytmusic-responsive-list-item-renderer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 76px;
+}
+
 /* Thin translucent scrollbars without arrow buttons for every scroller */
 html {
   /* A standard scrollbar-color (the site sets one) disables the rules below */

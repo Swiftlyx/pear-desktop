@@ -421,7 +421,58 @@ const preload = async () => {
   }
 };
 
+// Windows hands clicks on -webkit-app-region: drag areas (header, title bar)
+// to the window frame, so a click there never reaches the page and cannot end
+// middle-click autoscroll. While autoscroll may be running the drag areas are
+// lifted (see music-player.css).
+const keepAutoscrollStoppable = () => {
+  const root = document.documentElement;
+  let start: { x: number; y: number } | null = null;
+  const end = () => {
+    start = null;
+    root.classList.remove('pear-autoscroll');
+  };
+
+  document.addEventListener(
+    'mousedown',
+    (event) => {
+      const target = event.target as Element | null;
+      if (
+        event.button !== 1 ||
+        target?.closest('a[href], input, textarea, [contenteditable]')
+      ) {
+        end();
+        return;
+      }
+      start = { x: event.screenX, y: event.screenY };
+      root.classList.add('pear-autoscroll');
+    },
+    true,
+  );
+  document.addEventListener(
+    'mouseup',
+    (event) => {
+      if (event.button !== 1) {
+        end();
+        return;
+      }
+      // Released after dragging: autoscroll stops with the release. A click
+      // without movement keeps it on until the next press.
+      if (
+        start &&
+        Math.abs(event.screenX - start.x) + Math.abs(event.screenY - start.y) >
+          15
+      ) {
+        end();
+      }
+    },
+    true,
+  );
+  window.addEventListener('blur', end);
+};
+
 const main = async () => {
+  keepAutoscrollStoppable();
   await loadAllRendererPlugins();
   isPluginLoaded = true;
 
