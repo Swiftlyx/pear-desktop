@@ -216,7 +216,13 @@ export const injectCpuTamerByAnimationFrame = ((__CONTEXT__) => {
 
       const dFunc = (propFunc) => {
         return (cid) => {
-          if (cid) inExec.delete(cid) || propFunc(cid);
+          // Drop a run that waits for its frame and always clear the native
+          // timer: upstream skipped the latter for a waiting run, so an interval
+          // cleared then (a 1 ms one is nearly always waiting) kept firing
+          if (cid) {
+            inExec.delete(cid);
+            propFunc(cid);
+          }
         };
       };
 
