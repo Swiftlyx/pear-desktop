@@ -338,6 +338,8 @@ async function createMainWindow() {
   const windowMaximized = config.get('window-maximized');
   const windowPosition: Electron.Point = config.get('window-position');
   const useInlineMenu = await config.plugins.isEnabled('in-app-menu');
+  const useTransparentPlayer =
+    await config.plugins.isEnabled('transparent-player');
 
   const defaultTitleBarOverlayOptions: Electron.TitleBarOverlay = {
     color: '#00000000',
@@ -368,7 +370,11 @@ async function createMainWindow() {
     height: windowSize.height,
     minWidth: 325,
     minHeight: 425,
-    backgroundColor: '#000',
+    // macOS and Linux only clear a window's surface between frames when it is
+    // created transparent; turning transparency on later leaves stale frames.
+    // Windows gets its transparency from the DWM background material instead.
+    backgroundColor: useTransparentPlayer ? '#00000000' : '#000',
+    ...(useTransparentPlayer && !is.windows() ? { transparent: true } : {}),
     show: false,
     webPreferences: {
       contextIsolation: true,

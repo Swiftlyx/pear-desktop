@@ -32,8 +32,11 @@ const setWindowTransparency = (window: BrowserWindow, material: MaterialType, op
     }
   }
 
-  // Set the opacity
-  window.setBackgroundColor(`rgba(0, 0, 0, ${opacity})`);
+  // The page paints the tint (see style.css), so a translucent window colour
+  // would darken it twice; restore the opaque default when disabled
+  window.setBackgroundColor(
+    material === MaterialType.NONE && opacity >= 1 ? '#000' : '#00000000',
+  );
 };
 
 export const backend = createBackend({
