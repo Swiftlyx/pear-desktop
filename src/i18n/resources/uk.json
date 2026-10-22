@@ -248,7 +248,7 @@
         "disconnected": "Від'єднано",
         "hide-duration-left": "Приховати тривалість, яка залишилася",
         "hide-github-button": "Приховати посилання на GitHub",
-        "play-on-application": "Слухати на {{applicationName}}",
+        "play-on-application": "Показувати кнопку «Listen to this song»",
         "set-inactivity-timeout": "Встановити тайм-аут бездіяльності",
         "set-status-display-type": {
           "label": "Статус",
@@ -485,8 +485,8 @@
           "tooltip": "Перетворити китайський ієрогліф на традиційний або спрощений"
         },
         "use-ytm-lyrics-without-proxy": {
-          "label": "Тексти YouTube Music без проксі",
-          "tooltip": "Брати тексти YouTube Music напряму з YouTube, а не через сторонній проксі"
+          "label": "Вбудовані тексти без проксі",
+          "tooltip": "Брати вбудовані тексти плеєра напряму через сесію застосунку, а не через сторонній проксі"
         }
       },
       "name": "Синхронізовані тексти",

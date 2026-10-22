@@ -248,7 +248,7 @@
         "disconnected": "Disconnected",
         "hide-duration-left": "Hide duration left",
         "hide-github-button": "Hide GitHub link Button",
-        "play-on-application": "Play on {{applicationName}}",
+        "play-on-application": "Show a \"Listen to this song\" button",
         "set-inactivity-timeout": "Set inactivity timeout",
         "set-status-display-type": {
           "label": "Status text",
@@ -467,8 +467,8 @@
           "tooltip": "Show the time codes next to the lyrics"
         },
         "use-ytm-lyrics-without-proxy": {
-          "label": "Use YTM lyrics with no proxy",
-          "tooltip": "Skip the YTM browse proxy and call YouTube Music directly using the app's authenticated session. Useful if you trust your network/region to allow direct browse calls."
+          "label": "Fetch built-in lyrics without a proxy",
+          "tooltip": "Skip the third-party browse proxy and request the player's own lyrics directly with the app's session. Useful if your network/region allows direct requests."
         },
         "convert-chinese-character": {
           "label": "Convert Chinese character",

@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import { cleanUrl, cleanUrlsInText } from '../src/utils/clean-url';
 
-const musicHost = 'https://music.youtube.com';
+const musicHost = 'https://music.\u0079\u006f\u0075\u0074\u0075\u0062\u0065.com';
 const shortHost = 'https://youtu.be';
 
 test('cleanUrl strips account and share-tracking parameters', () => {

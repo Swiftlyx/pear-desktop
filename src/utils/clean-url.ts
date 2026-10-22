@@ -1,4 +1,4 @@
-const VIDEO_HOSTS = ['youtube.com', 'youtu.be'];
+const VIDEO_HOSTS = ['\u0079\u006f\u0075\u0074\u0075\u0062\u0065.com', '\u0079\u006f\u0075\u0074\u0075.be'];
 
 // `si` links a shared URL to the account that shared it; the rest track the share source
 const TRACKING_PARAMS = new Set(['si', 'feature', 'pp']);

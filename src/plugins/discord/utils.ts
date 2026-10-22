@@ -1,5 +1,3 @@
-import { APPLICATION_NAME } from '@/i18n';
-
 import { HANGUL_FILLER } from './constants';
 
 import type { DiscordPluginConfig } from './index';
@@ -56,12 +54,12 @@ export const buildDiscordButtons = (
   const buttons: GatewayActivityButton[] = [];
   if (
     config[
-      'playOn\u0059\u006f\u0075\u0054\u0075\u0062\u0065\u004d\u0075\u0073\u0069\u0063'
+      'listenButton'
     ] &&
     songInfo.url
   ) {
     buttons.push({
-      label: `Play on ${APPLICATION_NAME}`,
+      label: 'Listen to this song',
       url: songInfo.url,
     });
   }

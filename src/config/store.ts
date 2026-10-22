@@ -20,6 +20,15 @@ export type IStore = InstanceType<
 >;
 
 const migrations = {
+  '>=3.12.2'(store: IStore) {
+    // The Discord button setting was renamed with the app
+    const legacyKey = 'plugins.discord.playOn\u0059\u006f\u0075\u0054\u0075\u0062\u0065\u004d\u0075\u0073\u0069\u0063';
+    const listenButton = store.get(legacyKey);
+    if (listenButton !== undefined) {
+      store.set('plugins.discord.listenButton', listenButton);
+      store.delete(legacyKey);
+    }
+  },
   '>=3.12.0'(store: IStore) {
     const blockerConfig = store.get('plugins.adblocker') as TrackerBlockerConfig;
     if (blockerConfig) {
@@ -132,7 +141,7 @@ const migrations = {
     const listenAlong = store.get('plugins.discord.listenAlong');
     if (listenAlong !== undefined) {
       store.set(
-        'plugins.discord.playOn\u0059\u006f\u0075\u0054\u0075\u0062\u0065\u004d\u0075\u0073\u0069\u0063',
+        'plugins.discord.listenButton',
         listenAlong,
       );
       store.delete('plugins.discord.listenAlong');

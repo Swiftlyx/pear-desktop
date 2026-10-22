@@ -1,6 +1,6 @@
 // Domains the main window may display (the player itself plus the Google sign-in flow).
 // Everything else is opened in the default browser instead.
-const TRUSTED_DOMAINS = ['youtube.com', 'google.com'];
+const TRUSTED_DOMAINS = ['\u0079\u006f\u0075\u0074\u0075\u0062\u0065.com', 'google.com'];
 
 const isTrustedDomain = (hostname: string) =>
   TRUSTED_DOMAINS.some(

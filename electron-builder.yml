@@ -1,5 +1,5 @@
-appId: "com.github.th-ch.\u0079\u006f\u0075\u0074\u0075\u0062\u0065\u002d\u006d\u0075\u0073\u0069\u0063"
-productName: "\u0059\u006f\u0075\u0054\u0075\u0062\u0065\u0020\u004d\u0075\u0073\u0069\u0063"
+appId: "com.github.swiftlyx.pear-desktop"
+productName: "Pear Desktop"
 files:
   - '!*'
   - dist
@@ -49,13 +49,16 @@ win:
   compression: maximum
 nsisWeb:
   runAfterFinish: false
+# One portable exe per architecture instead of a combined, twice as large one
+portable:
+  artifactName: ${productName}-${version}-${arch}-portable.${ext}
 linux:
   icon: assets/generated/icons/png
   category: AudioVideo
   syncDesktopName: true
   desktop:
     entry:
-      StartupWMClass: "com.github.th-ch.\u0079\u006f\u0075\u0074\u0075\u0062\u0065\u002d\u006d\u0075\u0073\u0069\u0063"
+      StartupWMClass: "com.github.swiftlyx.pear-desktop"
   target:
     - target: AppImage
       arch:
@@ -88,10 +91,10 @@ linux:
         - arm64
         - armv7l
 appImage:
-  description: "\u0059\u006f\u0075\u0054\u0075\u0062\u0065\u0020\u004d\u0075\u0073\u0069\u0063 Desktop App bundled with custom plugins"
+  description: "Pear Desktop: a desktop music player with plugins"
   category: AudioVideo
 flatpak:
-  description: "\u0059\u006f\u0075\u0054\u0075\u0062\u0065\u0020\u004d\u0075\u0073\u0069\u0063 Desktop App bundled with custom plugins"
+  description: "Pear Desktop: a desktop music player with plugins"
   category: AudioVideo
   runtimeVersion: '24.08'
   baseVersion: '24.08'
@@ -106,7 +109,7 @@ flatpak:
     - '--talk-name=org.freedesktop.Notifications'
     - '--talk-name=org.gnome.SessionManager'
     - '--talk-name=org.kde.StatusNotifierWatcher'
-    - "--own-name=org.mpris.MediaPlayer2.\u0059\u006f\u0075\u0074\u0075\u0062\u0065\u004d\u0075\u0073\u0069\u0063.*"
+    - "--own-name=org.mpris.MediaPlayer2.PearDesktop.*"
 deb:
   depends:
     - libgtk-3-0

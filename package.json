@@ -1,9 +1,9 @@
 {
-  "name": "youtube-music",
-  "desktopName": "com.github.th-ch.youtube-music",
-  "productName": "YouTube Music",
-  "version": "3.12.1",
-  "description": "YouTube Music Desktop App - including custom plugins",
+  "name": "pear-desktop",
+  "desktopName": "com.github.swiftlyx.pear-desktop",
+  "productName": "Pear Desktop",
+  "version": "3.12.2",
+  "description": "Pear Desktop: a desktop music player with plugins",
   "main": "./dist/main/index.js",
   "type": "module",
   "license": "MIT",
@@ -29,15 +29,14 @@
     "dist:linux:deb-arm64": "pnpm clean && pnpm build && pnpm electron-builder --linux deb:arm64 -p never",
     "dist:linux:rpm-arm64": "pnpm clean && pnpm build && pnpm electron-builder --linux rpm:arm64 -p never",
     "dist:mac": "pnpm clean && pnpm build && pnpm electron-builder --mac dmg:arm64 -p never",
-    "dist:win": "pnpm clean && pnpm build && pnpm electron-builder --win -p never",
+    "dist:win": "pnpm clean && pnpm build && pnpm electron-builder --win nsis-web --x64 --arm64 -p never && pnpm electron-builder --win portable --x64 -p never && pnpm electron-builder --win portable --arm64 -p never",
     "dist:win:x64": "pnpm clean && pnpm build && pnpm electron-builder --win nsis-web:x64 -p never",
     "lint": "pnpm oxlint --type-aware src",
     "format": "pnpm oxfmt --write src",
     "format:check": "pnpm oxfmt --check src",
-    "changelog": "pnpm dlx auto-changelog",
     "release:linux": "pnpm clean && pnpm build && pnpm electron-builder --linux -p always -c.snap.publish=github",
     "release:mac": "pnpm clean && pnpm build && pnpm electron-builder --mac -p always",
-    "release:win": "pnpm clean && pnpm build && pnpm electron-builder --win -p always",
+    "release:win": "pnpm clean && pnpm build && pnpm electron-builder --win nsis-web --x64 --arm64 -p always && pnpm electron-builder --win portable --x64 -p always && pnpm electron-builder --win portable --arm64 -p always",
     "typecheck": "pnpm tsc -p tsconfig.json --noEmit",
     "check": "pnpm lint && pnpm format:check && pnpm typecheck",
     "dist:win:portable": "pnpm clean && pnpm build && pnpm electron-builder --win portable:x64 -p never"
@@ -134,11 +133,5 @@
     "vite-plugin-resolve": "2.5.2",
     "vite-plugin-solid": "2.11.12",
     "ws": "8.21.0"
-  },
-  "auto-changelog": {
-    "hideCredit": true,
-    "package": true,
-    "unreleased": true,
-    "output": "changelog.md"
   }
 }

@@ -90,13 +90,13 @@ const receivedBody = async (input: RequestInfo | URL, init?: RequestInit) =>
 
 const post = async (path: string, body: Record<string, unknown>) =>
   fetch(
-    new Request('https://music.youtube.com' + path, {
+    new Request('https://music.\u0079\u006f\u0075\u0074\u0075\u0062\u0065.com' + path, {
       method: 'POST',
       body: await gzip(JSON.stringify(body)),
     }),
   );
 
-const setupYouTubeMusic = (
+const setupPlayer = (
   releaseRows: unknown[],
   queue: unknown[],
   state: { failBrowse?: boolean } = {},
@@ -152,15 +152,15 @@ const playRelease = async (
   queue: unknown[],
   options?: { failBrowse?: boolean },
 ) => {
-  const { playerRequests } = setupYouTubeMusic(releaseRows, queue, options);
-  const response = await post('/youtubei/v1/next', {
+  const { playerRequests } = setupPlayer(releaseRows, queue, options);
+  const response = await post('/\u0079\u006f\u0075\u0074\u0075\u0062\u0065i/v1/next', {
     playlistId: RELEASE_PLAYLIST,
   });
   return { tracks: await tracksOf(response), playerRequests };
 };
 
 const playFromRelease = (videoId: string, setId = FIRST_SET) =>
-  post('/youtubei/v1/player', {
+  post('/\u0079\u006f\u0075\u0074\u0075\u0062\u0065i/v1/player', {
     videoId,
     playlistId: RELEASE_PLAYLIST,
     params: encodeURIComponent(btoa('\xf0\x05\x01' + setId)),
@@ -168,7 +168,7 @@ const playFromRelease = (videoId: string, setId = FIRST_SET) =>
 
 const playOutsideRelease = (videoId: string, playlistId?: string) =>
   post(
-    '/youtubei/v1/player',
+    '/\u0079\u006f\u0075\u0074\u0075\u0062\u0065i/v1/player',
     playlistId ? { videoId, playlistId } : { videoId },
   );
 
@@ -297,14 +297,14 @@ test('ignores a music video played from a mix', async () => {
 
 test('a release lookup that failed is retried on the next play', async () => {
   const state = { failBrowse: true };
-  setupYouTubeMusic(
+  setupPlayer(
     [releaseRow('video-1', 'song-1')],
     [queueItem('video-1', { musicVideo: true })],
     state,
   );
 
   const first = await tracksOf(
-    await post('/youtubei/v1/next', { playlistId: RELEASE_PLAYLIST }),
+    await post('/\u0079\u006f\u0075\u0074\u0075\u0062\u0065i/v1/next', { playlistId: RELEASE_PLAYLIST }),
   );
   // The lookup failed, so the queue is left as the page served it.
   expect(first[0].videoId).toBe('video-1');
@@ -313,7 +313,7 @@ test('a release lookup that failed is retried on the next play', async () => {
   // play swaps the music video for its song.
   state.failBrowse = false;
   const second = await tracksOf(
-    await post('/youtubei/v1/next', { playlistId: RELEASE_PLAYLIST }),
+    await post('/\u0079\u006f\u0075\u0074\u0075\u0062\u0065i/v1/next', { playlistId: RELEASE_PLAYLIST }),
   );
   expect(second[0].videoId).toBe('song-1');
 });

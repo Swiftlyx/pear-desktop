@@ -1,3 +1,6 @@
+// Must run before any module opens the config store in the profile folder
+import '@/migrate-user-data';
+
 import fs from 'node:fs';
 import path from 'node:path';
 import url from 'node:url';
@@ -130,12 +133,12 @@ if (is.linux()) {
 
   // Overrides WM_CLASS for X11 to correspond to icon filename
   app.setName(
-    'com.github.th-ch.\u0079\u006f\u0075\u0074\u0075\u0062\u0065\u002d\u006d\u0075\u0073\u0069\u0063',
+    'com.github.swiftlyx.pear-desktop',
   );
   // for wayland
   app.commandLine.appendSwitch(
     'class',
-    'com.github.th-ch.\u0079\u006f\u0075\u0074\u0075\u0062\u0065\u002d\u006d\u0075\u0073\u0069\u0063',
+    'com.github.swiftlyx.pear-desktop',
   );
 }
 
@@ -715,7 +718,7 @@ app.whenReady().then(async () => {
   // Register appID on windows
   if (is.windows()) {
     const appID =
-      'com.github.th-ch.\u0079\u006f\u0075\u0074\u0075\u0062\u0065\u002d\u006d\u0075\u0073\u0069\u0063';
+      'com.github.swiftlyx.pear-desktop';
     app.setAppUserModelId(appID);
     const appLocation = process.execPath;
     const appData = app.getPath('appData');
@@ -750,7 +753,7 @@ app.whenReady().then(async () => {
           {
             target: appLocation,
             cwd: path.dirname(appLocation),
-            description: `${APPLICATION_NAME} Desktop App - including custom plugins`,
+            description: `${APPLICATION_NAME}: a desktop music player with plugins`,
             appUserModelId: appID,
           },
         );
@@ -1003,7 +1006,7 @@ function removeContentSecurityPolicy(
     if (url?.protocol === 'https:') {
       // Remove the content security policy of the player only; other sites
       // (e.g. the Google sign-in pages) keep their XSS protection
-      if (url.hostname === 'music.youtube.com') {
+      if (url.hostname === 'music.\u0079\u006f\u0075\u0074\u0075\u0062\u0065.com') {
         delete details.responseHeaders['content-security-policy-report-only'];
         delete details.responseHeaders['Content-Security-Policy-Report-Only'];
         delete details.responseHeaders['content-security-policy'];

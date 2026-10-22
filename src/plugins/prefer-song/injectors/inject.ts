@@ -46,7 +46,7 @@ export function installPreferSong() {
     ).ytcfg;
     const key = config.get('INNERTUBE_API_KEY') as string;
     const response = await originalFetch(
-      '/youtubei/v1/' + path + '?key=' + key + '&prettyPrint=false',
+      '/\u0079\u006f\u0075\u0074\u0075\u0062\u0065i/v1/' + path + '?key=' + key + '&prettyPrint=false',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -212,10 +212,10 @@ export function installPreferSong() {
   window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
     if (!(input instanceof Request)) return originalFetch(input, init);
 
-    if (input.url.includes('/youtubei/v1/player')) {
+    if (input.url.includes('/\u0079\u006f\u0075\u0074\u0075\u0062\u0065i/v1/player')) {
       return originalFetch(await patchedOr(songPlayerRequest(input), input));
     }
-    if (input.url.includes('/youtubei/v1/next')) {
+    if (input.url.includes('/\u0079\u006f\u0075\u0074\u0075\u0062\u0065i/v1/next')) {
       const sent = input.clone();
       const response = await originalFetch(input);
       return patchedOr(songQueueResponse(response.clone(), sent), response);

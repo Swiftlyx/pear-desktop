@@ -36,7 +36,7 @@ export default createPlugin<
       // Hide video element, show album art
       this.applyVisualMode();
 
-      // Lock playback-mode so YouTube can never flip it back
+      // Lock playback-mode so the page can never flip it back
       const player = document.querySelector<HTMLElement>('ytmusic-player');
       if (player) {
         player.setAttribute('playback-mode', 'ATV_PREFERRED');
@@ -124,7 +124,7 @@ export default createPlugin<
     },
 
     lockPlaybackMode(player: HTMLElement) {
-      // Prevent YouTube from overriding playback-mode back to OMV_PREFERRED
+      // Prevent the page from overriding playback-mode back to OMV_PREFERRED
       this.playbackModeObserver = new MutationObserver((mutations) => {
         for (const mutation of mutations) {
           if (mutation.target instanceof HTMLElement) {

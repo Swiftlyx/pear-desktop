@@ -90,7 +90,7 @@ html {
 /*
  * NOTE: previously `will-change: transform`. That promotes every
  * matching element to its own GPU compositor layer for as long as
- * it's in the DOM — on a long playlist, where YouTube Music keeps
+ * it's in the DOM — on a long playlist, where the player page keeps
  * every row's element alive at once, that's thousands of simultaneous
  * layers (a classic "layer explosion"), which gets WORSE the longer
  * the list is — i.e. worse exactly where this comment says it should

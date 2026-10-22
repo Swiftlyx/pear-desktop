@@ -9,7 +9,7 @@ import {
 } from './harness';
 
 /**
- * The lyrics tab is whatever the browse response holds. YouTube answers a song
+ * The lyrics tab is whatever the browse response holds. The site answers a song
  * without lyrics with a localized message ("Lyrics not available at this time.",
  * "Không có lời bài hát", …) in `messageRenderer` or `musicMessageModel`; that is
  * not lyrics, and rendering it made the tab claim a hit (issue #53). Only timed

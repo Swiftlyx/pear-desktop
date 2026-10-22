@@ -139,7 +139,7 @@ export class YTMusic implements LyricProvider {
     }).then((res) => res.json()) as Promise<BrowseData>;
   }
 
-  // Calls YouTube Music's browse endpoint directly via the app's authenticated
+  // Calls the player's browse endpoint directly via the app's authenticated
   // network manager, which injects the visitor/auth tokens that the request
   // would otherwise be missing when called from regions where the unauthenticated
   // call is geo-restricted.

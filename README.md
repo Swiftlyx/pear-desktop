@@ -1,9 +1,9 @@
 # Pear Desktop — Swiftlyx fork
 
 A leaner, fixed and hardened fork of [pear-devs/pear-desktop](https://github.com/pear-devs/pear-desktop),
-the YouTube Music desktop app with plugins.
+a desktop music player with plugins.
 
-Not affiliated with, authorized or endorsed by Google LLC or YouTube.
+An independent project, not affiliated with, authorized or endorsed by Google LLC.
 
 ## How it differs from upstream
 
@@ -24,16 +24,16 @@ Not affiliated with, authorized or endorsed by Google LLC or YouTube.
   unknown tracks with a decoy. Every hit is now checked against the playing song, Musixmatch uses its
   working mobile API, and the lyrics cache is capped (it used to grow for the whole session).
 - Player setup could run twice and register every handler twice; plugins could hang until a song played.
-- Precise Volume works with the new YouTube Music player UI.
+- Precise Volume works with the new player UI.
 - Memory and lifecycle fixes across plugins (listeners and observers released on disable).
 
 **Security**
 - Electron 44 (upstream ships 42, now out of support) and no known vulnerable dependencies.
 - Chromium sandbox enabled for the page.
-- Only YouTube/Google pages load inside the app; other links open in your browser.
+- Only the player and Google sign-in pages load inside the app; other links open in your browser.
 - Google sign-in pages keep their Content-Security-Policy.
 - Cookies are encrypted on disk; `RunAsNode`, `NODE_OPTIONS` and `--inspect` are disabled.
-- `youtubemusic://` links can only control playback; the lyrics network helper only reaches Musixmatch.
+- `peardesktop://` links can only control playback; the lyrics network helper only reaches Musixmatch.
 
 **Other**
 - English and Ukrainian only.
@@ -42,12 +42,17 @@ Not affiliated with, authorized or endorsed by Google LLC or YouTube.
 
 ## Install
 
-Download the latest build from [Releases](https://github.com/Swiftlyx/pear-desktop/releases/latest).
+Download the latest build from [Releases](https://github.com/Swiftlyx/pear-desktop/releases/latest):
+`Pear-Desktop-Web-Setup-<version>.exe` (installer) or `Pear-Desktop-<version>-x64-portable.exe` /
+`-arm64-portable.exe` on Windows, `Pear-Desktop-<version>-arm64.dmg` on a Mac with Apple Silicon.
+
+Coming from a build released under the previous app name? The first start copies your old profile
+(sign-in, settings) over automatically; the old folder is kept as a backup.
 
 The macOS build is not signed. After moving it to Applications, run once:
 
 ```bash
-xattr -cr "/Applications/YouTube Music.app"
+xattr -cr "/Applications/Pear Desktop.app"
 ```
 
 ## Build
@@ -63,7 +68,7 @@ pnpm dist:mac            # Apple Silicon dmg (on macOS)
 
 Checks: `pnpm lint`, `pnpm typecheck`, `pnpm test`.
 
-To release, bump `version` in `package.json`, then push a matching tag (`git tag v3.12.1 && git push --tags`).
+To release, bump `version` in `package.json`, then push a matching tag (`git tag v3.12.2 && git push --tags`).
 GitHub Actions builds Windows and macOS packages into a draft release.
 
 ## Sync with upstream
@@ -87,7 +92,7 @@ git status --porcelain | awk '/^DU / {print $2}' | xargs -r git rm -q
     fixes by Mikey (with Kairo)
   - Precise Volume support for the new player UI by [WoWfff](https://github.com/WoWfff)
   - In-App Menu performance by [gothmiku](https://github.com/gothmiku)
-  - Optional YouTube Music lyrics proxy by Volodymyr Tymchenko
+  - Built-in lyrics without the third-party proxy by Volodymyr Tymchenko
   - Album Color Theme home page fix by [Chaganti-Reddy](https://github.com/Chaganti-Reddy) and
     Navigation cleanup by Mykhailo Balaker
 

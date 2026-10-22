@@ -48,7 +48,7 @@ jobs:
       - name: Unit tests
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
-        run: pnpm playwright test clean-url matching lrc
+        run: pnpm playwright test clean-url matching lrc migrate-profile
 
   draft:
     name: Create draft release

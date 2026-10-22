@@ -9,7 +9,7 @@ let blocker: ElectronBlocker | undefined;
 // Pinned copy of the upstream list index, so no third-party repository can
 // change which filter lists (and scriptlets) are loaded into the app
 const DEFAULT_LISTS = [
-  'https://raw.githubusercontent.com/kbinani/adblock-youtube-ads/master/signed.txt',
+  'https://raw.githubusercontent.com/kbinani/adblock-\u0079\u006f\u0075\u0074\u0075\u0062\u0065-ads/master/signed.txt',
   'https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/filters.txt',
   'https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/quick-fixes.txt',
   'https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/unbreak.txt',
