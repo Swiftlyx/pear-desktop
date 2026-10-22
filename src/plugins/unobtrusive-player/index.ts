@@ -42,28 +42,42 @@ const handlePlay = (e: MouseEvent) => {
   }
 };
 
+const isPlayerPageOpen = () =>
+  document
+    .querySelector('ytmusic-app-layout')
+    ?.attributes.getNamedItem('player-ui-state')?.value === 'PLAYER_PAGE_OPEN';
+
+// YTM renders a second, hidden player bar (`.top-player-bar`) inside the player
+// page, so the first `.toggle-player-page-button` in DOM order is not clickable.
+const getTogglePlayerPageButton = () =>
+  document.querySelector<HTMLElement>(
+    'ytmusic-player-bar[slot="player-bar"] .toggle-player-page-button',
+  ) ??
+  [
+    ...document.querySelectorAll<HTMLElement>('.toggle-player-page-button'),
+  ].find((button) => button.offsetParent !== null) ??
+  null;
+
 const handleVideoDataChange = () => {
-  const isPlayerPageOpen =
-    document
-      .querySelector('ytmusic-app-layout')
-      ?.attributes.getNamedItem('player-ui-state')?.value ===
-    'PLAYER_PAGE_OPEN';
-
   if (
-    document.body.classList.contains('unobtrusive-player--did-play') &&
-    isPlayerPageOpen
+    !document.body.classList.contains('unobtrusive-player--did-play') ||
+    !isPlayerPageOpen()
   ) {
-    document.body.classList.add('unobtrusive-player--auto-closing');
-
-    document
-      .querySelector<HTMLButtonElement>('.toggle-player-page-button')
-      ?.click();
-
-    // prevent animation flickering
-    setTimeout(() => {
-      document.body.classList.remove('unobtrusive-player--auto-closing');
-    }, 500);
+    return;
   }
+
+  document.body.classList.add('unobtrusive-player--auto-closing');
+  getTogglePlayerPageButton()?.click();
+
+  // prevent animation flickering
+  setTimeout(() => {
+    document.body.classList.remove('unobtrusive-player--auto-closing');
+
+    // Never leave an open but invisible player page behind
+    if (isPlayerPageOpen()) {
+      document.body.classList.remove('unobtrusive-player--did-play');
+    }
+  }, 500);
 };
 
 export default createPlugin({
