@@ -899,8 +899,9 @@ app.whenReady().then(async () => {
     };
 
     const updateTimeout = setTimeout(async () => {
-      // electron-updater has no update metadata for the portable exe
-      if (isPortableBuild()) {
+      // electron-updater has no update metadata for the portable exe and
+      // cannot verify the unsigned macOS build, so both ask GitHub directly
+      if (isPortableBuild() || is.macOS()) {
         if (await isNewerReleaseAvailable()) showUpdateAvailableDialog();
       } else {
         electronUpdater.autoUpdater.checkForUpdatesAndNotify();

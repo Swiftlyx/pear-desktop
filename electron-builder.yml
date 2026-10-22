@@ -24,12 +24,14 @@ electronFuses:
   enableNodeCliInspectArguments: false
   enableEmbeddedAsarIntegrityValidation: true
   onlyLoadAppFromAsar: true
+  # Apple Silicon only runs signed code; flipping fuses breaks the ad-hoc
+  # signature of the unsigned build, so it has to be re-applied
+  resetAdHocDarwinSignature: true
 mac:
   identity: null
   target:
     - target: dmg
       arch:
-        - x64
         - arm64
   icon: assets/generated/icons/mac/icon.icon
   compression: maximum
@@ -39,12 +41,10 @@ win:
     - target: nsis-web
       arch:
         - x64
-        - ia32
         - arm64
     - target: portable
       arch:
         - x64
-        - ia32
         - arm64
   compression: maximum
 nsisWeb:
