@@ -51,13 +51,17 @@ jobs:
         run: pnpm playwright test clean-url matching lrc
 
   release:
-    name: Windows installer
-    # Only tagged versions are built and published, to save Actions minutes
+    name: Release (${{ matrix.os }})
+    # Only tagged versions are built and published
     if: startsWith(github.ref, 'refs/tags/v')
     needs: check
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
     permissions:
       contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-26, ubuntu-latest, windows-latest]
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
@@ -85,9 +89,30 @@ jobs:
             exit 1
           fi
 
-      # electron-builder uploads the installer, portable exe and latest.yml
-      # to a draft release of this repository
-      - name: Build and publish
+      # electron-builder uploads every artifact and the update metadata
+      # (latest*.yml) to a draft release of this repository
+      - name: Build and publish (macOS)
+        if: startsWith(matrix.os, 'macos')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm release:mac
+
+      - name: Build and publish (Linux)
+        if: startsWith(matrix.os, 'ubuntu')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          sudo snap install snapcraft --classic
+          sudo apt update
+          sudo apt install -y flatpak flatpak-builder
+          sudo flatpak remote-add --if-not-exists --system flathub https://flathub.org/repo/flathub.flatpakrepo
+          sudo flatpak install -y flathub org.freedesktop.Platform/x86_64/24.08
+          sudo flatpak install -y flathub org.freedesktop.Sdk/x86_64/24.08
+          sudo flatpak install -y flathub org.electronjs.Electron2.BaseApp/x86_64/24.08
+          pnpm release:linux
+
+      - name: Build and publish (Windows)
+        if: startsWith(matrix.os, 'windows')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm release:win

@@ -36,14 +36,18 @@ mac:
 win:
   icon: assets/generated/icons/win/icon.ico
   target:
-    - target: nsis
+    - target: nsis-web
       arch:
         - x64
+        - ia32
+        - arm64
     - target: portable
       arch:
         - x64
+        - ia32
+        - arm64
   compression: maximum
-nsis:
+nsisWeb:
   runAfterFinish: false
 linux:
   icon: assets/generated/icons/png

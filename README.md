@@ -40,7 +40,10 @@ Requirements: Node.js 24 LTS (or 22.22+ / 26+) and pnpm 11 (`npm install -g pnpm
 ```bash
 pnpm install
 pnpm dev              # run from source with hot reload
-pnpm dist:win:x64     # build the Windows installer into ./pack
+pnpm dist:win:portable  # build the portable Windows exe into ./pack
+pnpm dist:win          # Windows web installer + portable (x64, ia32, arm64)
+pnpm dist:mac          # macOS dmg (run on macOS)
+pnpm dist:linux        # AppImage, deb, rpm, snap, flatpak, tar.gz (run on Linux)
 ```
 
 Checks: `pnpm lint`, `pnpm typecheck`, `pnpm playwright test clean-url matching lrc`.
@@ -49,8 +52,8 @@ Checks: `pnpm lint`, `pnpm typecheck`, `pnpm playwright test clean-url matching 
 
 1. Bump `version` in `package.json` and commit.
 2. Tag and push: `git tag v3.12.1 && git push origin master --tags`.
-3. GitHub Actions builds the installer and a portable exe and uploads them to a **draft** release.
-   Publish the draft on GitHub.
+3. GitHub Actions builds Windows, macOS and Linux packages, like upstream, and uploads them to a
+   **draft** release. Publish the draft on GitHub.
 
 ## Sync with upstream
 
