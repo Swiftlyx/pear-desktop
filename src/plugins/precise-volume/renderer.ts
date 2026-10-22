@@ -11,7 +11,7 @@ function $<E extends Element = Element>(selector: string) {
 
 let api: MusicPlayer;
 
-const moveVolumeHud = debounce((showVideo: boolean) => {
+export const moveVolumeHud = debounce((showVideo: boolean) => {
   const volumeHud = $<HTMLElement>('#volumeHud');
   if (!volumeHud) {
     return;
@@ -45,7 +45,7 @@ export const onPlayerApiReady = async (
   }, 2500);
 
   /** Restore saved volume and setup tooltip */
-  function firstRun() {
+  async function firstRun() {
     if (typeof options.savedVolume === 'number') {
       // Set saved volume as tooltip
       setTooltip(options.savedVolume);
@@ -66,12 +66,15 @@ export const onPlayerApiReady = async (
     injectVolumeHud(noVid);
     if (!noVid) {
       setupVideoPlayerOnwheel();
-      const videoMode = () =>
-        api.getPlayerResponse().videoDetails?.musicVideoType !==
-        'MUSIC_VIDEO_TYPE_ATV';
-      $('video')?.addEventListener('peard:src-changed', () =>
-        moveVolumeHud(videoMode()),
-      );
+      if (!(await window.mainConfig.plugins.isEnabled('video-toggle'))) {
+        // Video-toggle handles hud positioning on its own
+        const videoMode = () =>
+          api.getPlayerResponse().videoDetails?.musicVideoType !==
+          'MUSIC_VIDEO_TYPE_ATV';
+        $('video')?.addEventListener('peard:src-changed', () =>
+          moveVolumeHud(videoMode()),
+        );
+      }
     }
   }
 
@@ -277,7 +280,7 @@ export const onPlayerApiReady = async (
   );
   context.ipc.on('setVolume', (value: number) => setVolume(value));
 
-  firstRun();
+  await firstRun();
 };
 
 export const onConfigChange = (config: PreciseVolumePluginConfig) => {

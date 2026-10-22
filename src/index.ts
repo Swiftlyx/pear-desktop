@@ -121,6 +121,13 @@ let disableHardwareAcceleration = config.get(
 
 // Linux specific fixes
 if (is.linux()) {
+  // https://github.com/electron/electron/issues/15947
+  if (await config.plugins.isEnabled('transparent-player')) {
+    disableHardwareAcceleration = true;
+    app.commandLine.appendSwitch('enable-transparent-visuals');
+    app.commandLine.appendSwitch('enable-unsafe-swiftshader');
+  }
+
   // Overrides WM_CLASS for X11 to correspond to icon filename
   app.setName(
     'com.github.th-ch.\u0079\u006f\u0075\u0074\u0075\u0062\u0065\u002d\u006d\u0075\u0073\u0069\u0063',
