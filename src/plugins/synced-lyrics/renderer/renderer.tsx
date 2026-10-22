@@ -172,6 +172,8 @@ export const LyricsRenderer = () => {
       // picker hidden
       stickyRef()!.style.setProperty('--lyrics-picker-top', `-${height}px`);
     }
+    // Lines fade under the picker only while it is shown (style.css)
+    tab.toggleAttribute('lyrics-picker-hidden', !showPicker);
   };
 
   onMount(() => {
@@ -182,6 +184,7 @@ export const LyricsRenderer = () => {
     vList?.addEventListener('scrollend', mousemoveListener);
 
     onCleanup(() => {
+      tab.removeAttribute('lyrics-picker-hidden');
       tab.removeEventListener('mousemove', mousemoveListener);
       vList?.removeEventListener('scroll', mousemoveListener);
       vList?.removeEventListener('scrollend', mousemoveListener);

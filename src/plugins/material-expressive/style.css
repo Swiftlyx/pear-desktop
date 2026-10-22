@@ -434,7 +434,9 @@ html.pear-m3e {
     background-color: rgb(
       from var(--md-sys-color-on-surface) r g b / 0.06
     ) !important;
-    box-shadow: inset 0 0 0 1px var(--md-sys-color-outline-variant);
+    /* An inset box-shadow left stray pixels where the corners start */
+    outline: 1px solid var(--md-sys-color-outline-variant);
+    outline-offset: -1px;
     color: var(--md-sys-color-on-surface) !important;
     transition: var(--m3e-color-change);
 
@@ -447,7 +449,7 @@ html.pear-m3e {
 
   ytmusic-chip-cloud-chip-renderer[is-selected] a.yt-simple-endpoint {
     background-color: var(--md-sys-color-secondary-container) !important;
-    box-shadow: none;
+    outline-color: transparent;
     color: var(--md-sys-color-on-secondary-container) !important;
   }
 
@@ -500,24 +502,52 @@ html.pear-m3e {
   }
 
   /*
-   * Row covers are clipped once, by the container they fill: a cover and
-   * the play overlay on top of it, each clipped to the same corners, let the
-   * cover's edge pixels show through as light dots at the corners
+   * Row covers: the play overlay that darkens a cover on hover reaches 1px
+   * past it on every side, so at the rounded edge the cover is always fully
+   * under it. With equal edges the cover's edge pixels showed through as a
+   * light rim, however the two were clipped: the overlay fades in on a layer
+   * of its own, and layers are anti-aliased separately.
    */
   :is(ytmusic-responsive-list-item-renderer, ytmusic-player-queue-item)
     .left-items {
-    overflow: hidden;
-    border-radius: var(--md-sys-shape-corner-small) !important;
+    overflow: visible !important;
 
-    > *,
-    yt-img-shadow {
-      border-radius: 0 !important;
+    > :is(ytmusic-thumbnail-renderer, yt-img-shadow) {
+      overflow: hidden;
+      border-radius: var(--md-sys-shape-corner-small) !important;
+    }
+
+    > .thumbnail-overlay {
+      inset: -1px !important;
+      width: auto !important;
+      height: auto !important;
+      overflow: hidden;
+      border-radius: calc(var(--md-sys-shape-corner-small) + 1px) !important;
     }
   }
 
   ytmusic-responsive-list-item-renderer
-    .left-items:has(> [thumbnail-crop='MUSIC_THUMBNAIL_CROP_CIRCLE']) {
+    .left-items
+    > [thumbnail-crop='MUSIC_THUMBNAIL_CROP_CIRCLE'],
+  ytmusic-responsive-list-item-renderer
+    .left-items
+    > [thumbnail-crop='MUSIC_THUMBNAIL_CROP_CIRCLE']
+    ~ .thumbnail-overlay {
     border-radius: 50% !important;
+  }
+
+  /*
+   * Artist circles answer hover with the same kind of morph as artwork, the
+   * other way: artwork rounds, circles square towards a squircle
+   */
+  ytmusic-two-row-item-renderer[has-circle-cropped-thumbnail] a.image-wrapper {
+    :is(yt-img-shadow#image, #ripple) {
+      transition: var(--m3e-shape-morph);
+    }
+
+    &:hover :is(yt-img-shadow#image, #ripple) {
+      border-radius: 36% !important;
+    }
   }
 
   ytmusic-responsive-header-renderer
@@ -570,13 +600,17 @@ html.pear-m3e {
   /*
    * Rows of list shelves sit flush in their grid, so the hover layer hugged
    * the cover. They grow into the 16px gaps around them, the padding taken
-   * back by negative margins so nothing moves; the shelf's scroller, which
-   * clips vertically, makes room for its first and last row the same way.
+   * back by negative margins so nothing moves. The shelf's scroller and the
+   * carousel around it both clip, so the scroller really grows by the same
+   * amount to keep the first and last row whole.
    */
-  ytmusic-carousel ul#items:has(> ytmusic-responsive-list-item-renderer),
   ytmusic-carousel ul#items > ytmusic-responsive-list-item-renderer {
     padding-block: 6px;
     margin-block: -6px;
+  }
+
+  ytmusic-carousel ul#items:has(> ytmusic-responsive-list-item-renderer) {
+    padding-block: 6px;
   }
 
   /*

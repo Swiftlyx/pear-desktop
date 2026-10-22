@@ -270,6 +270,14 @@ div:has(> .lyrics-picker) {
   animation-range: exit -40px exit 0%;
 }
 
+/* With the picker slid away the lines only fade at the top edge */
+[lyrics-picker-hidden]
+  .synced-lyrics-vlist
+  > div
+  > div:has(> :is(.synced-line, .text-lyrics)) {
+  --lyrics-under-picker: view(block 0px 0px);
+}
+
 @keyframes lyrics-under-picker {
   to {
     opacity: 0;

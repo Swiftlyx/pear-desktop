@@ -46,9 +46,14 @@ this list before building, and extend the list when a new rule is settled.
 - Play: round, a rounded square (30 %) while playing, 22 % while pressed;
   proportional radii keep the shape at every size. It never shows a spinner
   or a loading shape of its own.
-- Clip once. When an overlay sits on an image, only their common container
-  rounds and clips (`overflow: hidden` and the radius); two nested clips with
-  equal corners leak the image's edge pixels as light dots.
+- Overlays on images reach 1 px past the image on every side (radius + 1).
+  With equal edges the image's edge pixels show through as a light rim or
+  dots, however the two are clipped: an overlay that fades is a layer of its
+  own, and layers are anti-aliased separately.
+- Outlines are `outline` with a -1 px offset (or a border), never an inset
+  box-shadow: its corners leave stray pixels next to a rounded background.
+- Hover on artwork morphs its shape: square artwork rounds (16 to 28 px),
+  artist circles square towards a squircle (50 % to 36 %).
 
 ## Outlines and dividers
 
@@ -67,7 +72,8 @@ this list before building, and extend the list when a new rule is settled.
   hover.
 - A hover area is larger than its content: rows keep at least 6 px above and
   below the cover. Where rows sit flush, they grow into the gaps with padding
-  taken back by negative margins, so nothing moves.
+  taken back by negative margins, so nothing moves; a clipping parent (the
+  shelf scroller, the carousel) grows for real so the outer rows stay whole.
 - Icons in a row share one colour: on-surface-variant, on-surface on hover.
   Controls added by plugins follow it.
 - Anything that acts on a click shows the pointer cursor (queue rows play on
