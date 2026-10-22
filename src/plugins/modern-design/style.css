@@ -1,0 +1,224 @@
+/*
+ * One design language in both modes: Material 3 Expressive shapes and motion
+ * with accents in the album colour. Only the surfaces differ: glass (clear
+ * fills, hairline edges) over the Transparent Player window, tonal fills
+ * otherwise. No backdrop-filter and nothing animated on list rows, so long
+ * lists keep scrolling smoothly.
+ */
+body.modern-design {
+  --md-radius-s: 8px;
+  --md-radius-m: 12px;
+  --md-radius-l: 16px;
+  --md-radius-xl: 24px;
+  --md-radius-full: 999px;
+  --md-ease: cubic-bezier(0.2, 0, 0, 1);
+  --md-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --md-fast: 160ms;
+  --md-medium: 320ms;
+
+  /* Album Color Theme supplies the accent; the site's white otherwise */
+  --md-accent: rgb(var(--ytmusic-album-accent, 255, 255, 255));
+  --md-on-accent: var(--ytmusic-album-on-accent, #0d0d0d);
+  --md-accent-container: color-mix(in srgb, var(--md-accent) 26%, transparent);
+
+  /* Tonal surfaces */
+  --md-fill: rgba(255, 255, 255, 0.08);
+  --md-edge: transparent;
+  --md-highlight: transparent;
+  --md-elevation: 0 8px 24px rgba(0, 0, 0, 0.35);
+
+  /* Glass surfaces over the Transparent Player window */
+  &.transparent-player {
+    --md-fill: rgba(255, 255, 255, 0.06);
+    --md-edge: rgba(255, 255, 255, 0.1);
+    --md-highlight: rgba(255, 255, 255, 0.08);
+    --md-elevation: 0 12px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Progress and the selected tab follow the album colour */
+  &.seekbar-theme {
+    --yt-sys-color-baseline--static-brand-red: rgb(
+      var(--ytmusic-album-accent, 255, 0, 51)
+    );
+    --yt-sys-color-baseline--static-magenta: rgb(
+      var(--ytmusic-album-accent, 255, 0, 127)
+    );
+  }
+
+  tp-yt-paper-tabs {
+    --paper-tabs-selection-bar-color: var(--md-accent) !important;
+  }
+
+  /* Primary Play buttons: accent fill, morphing shape */
+  ytmusic-responsive-header-renderer ytmusic-play-button-renderer,
+  ytmusic-guide-entry-renderer ytmusic-play-button-renderer {
+    background-color: var(--md-accent) !important;
+    transition:
+      border-radius var(--md-medium) var(--md-spring),
+      transform var(--md-fast) var(--md-ease),
+      background-color var(--md-medium) var(--md-ease);
+
+    .content-wrapper {
+      border-radius: inherit !important;
+    }
+
+    .icon,
+    yt-icon {
+      color: var(--md-on-accent) !important;
+    }
+
+    &:hover {
+      border-radius: 32% !important;
+    }
+
+    &:active {
+      transform: scale(0.92);
+    }
+  }
+
+  /* Player bar Play/Pause: the same primary button */
+  .ytmusicPlayerControlsPlayPauseButton button.ytSpecButtonShapeNextHost {
+    background-color: var(--md-accent) !important;
+    color: var(--md-on-accent) !important;
+    border-radius: var(--md-radius-l) !important;
+
+    &:hover {
+      border-radius: var(--md-radius-full) !important;
+    }
+
+    yt-touch-feedback-shape,
+    .ytSpecTouchFeedbackShapeFill {
+      border-radius: inherit !important;
+    }
+  }
+
+  /* Buttons: springy press, icon buttons squish into a rounded square */
+  .ytSpecButtonShapeNextHost {
+    transition:
+      transform var(--md-fast) var(--md-ease),
+      border-radius var(--md-medium) var(--md-spring),
+      background-color var(--md-fast) var(--md-ease);
+
+    &:active {
+      transform: scale(0.94);
+    }
+  }
+
+  .ytSpecButtonShapeNextIconOnlyDefault:active {
+    border-radius: 30% !important;
+  }
+
+  .ytSpecButtonShapeNextTonal,
+  .ytSpecButtonShapeNextOutline {
+    box-shadow: inset 0 0 0 1px var(--md-edge);
+  }
+
+  /* Song/Video: one segmented switch */
+  ytmusic-av-toggle .av-toggle {
+    border-radius: var(--md-radius-full) !important;
+    background-color: var(--md-fill) !important;
+    box-shadow: inset 0 0 0 1px var(--md-edge);
+
+    button {
+      border-radius: var(--md-radius-full) !important;
+      background-color: transparent !important;
+      transition: background-color var(--md-medium) var(--md-ease);
+    }
+
+    button[aria-pressed='true'] {
+      background-color: var(--md-accent-container) !important;
+    }
+  }
+
+  /* Chips and the search field */
+  ytmusic-chip-cloud-chip-renderer a.yt-simple-endpoint {
+    border-radius: var(--md-radius-full) !important;
+    box-shadow: inset 0 0 0 1px var(--md-edge);
+    transition: background-color var(--md-fast) var(--md-ease);
+  }
+
+  ytmusic-search-box:not([opened]) .search-box {
+    border-radius: var(--md-radius-full) !important;
+    box-shadow: inset 0 0 0 1px var(--md-edge);
+  }
+
+  ytmusic-search-box[opened] .search-container {
+    overflow: hidden;
+    border-radius: var(--md-radius-l) !important;
+    box-shadow:
+      var(--md-elevation),
+      inset 0 0 0 1px var(--md-edge);
+  }
+
+  /* Sidebar */
+  tp-yt-paper-item.ytmusic-guide-entry-renderer,
+  tp-yt-paper-item.ytmusic-guide-entry-renderer::before {
+    border-radius: var(--md-radius-m) !important;
+  }
+
+  tp-yt-paper-item.ytmusic-guide-entry-renderer {
+    transition: background-color var(--md-fast) var(--md-ease);
+  }
+
+  /* Artwork: rounder corners, round avatars stay round */
+  ytmusic-two-row-item-renderer:not([has-circle-cropped-thumbnail])
+    a.image-wrapper {
+    overflow: hidden;
+    border-radius: var(--md-radius-m);
+
+    img {
+      transition: transform var(--md-medium) var(--md-ease);
+    }
+
+    &:hover img {
+      transform: scale(1.04);
+    }
+  }
+
+  ytmusic-responsive-list-item-renderer
+    ytmusic-thumbnail-renderer:not(
+      [thumbnail-crop='MUSIC_THUMBNAIL_CROP_CIRCLE']
+    ) {
+    overflow: hidden;
+    border-radius: var(--md-radius-s);
+  }
+
+  ytmusic-responsive-header-renderer
+    ytmusic-thumbnail-renderer:not(
+      [thumbnail-crop='MUSIC_THUMBNAIL_CROP_CIRCLE']
+    ) {
+    overflow: hidden;
+    border-radius: var(--md-radius-xl);
+  }
+
+  ytmusic-player#player {
+    border-radius: var(--md-radius-xl) !important;
+  }
+
+  ytmusic-responsive-list-item-renderer {
+    border-radius: var(--md-radius-m);
+  }
+
+  /* Menus, panels and dialogs */
+  ytmusic-menu-popup-renderer,
+  ul[data-ytmd-sub-panel] {
+    overflow: hidden;
+    border-radius: var(--md-radius-l) !important;
+    box-shadow:
+      var(--md-elevation),
+      inset 0 0 0 1px var(--md-edge) !important;
+  }
+
+  tp-yt-paper-dialog {
+    border-radius: var(--md-radius-xl) !important;
+    box-shadow:
+      var(--md-elevation),
+      inset 0 0 0 1px var(--md-edge) !important;
+  }
+
+  /* Glass player bar: a clear pane with a light top edge */
+  &.transparent-player ytmusic-miniplayer.ytMusicMiniPlayerHost {
+    background: rgba(255, 255, 255, 0.04) !important;
+    box-shadow: inset 0 1px 0 var(--md-highlight);
+  }
+}
