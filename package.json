@@ -2,7 +2,7 @@
   "name": "pear-desktop",
   "desktopName": "com.github.swiftlyx.pear-desktop",
   "productName": "Pear Desktop",
-  "version": "3.12.2",
+  "version": "3.12.3",
   "description": "Pear Desktop: a desktop music player with plugins",
   "main": "./dist/main/index.js",
   "type": "module",
