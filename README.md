@@ -10,14 +10,24 @@ This project is not affiliated with, authorized or endorsed by Google LLC or You
 
 - **Only the plugins that are actually used are kept:** Album Color Theme, Blur Navigation Bar,
   Discord Rich Presence, Do Not Track (ad/tracker blocker, off by default), Downloader,
-  In-App Menu, Link Sanitizer, Navigation, Performance Improvement, Precise Volume,
-  Synced Lyrics, Unobtrusive Player. The other 30 plugins and their dependencies are removed.
-- **English only.** Translations and the language menu are removed.
+  In-App Menu, Link Sanitizer, Navigation, Performance Improvement, Playlist Reorder,
+  Precise Volume, Synced Lyrics, Unobtrusive Player. The other 30 plugins and their dependencies
+  are removed.
+- **English and Ukrainian only.** Other translations are removed; the language follows the system
+  locale and can be changed in *Options → Language*.
 - **Unobtrusive Player fix.** YouTube Music now renders a second, hidden player bar. The plugin
   clicked its toggle, so the player page stayed open but invisible and could not be expanded.
 - **Link Sanitizer (new, on by default).** Removes the account-bound `si` parameter and share
   tracking (`feature`, `pp`, `utm_*`) from the share dialog, from every copy to the clipboard and
   from *Navigation → Copy current URL*.
+- **Playlist Reorder (new, on by default).** Hover a song in one of your own playlists to move it
+  to the top or the bottom in one click.
+- **Synced Lyrics fix.** Musixmatch answers unknown and instrumental tracks with a decoy song and
+  made-up lyrics, so many songs showed the same text. Musixmatch and Genius hits are now checked
+  against the playing song, and a provider that never answers times out.
+- **Handlers no longer register twice.** A race could run the player setup twice, doubling every
+  IPC handler and plugin hook.
+- **Update notifications in the portable build**, which electron-updater does not support.
 - **Security hardening**
   - Electron 44 (42 is out of support).
   - Only YouTube/Google pages can be loaded in the app window. Popups, links and redirects to other
