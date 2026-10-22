@@ -434,6 +434,12 @@ html.pear-m3e {
         background-color: var(--m3e-neutral-container-hover) !important;
       }
 
+      /* The site's press effect is a circle; it takes the segment's shape */
+      #interaction,
+      #interaction :is(.stroke, .fill) {
+        border-radius: inherit !important;
+      }
+
       &[disabled] {
         background-color: rgb(
           from var(--md-sys-color-on-surface) r g b / 0.04

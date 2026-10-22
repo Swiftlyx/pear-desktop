@@ -80,6 +80,9 @@ this list before building, and extend the list when a new rule is settled.
   shelf scroller, the carousel) grows for real so the outer rows stay whole.
 - Icons in a row share one colour: on-surface-variant, on-surface on hover.
   Controls added by plugins follow it.
+- Press effects take the shape of their control: the site's ripple and
+  touch feedback elements (`yt-interaction`, `yt-touch-feedback-shape`) get
+  `border-radius: inherit`, never their own circle.
 - Anything that acts on a click shows the pointer cursor (queue rows play on
   click).
 
