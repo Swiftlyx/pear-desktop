@@ -3,13 +3,25 @@ import path from 'node:path';
 
 import { ElectronBlocker } from '@ghostery/adblocker-electron';
 import { app, net } from 'electron';
-import * as z from 'zod';
 
 let blocker: ElectronBlocker | undefined;
 
-const TbSourcesSchema = z.object({
-  tb: z.array(z.string()),
-});
+// Pinned copy of the upstream list index, so no third-party repository can
+// change which filter lists (and scriptlets) are loaded into the app
+const DEFAULT_LISTS = [
+  'https://raw.githubusercontent.com/kbinani/adblock-youtube-ads/master/signed.txt',
+  'https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/filters.txt',
+  'https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/quick-fixes.txt',
+  'https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/unbreak.txt',
+  'https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/filters-2020.txt',
+  'https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/filters-2021.txt',
+  'https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/filters-2022.txt',
+  'https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/filters-2023.txt',
+  'https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/filters-2024.txt',
+  'https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/filters-2025.txt',
+  'https://secure.fanboy.co.nz/fanboy-annoyance_ubo.txt',
+  'https://filters.adtidy.org/extension/ublock/filters/122_optimized.txt',
+];
 
 export const loadTrackerBlockerEngine = async (
   session?: Electron.Session,
@@ -30,20 +42,11 @@ export const loadTrackerBlockerEngine = async (
           write: promises.writeFile,
         }
       : undefined;
-  const tbSources = TbSourcesSchema.safeParse(
-    await (
-      await net.fetch(
-        'https://raw.githubusercontent.com/organization/tb-list/refs/heads/main/tb.json',
-      )
-    ).json(),
-  );
   const lists = [
     ...((disableDefaultLists && !Array.isArray(disableDefaultLists)) ||
     (Array.isArray(disableDefaultLists) && disableDefaultLists.length > 0)
       ? []
-      : tbSources.success
-        ? tbSources.data.tb
-        : []),
+      : DEFAULT_LISTS),
     ...additionalBlockLists,
   ];
 

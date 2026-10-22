@@ -49,6 +49,7 @@ import { setupSongInfo } from '@/providers/song-info';
 import { setUpTray } from '@/tray';
 import { LoggerPrefix } from '@/utils';
 import { isTesting } from '@/utils/testing';
+import { isExternalWebUrl, isTrustedAppUrl } from '@/utils/trusted-hosts';
 
 import type { PluginConfig } from '@/types/plugins';
 
@@ -479,7 +480,30 @@ async function createMainWindow() {
       });
     }
   });
+  // Keep untrusted sites out of the app window: they would get the preload bridge
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    if (isExternalWebUrl(url)) {
+      shell.openExternal(url);
+    }
+    return { action: 'deny' };
+  });
+  win.webContents.on('will-navigate', (event) => {
+    if (!isTrustedAppUrl(event.url)) {
+      event.preventDefault();
+      if (isExternalWebUrl(event.url)) {
+        shell.openExternal(event.url);
+      }
+    }
+  });
   win.webContents.on('will-redirect', (event) => {
+    if (event.isMainFrame && !isTrustedAppUrl(event.url)) {
+      event.preventDefault();
+      if (isExternalWebUrl(event.url)) {
+        shell.openExternal(event.url);
+      }
+      return;
+    }
+
     const url = URL.parse(event.url);
 
     // Workarounds for regions where YTM is restricted
@@ -904,13 +928,18 @@ function removeContentSecurityPolicy(
   betterSession.webRequest.onHeadersReceived((details, callback) => {
     details.responseHeaders ??= {};
 
+    const url = URL.parse(details.url);
+
     // prettier-ignore
-    if (URL.parse(details.url)?.protocol === 'https:') {
-      // Remove the content security policy
-      delete details.responseHeaders['content-security-policy-report-only'];
-      delete details.responseHeaders['Content-Security-Policy-Report-Only'];
-      delete details.responseHeaders['content-security-policy'];
-      delete details.responseHeaders['Content-Security-Policy'];
+    if (url?.protocol === 'https:') {
+      // Remove the content security policy of the player only; other sites
+      // (e.g. the Google sign-in pages) keep their XSS protection
+      if (url.hostname === 'music.youtube.com') {
+        delete details.responseHeaders['content-security-policy-report-only'];
+        delete details.responseHeaders['Content-Security-Policy-Report-Only'];
+        delete details.responseHeaders['content-security-policy'];
+        delete details.responseHeaders['Content-Security-Policy'];
+      }
 
       if (
         !details.responseHeaders['access-control-allow-origin'] &&

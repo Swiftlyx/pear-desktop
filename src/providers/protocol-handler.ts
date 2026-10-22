@@ -21,12 +21,18 @@ export function setupProtocolHandler(win: BrowserWindow) {
   const songControls = getSongControls(win);
 
   protocolHandler = ((cmd: keyof typeof songControls, ...args) => {
-    if (Object.keys(songControls).includes(cmd)) {
+    if (PROTOCOL_COMMANDS.has(cmd)) {
       // @ts-expect-error: cmd is a key of songControls
       songControls[cmd](...args);
     }
   }) as (cmd: string, ...args: string[]) => void;
 }
+
+// Any website can open a protocol link, so only plain playback controls are
+// exposed (no likes, queue edits or searches on behalf of the account)
+const PROTOCOL_COMMANDS: ReadonlySet<string> = new Set<
+  keyof ReturnType<typeof getSongControls>
+>(['previous', 'next', 'play', 'pause', 'playPause']);
 
 export function handleProtocol(cmd: string, ...args: string[]) {
   protocolHandler?.(cmd, ...args);
