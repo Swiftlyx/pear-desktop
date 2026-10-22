@@ -86,19 +86,39 @@ body.transparent-player {
     }
   }
 
-  /* Blur Navigation Bar: content fades under the clear header instead */
-  &.blur-nav-bar ytmusic-app-layout[is-contained-content-layout-enabled] {
-    > #content {
-      clip-path: none;
-      mask-image: linear-gradient(
-        to bottom,
-        transparent
-          calc(
-            var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) * 0.55
-          ),
-        #000
-          calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) + 12px)
+  /*
+   * Blur Navigation Bar. backdrop-filter cannot blur text here: the blurred
+   * copy of white text on a clear window is itself nearly clear, so the sharp
+   * original shows through it. Instead the content blurs itself while it
+   * slides under the clear header, driven by its own scroll position.
+   */
+  &.blur-nav-bar ytmusic-app-layout[is-contained-content-layout-enabled] > #content {
+    clip-path: inset(var(--menu-bar-height, 0px) 0 0 0);
+    /* Everything fades out across the header band */
+    mask-image: linear-gradient(
+      to bottom,
+      transparent
+        calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) * 0.5),
+      #000
+        calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) + 10px)
+    );
+
+    /*
+     * Rows of vertical lists also blur on their way under it. A view timeline
+     * follows the nearest scroller, so items inside horizontal carousels would
+     * track those instead; they only fade.
+     */
+    :is(
+      ytmusic-playlist-shelf-renderer #contents > ytmusic-responsive-list-item-renderer,
+      ytmusic-shelf-renderer #contents > ytmusic-responsive-list-item-renderer,
+      ytmusic-grid-renderer #items > ytmusic-two-row-item-renderer
+    ) {
+      animation: transparent-player-under-header linear forwards;
+      animation-timeline: view(
+        block calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height))
+          0px
       );
+      animation-range: exit 0% exit 100%;
     }
   }
 
@@ -141,5 +161,17 @@ body.transparent-player {
     button[aria-pressed='true'] {
       background-color: rgba(255, 255, 255, 0.16) !important;
     }
+  }
+}
+
+@keyframes transparent-player-under-header {
+  from {
+    filter: blur(0);
+    opacity: 1;
+  }
+
+  to {
+    filter: blur(14px);
+    opacity: 0.6;
   }
 }

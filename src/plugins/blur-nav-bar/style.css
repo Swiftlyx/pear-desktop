@@ -4,6 +4,11 @@
   backdrop-filter: blur(8px) !important;
 }
 
+/* The blurred header already separates the content; no line under it */
+#nav-bar-background {
+  border-bottom: 0 !important;
+}
+
 ytmusic-tabs {
   backdrop-filter: blur(8px) !important;
 }

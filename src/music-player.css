@@ -106,6 +106,15 @@ ytmusic-playlist-shelf-renderer #contents > ytmusic-responsive-list-item-rendere
   contain-intrinsic-size: auto 76px;
 }
 
+/* Room between the last row and the player bar */
+ytmusic-app-layout[is-contained-content-layout-enabled] > #content {
+  padding-bottom: 24px;
+}
+
+ytmusic-player-queue #contents {
+  padding-bottom: 16px;
+}
+
 /* Thin translucent scrollbars without arrow buttons for every scroller */
 html {
   /* A standard scrollbar-color (the site sets one) disables the rules below */
