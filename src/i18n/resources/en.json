@@ -370,6 +370,14 @@
       "description": "Improve performance by enabling experimental scripts",
       "name": "Performance improvement [Beta]"
     },
+    "playlist-reorder": {
+      "button": {
+        "bottom": "Move to bottom",
+        "top": "Move to top"
+      },
+      "description": "Adds buttons to move a song to the top or bottom of your own playlists in one click",
+      "name": "Playlist Reorder"
+    },
     "precise-volume": {
       "description": "Control the volume precisely using mousewheel/hotkeys, with a custom HUD and customizable volume steps",
       "menu": {

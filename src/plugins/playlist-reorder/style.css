@@ -1,0 +1,42 @@
+.pear-playlist-reorder {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+ytmusic-responsive-list-item-renderer:hover .pear-playlist-reorder,
+.pear-playlist-reorder:focus-within {
+  opacity: 1;
+}
+
+.pear-playlist-reorder button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ytmusic-text-secondary, #aaa);
+  cursor: pointer;
+}
+
+.pear-playlist-reorder button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--ytmusic-text-primary, #fff);
+}
+
+.pear-playlist-reorder button:disabled {
+  cursor: progress;
+  opacity: 0.5;
+}
+
+.pear-playlist-reorder svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
