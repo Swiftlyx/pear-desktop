@@ -384,6 +384,9 @@ async function createMainWindow() {
       preload: path.join(__dirname, '..', 'preload', 'preload.cjs'),
       // The preload only uses sandbox-safe Electron APIs and reads config over IPC
       sandbox: true,
+      // The only text field is the search box; the spellchecker would load
+      // dictionaries and check every keystroke for nothing
+      spellcheck: false,
     },
     ...decorations,
   };
