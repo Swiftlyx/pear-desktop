@@ -212,17 +212,7 @@ html.pear-m3e {
     --ytmusic-player-bar-background: var(--m3e-surface-container) !important;
   }
 
-  /*
-   * Typeface: Inter everywhere (registered by the renderer); its optical
-   * size axis follows the font size. Times use tabular figures so they do
-   * not shift while counting.
-   */
-  &,
-  *:not(code, pre, kbd, samp) {
-    font-family:
-      'Pear Inter', Roboto, 'Noto Naskh Arabic UI', Arial, sans-serif !important;
-  }
-
+  /* Times use tabular figures so they do not shift while counting */
   .ytMusicMiniPlayerTimeInfo,
   ytmusic-player-queue-item .duration,
   ytmusic-responsive-list-item-renderer .fixed-column {
@@ -304,10 +294,17 @@ html.pear-m3e {
   }
 
   /*
-   * Like/dislike: a connected button group in the same neutral tone as the
-   * volume and menu buttons next to it. Segments meet with small inner
-   * corners and no divider; the selected one turns tonal and fully round.
+   * Like/dislike: one capsule in the same neutral tone as the volume and
+   * menu buttons next to it, split into two segments with small inner
+   * corners. The segments keep their shape in every state (also while
+   * pressed), so the capsule stays whole; the selected one only turns tonal.
+   * Icons: Material rounded thumbs, filled while selected.
    */
+  --m3e-icon-thumb-up: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath transform='rotate(180 12 12)' d='M14.99 3H6c-.8 0-1.52.48-1.83 1.21L.91 11.82C.06 13.8 1.51 16 3.66 16h5.65l-.95 4.58c-.1.5.05 1.01.41 1.37.29.29.67.43 1.05.43s.77-.15 1.06-.44l5.53-5.54c.37-.37.58-.88.58-1.41V5c0-1.1-.9-2-2-2zm-4.33 16.33.61-2.92.5-2.41H3.66c-.47 0-.72-.28-.83-.45a.972.972 0 0 1-.08-.95L6 5h8.99v9.99l-4.33 4.34zM21 3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2s2-.9 2-2V5c0-1.1-.9-2-2-2z'/%3E%3C/svg%3E");
+  --m3e-icon-thumb-up-filled: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M13.12 2.06 7.58 7.6c-.37.37-.58.88-.58 1.41V19c0 1.1.9 2 2 2h9c.8 0 1.52-.48 1.84-1.21l3.26-7.61C23.94 10.2 22.49 8 20.34 8h-5.65l.95-4.58c.1-.5-.05-1.01-.41-1.37-.59-.58-1.53-.58-2.11.01zM3 21c1.1 0 2-.9 2-2v-8c0-1.1-.9-2-2-2s-2 .9-2 2v8c0 1.1.9 2 2 2z'/%3E%3C/svg%3E");
+  --m3e-icon-thumb-down: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M14.99 3H6c-.8 0-1.52.48-1.83 1.21L.91 11.82C.06 13.8 1.51 16 3.66 16h5.65l-.95 4.58c-.1.5.05 1.01.41 1.37.29.29.67.43 1.05.43s.77-.15 1.06-.44l5.53-5.54c.37-.37.58-.88.58-1.41V5c0-1.1-.9-2-2-2zm-4.33 16.33.61-2.92.5-2.41H3.66c-.47 0-.72-.28-.83-.45a.972.972 0 0 1-.08-.95L6 5h8.99v9.99l-4.33 4.34zM21 3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2s2-.9 2-2V5c0-1.1-.9-2-2-2z'/%3E%3C/svg%3E");
+  --m3e-icon-thumb-down-filled: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m10.88 21.94 5.53-5.54c.37-.37.58-.88.58-1.41V5c0-1.1-.9-2-2-2H6c-.8 0-1.52.48-1.83 1.21L.91 11.82C.06 13.8 1.51 16 3.66 16h5.65l-.95 4.58c-.1.5.05 1.01.41 1.37.59.58 1.53.58 2.11-.01zM21 3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2s2-.9 2-2V5c0-1.1-.9-2-2-2z'/%3E%3C/svg%3E");
+
   segmented-like-dislike-button-view-model {
     .ytSegmentedLikeDislikeButtonViewModelSegmentedButtonsWrapper {
       gap: 2px;
@@ -316,6 +313,7 @@ html.pear-m3e {
     button.ytSpecButtonShapeNextHost {
       background-color: var(--m3e-state-pressed) !important;
       color: var(--md-sys-color-on-surface) !important;
+      transition: var(--m3e-color-change);
 
       &::after {
         display: none !important;
@@ -326,20 +324,44 @@ html.pear-m3e {
       .ytSpecTouchFeedbackShapeFill {
         border-radius: inherit !important;
       }
+
+      /* The site's icon (an animation for like) is replaced by a mask */
+      .ytSpecButtonShapeNextIcon {
+        width: 18px !important;
+        height: 18px !important;
+        background-color: currentColor;
+        mask: var(--m3e-icon-thumb-up) center / 18px 18px no-repeat;
+
+        > * {
+          visibility: hidden !important;
+        }
+      }
     }
 
-    button.ytSpecButtonShapeNextSegmentedStart {
+    /* Two classes outrank the press squish of other buttons */
+    button.ytSpecButtonShapeNextHost.ytSpecButtonShapeNextSegmentedStart {
       border-radius: 16px 4px 4px 16px !important;
     }
 
-    button.ytSpecButtonShapeNextSegmentedEnd {
+    button.ytSpecButtonShapeNextHost.ytSpecButtonShapeNextSegmentedEnd {
       border-radius: 4px 16px 16px 4px !important;
     }
 
     button[aria-pressed='true'] {
-      border-radius: 16px !important;
       background-color: var(--md-sys-color-secondary-container) !important;
       color: var(--md-sys-color-on-secondary-container) !important;
+
+      .ytSpecButtonShapeNextIcon {
+        mask-image: var(--m3e-icon-thumb-up-filled);
+      }
+    }
+
+    dislike-button-view-model .ytSpecButtonShapeNextIcon {
+      mask-image: var(--m3e-icon-thumb-down) !important;
+    }
+
+    dislike-button-view-model button[aria-pressed='true'] .ytSpecButtonShapeNextIcon {
+      mask-image: var(--m3e-icon-thumb-down-filled) !important;
     }
   }
 

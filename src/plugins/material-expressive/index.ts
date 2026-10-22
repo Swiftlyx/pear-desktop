@@ -9,7 +9,6 @@ import {
   FALLBACK_SOURCE,
   sourceColorFromUrl,
 } from './colors';
-import { addFont } from './font';
 import style from './style.css?inline';
 
 import type { VideoDataChanged } from '@/types/video-data-changed';
@@ -28,13 +27,11 @@ export default createPlugin({
   renderer: {
     lastThumbnail: null as string | null,
     onVideoDataChange: null as EventListener | null,
-    removeFont: null as (() => void) | null,
 
     async start() {
       const root = document.documentElement;
       root.classList.add(ROOT_CLASS);
       applyScheme(createScheme(FALLBACK_SOURCE));
-      this.removeFont = addFont();
 
       // Surfaces let the Transparent Player window show through
       let surfaceAlpha = 1;
@@ -75,7 +72,6 @@ export default createPlugin({
       if (this.onVideoDataChange) {
         document.removeEventListener('videodatachange', this.onVideoDataChange);
       }
-      this.removeFont?.();
       const root = document.documentElement;
       root.classList.remove(ROOT_CLASS);
       root.style.removeProperty('--m3e-surface-alpha');

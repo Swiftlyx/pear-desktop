@@ -57,6 +57,16 @@ body.transparent-player {
   }
 
   /*
+   * Blur Navigation Bar sets a backdrop-filter by id, which outranks the
+   * reset above; the site shows that layer once the page scrolls, and it
+   * darkened the whole nav bar into a band with hard edges.
+   */
+  #nav-bar-background,
+  #header.ytmusic-item-section-renderer {
+    backdrop-filter: none !important;
+  }
+
+  /*
    * Content scrolls in #content; keep it out of the clear header. The height
    * is resolved here: the layout overrides the root's nav bar height.
    */

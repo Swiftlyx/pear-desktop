@@ -16,7 +16,7 @@ An independent project, not affiliated with, authorized or endorsed by Google LL
 | Transparent Player | On by default: mica on Windows, native vibrancy on macOS. Reworked: one even tint, content clipped under the header (with Blur Navigation Bar it blurs and fades there instead), readable menus; no stale frames on macOS/Linux |
 | **Link Sanitizer** (new) | Strips the account-bound `si` and share tracking (`feature`, `pp`, `utm_*`) from shared and copied links |
 | **Playlist Reorder** (new) | Move a song to the top or bottom of your own playlist in one click |
-| **Material 3 Expressive** (new) | The whole app in Material 3 Expressive: a dynamic colour scheme from the current cover (Material colour utilities), shape morphing, spring motion and the Inter typeface (OFL); translucent surfaces with Transparent Player |
+| **Material 3 Expressive** (new) | The whole app in Material 3 Expressive: a dynamic colour scheme from the current cover (Material colour utilities), shape morphing and spring motion; translucent surfaces with Transparent Player |
 | **Prefer Song**, **Audio Only** | From [michei69/pear-desktop](https://github.com/michei69/pear-desktop): song instead of music video |
 
 **Fixes**
