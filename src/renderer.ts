@@ -3,7 +3,7 @@ import { setTheme } from 'mdui/functions/setTheme.js';
 import 'mdui/mdui.css';
 import 'mdui';
 
-import { loadI18n, t as i18t } from '@/i18n';
+import { loadI18n, setLanguage, t as i18t } from '@/i18n';
 import {
   defaultTrustedTypePolicy,
   registerWindowDefaultTrustedTypePolicy,
@@ -408,6 +408,7 @@ const definePearTransElements = () => {
 
 const preload = async () => {
   await loadI18n();
+  await setLanguage(window.mainConfig.get('options.language') ?? 'en');
   window.i18n = {
     t: i18t.bind(i18next),
   };

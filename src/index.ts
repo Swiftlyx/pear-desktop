@@ -26,10 +26,11 @@ import unhandled from 'electron-unhandled';
 import electronUpdater from 'electron-updater';
 import { deepEqual } from 'fast-equals';
 import { parse } from 'node-html-parser';
+import { languageResources } from 'virtual:i18n';
 import { allPlugins, mainPlugins } from 'virtual:plugins';
 
 import * as config from '@/config';
-import { APPLICATION_NAME, loadI18n, t } from '@/i18n';
+import { APPLICATION_NAME, loadI18n, setLanguage, t } from '@/i18n';
 import {
   forceLoadMainPlugin,
   forceUnloadMainPlugin,
@@ -635,9 +636,21 @@ app.on('activate', async () => {
   }
 });
 
+const getDefaultLocale = async (locale: string) =>
+  Object.keys(await languageResources()).includes(locale) ? locale : null;
+
 app.whenReady().then(async () => {
-  await loadI18n();
-  console.log(LoggerPrefix, t('main.console.i18n.loaded'));
+  if (!config.get('options.language')) {
+    const locale = await getDefaultLocale(app.getLocale());
+    if (locale) {
+      config.set('options.language', locale);
+    }
+  }
+
+  await loadI18n().then(async () => {
+    await setLanguage(config.get('options.language') ?? 'en');
+    console.log(LoggerPrefix, t('main.console.i18n.loaded'));
+  });
 
   if (config.get('options.autoResetAppCache')) {
     // Clear cache after 20s

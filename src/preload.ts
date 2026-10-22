@@ -6,7 +6,7 @@ import {
 } from 'electron';
 import is from 'electron-is';
 
-import { loadI18n } from '@/i18n';
+import { loadI18n, setLanguage } from '@/i18n';
 import { isTrustedAppUrl } from '@/utils/trusted-hosts';
 
 import * as config from './config';
@@ -44,6 +44,7 @@ new MutationObserver((mutations, observer) => {
 const isTrustedPage = isTrustedAppUrl(location.href);
 
 loadI18n().then(async () => {
+  await setLanguage(config.get('options.language') ?? 'en');
   if (isTrustedPage) await loadAllPreloadPlugins();
 });
 

@@ -1,0 +1,488 @@
+{
+  "common": {
+    "console": {
+      "plugins": {
+        "execute-failed": "Не вдалося виконати плагін {{pluginName}}::{{contextName}}",
+        "executed-at-ms": "Плагін {{pluginName}}::{{contextName}} запущено за {{ms}}ms",
+        "initialize-failed": "Не вдалося ініціалізувати плагін \"{{pluginName}}\"",
+        "load-all": "Завантаження всіх плагінів",
+        "load-failed": "Не вдалося завантажити плагін \"{{pluginName}}\"",
+        "loaded": "Плагін \"{{pluginName}}\" завантажено",
+        "unload-failed": "Не вдалося вивантажити плагін \"{{pluginName}}\"",
+        "unloaded": "Плагін \"{{pluginName}}\" вивантажено"
+      }
+    }
+  },
+  "language": {
+    "code": "uk",
+    "local-name": "Українська",
+    "name": "Ukrainian"
+  },
+  "main": {
+    "console": {
+      "did-finish-load": {
+        "dev-tools": "Завантаження завершено. Відкрито DevTools"
+      },
+      "i18n": {
+        "loaded": "i18n завантажено"
+      },
+      "second-instance": {
+        "receive-command": "Отримано команду за протоколом: \"{{command}}\""
+      },
+      "theme": {
+        "css-file-not-found": "Файл CSS \"{{cssFile}}\" не існує, ігноруємо"
+      },
+      "unresponsive": {
+        "details": "Невідповідна помилка!\n{{error}}"
+      },
+      "when-ready": {
+        "clearing-cache-after-20s": "Очищення кешу програми"
+      },
+      "window": {
+        "tried-to-render-offscreen": "Вікно намагалися відобразитися поза екраном, windowSize={{windowSize}}, displaySize={{displaySize}}, position={{position}}"
+      }
+    },
+    "dialog": {
+      "hide-menu-enabled": {
+        "detail": "Меню приховано, використовуйте \"Alt\", щоб показати його (або \"Escape\", якщо ви використовуєте меню в додатку)",
+        "message": "Приховане меню увімкнено",
+        "title": "Увімкнути Приховане Меню"
+      },
+      "need-to-restart": {
+        "buttons": {
+          "later": "Пізніше",
+          "restart-now": "Перезапустити зараз"
+        },
+        "detail": "\"{{pluginName}}\" плагін потребує перезапуску, щоб набути чинності",
+        "message": "\"{{pluginName}}\" необхідно перезапустити",
+        "title": "Потрібен перезапуск"
+      },
+      "unresponsive": {
+        "buttons": {
+          "quit": "Вийти",
+          "relaunch": "Перезапустити",
+          "wait": "Чекати"
+        },
+        "detail": "Перепрошуємо за незручності! Будь ласка, оберіть, що робити:",
+        "message": "Програма не відповідає",
+        "title": "Вікно не відповідає"
+      },
+      "update-available": {
+        "buttons": {
+          "disable": "Вимкнути оновлення",
+          "download": "Завантажити",
+          "ok": "Так"
+        },
+        "detail": "Доступна нова версія, яку можна завантажити за посиланням {{downloadLink}}",
+        "message": "Доступна нова версія",
+        "title": "Доступне оновлення"
+      }
+    },
+    "menu": {
+      "about": "Про нас",
+      "navigation": {
+        "label": "Навігація",
+        "submenu": {
+          "copy-current-url": "Копіювати поточну URL-адресу",
+          "go-back": "Назад",
+          "go-forward": "Вперед",
+          "quit": "Вихід",
+          "restart": "Перезапустити програму"
+        }
+      },
+      "options": {
+        "label": "Параметри",
+        "submenu": {
+          "advanced-options": {
+            "label": "Додаткові опції",
+            "submenu": {
+              "auto-reset-app-cache": "Очищення кешу програми при її запуску",
+              "disable-hardware-acceleration": "Вимкнути апаратне прискорення",
+              "edit-config-json": "Редагувати config.json",
+              "override-user-agent": "Змінити User-Agent",
+              "restart-on-config-changes": "Перезапуск після зміни конфігурації",
+              "set-proxy": {
+                "label": "Задати проксі",
+                "prompt": {
+                  "label": "Введіть адресу проксі-сервера: (залиште порожнім, щоб вимкнути)",
+                  "placeholder": "Приклад: SOCKS5://127.0.0.1:9999",
+                  "title": "Задати проксі"
+                }
+              },
+              "toggle-dev-tools": "Перемкнути DevTools"
+            }
+          },
+          "always-on-top": "Завжди зверху",
+          "auto-update": "Автооновлення",
+          "hide-menu": {
+            "dialog": {
+              "message": "Меню буде приховано при наступному запуску, використовуйте [Alt], щоб показати його (або клавішу [`], якщо ви використовуєте вбудоване меню)",
+              "title": "Приховане меню Увімкнено"
+            },
+            "label": "Приховане меню"
+          },
+          "language": {
+            "dialog": {
+              "message": "Мова буде змінена після перезапуску",
+              "title": "Мову змінено"
+            },
+            "label": "Мова"
+          },
+          "resume-on-start": "Відновлювати останню пісню при запуску програми",
+          "single-instance-lock": "Заблокувати єдиним інстансом",
+          "start-at-login": "Запустити при вході в систему",
+          "starting-page": {
+            "label": "Початкова сторінка",
+            "unset": "Не задано"
+          },
+          "tray": {
+            "label": "Таця",
+            "submenu": {
+              "disabled": "Вимкнено",
+              "enabled-and-hide-app": "Запустити та приховати програму",
+              "enabled-and-show-app": "Запустити та відобразити додаток",
+              "play-pause-on-click": "Відтворення/Пауза за натисканням"
+            }
+          },
+          "visual-tweaks": {
+            "label": "Візуальні налаштування",
+            "submenu": {
+              "like-buttons": {
+                "default": "За замовчуванням",
+                "force-show": "Завжди показувати",
+                "hide": "Приховати",
+                "swap": "Замінити місцями порядок кнопок лайка",
+                "label": "Як кнопки"
+              },
+              "custom-window-title": {
+                "label": "Налаштування заголовка вікна",
+                "prompt": {
+                  "label": "Введіть власний заголовок вікна: (залиште порожнім, щоб вимкнути)",
+                  "placeholder": "Приклад: {{applicationName}}"
+                }
+              },
+              "remove-upgrade-button": "Прибрати кнопку оновлення",
+              "theme": {
+                "dialog": {
+                  "button": {
+                    "cancel": "Скасувати",
+                    "remove": "Видалити"
+                  },
+                  "remove-theme": "Ви впевнені, що хочете видалити власну тему?",
+                  "remove-theme-message": "Це видалить власну тему"
+                },
+                "label": "Тема",
+                "submenu": {
+                  "import-css-file": "Імпортувати власний CSS файл",
+                  "no-theme": "Без теми"
+                }
+              }
+            }
+          }
+        }
+      },
+      "plugins": {
+        "enabled": "Увімкнено",
+        "label": "Плагіни",
+        "new": "НОВЕ"
+      },
+      "view": {
+        "label": "Вид",
+        "submenu": {
+          "force-reload": "Примусове перезавантаження",
+          "reload": "Перезавантажити",
+          "reset-zoom": "Фактичний розмір",
+          "toggle-fullscreen": "Включити повноекранний режим",
+          "zoom-in": "Збільшити",
+          "zoom-out": "Зменшити"
+        }
+      }
+    },
+    "tray": {
+      "next": "Далі",
+      "play-pause": "Відтворення/Пауза",
+      "previous": "Попередній",
+      "quit": "Вихід",
+      "restart": "Перезапустити програму",
+      "show": "Показати вікно",
+      "tooltip": {
+        "default": "{{applicationName}}",
+        "with-song-info": "{{applicationName}}: {{artist}} - {{title}}"
+      }
+    }
+  },
+  "plugins": {
+    "album-color-theme": {
+      "description": "Застосовує динамічну тему та візуальні ефекти на основі колірної палітри альбому",
+      "menu": {
+        "color-mix-ratio": {
+          "label": "Співвідношення змішування кольорів",
+          "submenu": {
+            "percent": "{{ratio}}%"
+          }
+        },
+        "enable-seekbar": "Увімкнути стилізацію (тему) повзунка прогресу"
+      },
+      "name": "Кольорова тема альбому"
+    },
+    "blur-nav-bar": {
+      "description": "Робить панель навігації прозорою та розмитою",
+      "name": "Розмиття панелі навігації"
+    },
+    "discord": {
+      "backend": {
+        "already-connected": "Спроба підключення при активному з'єднанні",
+        "connected": "Під'єднано до Discord",
+        "disconnected": "Від'єднано від Discord"
+      },
+      "description": "Покажіть друзям, що ви слухаєте за допомогою Rich Presence",
+      "menu": {
+        "auto-reconnect": "Автоматичне перепідключення",
+        "clear-activity": "Очистити активність",
+        "clear-activity-after-timeout": "Очистити активність після тайм-ауту",
+        "connected": "Під'єднано",
+        "disconnected": "Від'єднано",
+        "hide-duration-left": "Приховати тривалість, яка залишилася",
+        "hide-github-button": "Приховати посилання на GitHub",
+        "play-on-application": "Слухати на {{applicationName}}",
+        "set-inactivity-timeout": "Встановити тайм-аут бездіяльності",
+        "set-status-display-type": {
+          "label": "Статус",
+          "submenu": {
+            "application": "Відтворення з {{applicationName}}",
+            "artist": "Ви слухаєте {artist}",
+            "title": "Ви слухаєте {song title}"
+          }
+        }
+      },
+      "name": "Активність Discord",
+      "prompt": {
+        "set-inactivity-timeout": {
+          "label": "Введіть тайм-аут бездіяльності в секундах:",
+          "title": "Встановлення тайм-ауту бездіяльності"
+        }
+      }
+    },
+    "do-not-track": {
+      "description": "Блокувати все відстеження за замовчуванням",
+      "menu": {
+        "blocker": "Блокувальник"
+      },
+      "name": "Не відстежувати"
+    },
+    "downloader": {
+      "backend": {
+        "dialog": {
+          "error": {
+            "buttons": {
+              "ok": "Добре"
+            },
+            "message": "Йой! При завантаженні виникла помилка…",
+            "title": "Помилка при завантаженні!"
+          },
+          "start-download-playlist": {
+            "buttons": {
+              "ok": "OK"
+            },
+            "detail": "({{playlistSize}} пісень)",
+            "message": "Завантаження списку відтворення {{playlistTitle}}",
+            "title": "Завантаження розпочато"
+          }
+        },
+        "feedback": {
+          "conversion-progress": "Конвертація: {{percent}}%",
+          "converting": "Конвертація…",
+          "done": "Готово: {{filePath}}",
+          "download-info": "Завантаження {{artist}} - {{title}} [{{videoId}}]",
+          "download-progress": "Завантажено: {{percent}}%",
+          "downloading": "Завантаження…",
+          "downloading-counter": "Завантажено {{current}}/{{total}}…",
+          "downloading-playlist": "Завантаження плейлисту \"{{playlistTitle}}\" - {{playlistSize}} пісень ({{playlistId}})",
+          "error-while-downloading": "Помилка завантаження \"{{author}} - {{title}}\": {{error}}",
+          "folder-already-exists": "Папка {{playlistFolder}} вже існує",
+          "getting-playlist-info": "Отримання інформації про плейлист…",
+          "loading": "Завантаження…",
+          "playlist-has-only-one-song": "Плейлист має лише один елемент, завантаження якого відбувається безпосередньо",
+          "playlist-id-not-found": "Ідентифікатор плейлиста не знайдено",
+          "playlist-is-empty": "Плейлист порожній",
+          "playlist-is-mix-or-private": "Помилка при отриманні інформації про плейлист: переконайтеся, що це не приватний плейлист або плейлист \"Мікс для вас\"\n\n{{error}}",
+          "preparing-file": "Готуємо файл…",
+          "saving": "Збереження…",
+          "trying-to-get-playlist-id": "Спроба отримати ідентифікатора плейлиста: {{playlistId}}",
+          "video-id-not-found": "Відео не знайдено",
+          "writing-id3": "Пишемо ID3-теги…"
+        }
+      },
+      "description": "Завантажує MP3 / джерело аудіо безпосередньо з інтерфейсу",
+      "menu": {
+        "choose-download-folder": "Оберіть папку для завантаження",
+        "download-finish-settings": {
+          "label": "Скачати по завершенню",
+          "prompt": {
+            "last-percent": "Після Х відсотків",
+            "last-seconds": "Останні Х секунд",
+            "title": "Налаштувати коли завантажувати"
+          },
+          "submenu": {
+            "advanced": "Розширені",
+            "enabled": "Увімкнено",
+            "mode": "Режим часу",
+            "percent": "Відсоток",
+            "seconds": "Секунди"
+          }
+        },
+        "download-playlist": "Завантажити плейлист",
+        "presets": "Попередні налаштування",
+        "skip-existing": "Пропустити наявні файли"
+      },
+      "name": "Завантажувач",
+      "renderer": {
+        "can-not-update-progress": "Неможливо оновити прогрес"
+      },
+      "templates": {
+        "button": "Завантажити"
+      }
+    },
+    "in-app-menu": {
+      "description": "Надає панелям меню вишуканий темний або кольоровий вигляд, схожий на альбом",
+      "menu": {
+        "hide-dom-window-controls": "Сховати елементи керування вікном DOM"
+      },
+      "name": "Меню в програмі"
+    },
+    "link-sanitizer": {
+      "description": "Прибирає з копійованих і поширюваних посилань ідентифікатори акаунта та відстеження (si, feature, utm_*)",
+      "name": "Очищення посилань"
+    },
+    "navigation": {
+      "description": "Стрілки навігації Вперед/Назад безпосередньо інтегровані в інтерфейс, як у вашому браузері, який ви використовуєте",
+      "name": "Навігація",
+      "templates": {
+        "back": {
+          "title": "Перейти на минулу сторінку"
+        },
+        "forward": {
+          "title": "Перейти на наступну сторінку"
+        }
+      }
+    },
+    "performance-improvement": {
+      "description": "Поліпшіть продуктивність, ввімкнувши експериментальні сценарії",
+      "name": "Поліпшення продуктивності [Бета]"
+    },
+    "precise-volume": {
+      "description": "Точне керування гучністю за допомогою колеса миші/гарячих клавіш, з власним інтерфейсом користувача та настроюваними кроками гучності",
+      "menu": {
+        "arrows-shortcuts": "Локальне керування за допомогою клавіш зі стрілками",
+        "custom-volume-steps": "Встановити власні кроки гучності",
+        "global-shortcuts": "Глобальні гарячі клавіші"
+      },
+      "name": "Точна гучність",
+      "prompt": {
+        "global-shortcuts": {
+          "keybind-options": {
+            "decrease": "Зменшити гучність",
+            "increase": "Збільшити гучність"
+          },
+          "label": "Вибрати глобальні комбінації клавіш для зміни гучності:",
+          "title": "Глобальні комбінації клавіш для регулювання гучності"
+        },
+        "volume-steps": {
+          "label": "Вибрати кроки збільшення/зменшення гучності",
+          "title": "Кроки гучності"
+        }
+      }
+    },
+    "synced-lyrics": {
+      "description": "Додає синхронізовані тексти до пісень використовуючи провайдери, такі як LRClib.",
+      "errors": {
+        "fetch": "⚠️ - При завантаженні слів пісні сталась помилка.\nСпробуйте будь ласка пізніше.",
+        "not-found": "⚠️ До цієї пісні текст не знайдено."
+      },
+      "menu": {
+        "preferred-provider": {
+          "label": "Пріорітетний Провайдер",
+          "tooltip": "Оберіть якого провайдера використовувати за замовчуванням",
+          "none": {
+            "label": "Нічого",
+            "tooltip": "Нема провайдера за замовчуванням"
+          }
+        },
+        "default-text-string": {
+          "label": "Символ за замовчуванням між текстами пісень",
+          "tooltip": "Виберіть символ за замовчуванням, який буде використовуватися для проміжку між текстами пісень"
+        },
+        "line-effect": {
+          "label": "Лінійний ефект",
+          "submenu": {
+            "fancy": {
+              "label": "Fancy",
+              "tooltip": "Використовуйте великі, додаткоподібні ефекти на поточному рядку"
+            },
+            "focus": {
+              "label": "Зосереджитись",
+              "tooltip": "Зробити білим лише поточний рядок"
+            },
+            "offset": {
+              "label": "Офсет",
+              "tooltip": "Офсет з права від нинішньої лінії"
+            },
+            "scale": {
+              "label": "Масштабувати",
+              "tooltip": "Масштабувати поточну лінію"
+            }
+          },
+          "tooltip": "Виберіть ефект, який потрібно застосувати до поточної лінії"
+        },
+        "precise-timing": {
+          "label": "Зробити текст пісні ідеально синхронізованим",
+          "tooltip": "Обчисли до мілісекунд відображення наступного рядка (може мати невеликий вплив на продуктивність)"
+        },
+        "romanization": {
+          "label": "Транслітерувати текст пісень",
+          "tooltip": "Якщо текст пісні іншою мовою, спробувати його відобразити латинською версією."
+        },
+        "show-lyrics-even-if-inexact": {
+          "label": "Показувати текст пісні, навіть якщо він неточний",
+          "tooltip": "Якщо пісня не знайдена, плагін повторює спробу з іншим пошуковим запитом.\nРезультат з другої спроби може бути не точним."
+        },
+        "show-time-codes": {
+          "label": "Відображати часові коди",
+          "tooltip": "Відображати часові коди біля тексту"
+        },
+        "convert-chinese-character": {
+          "label": "Конвертувати китайські символи",
+          "submenu": {
+            "disabled": {
+              "label": "Вимкнено",
+              "tooltip": "Вимкнути конвертування китайськіх символів"
+            },
+            "simplified-to-traditional": {
+              "label": "Спрощені до традиційних",
+              "tooltip": "Перетворити спрощену китайську на традиційну китайську"
+            },
+            "traditional-to-simplified": {
+              "label": "Традиційні до спрощених",
+              "tooltip": "Перетворити традиційну китайську на спрощену китайську"
+            }
+          },
+          "tooltip": "Перетворити китайський ієрогліф на традиційний або спрощений"
+        }
+      },
+      "name": "Синхронізовані тексти",
+      "refetch-btn": {
+        "fetching": "Завантаження...",
+        "normal": "Перезавантажити текст"
+      },
+      "warnings": {
+        "duration-mismatch": "⚠️ - Тексти цієї пісні можуть бути не синхронізовані через не співпадіння довжини пісні.",
+        "inexact": "⚠️ - Текст цієї пісні може не співпадати",
+        "instrumental": "⚠️ - Це інструментал"
+      }
+    },
+    "unobtrusive-player": {
+      "description": "Запобігання спливання плеєру під час відтворення пісні",
+      "name": "Ненав'язливий програвач"
+    }
+  }
+}

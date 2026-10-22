@@ -9,9 +9,10 @@ import {
 } from 'electron';
 import is from 'electron-is';
 import { satisfies } from 'semver';
+import { languageResources } from 'virtual:i18n';
 import { allPlugins } from 'virtual:plugins';
 
-import { APPLICATION_NAME, t } from '@/i18n';
+import { APPLICATION_NAME, setLanguage, t } from '@/i18n';
 import { cleanUrl } from '@/utils/clean-url';
 
 import * as config from './config';
@@ -145,6 +146,9 @@ export const mainMenuTemplate = async (
         );
       }),
   );
+
+  const langResources = await languageResources();
+  const availableLanguages = Object.keys(langResources);
 
   return [
     {
@@ -472,6 +476,29 @@ export const mainMenuTemplate = async (
               },
             },
           ],
+        },
+        {
+          label: t('main.menu.options.submenu.language.label') + ' (Language)',
+          submenu: availableLanguages
+            .map(
+              (lang): Electron.MenuItemConstructorOptions => ({
+                label: `${langResources[lang].translation.language?.name ?? 'Unknown'} (${langResources[lang].translation.language?.['local-name'] ?? 'Unknown'})`,
+                type: 'checkbox',
+                checked: (config.get('options.language') ?? 'en') === lang,
+                click() {
+                  config.setMenuOption('options.language', lang);
+                  refreshMenu(win);
+                  setLanguage(lang);
+                  dialog.showMessageBox(win, {
+                    title: t('main.menu.options.submenu.language.dialog.title'),
+                    message: t(
+                      'main.menu.options.submenu.language.dialog.message',
+                    ),
+                  });
+                },
+              }),
+            )
+            .sort((a, b) => a.label!.localeCompare(b.label!)),
         },
         { type: 'separator' },
         {

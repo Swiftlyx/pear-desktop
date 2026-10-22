@@ -13,6 +13,11 @@
       }
     }
   },
+  "language": {
+    "code": "en",
+    "local-name": "English",
+    "name": "English"
+  },
   "main": {
     "console": {
       "did-finish-load": {
@@ -115,6 +120,13 @@
               "title": "Hide Menu Enabled"
             },
             "label": "Hide Menu"
+          },
+          "language": {
+            "dialog": {
+              "message": "Language will be changed after restart",
+              "title": "Language Changed"
+            },
+            "label": "Language"
           },
           "resume-on-start": "Resume last song when app starts",
           "single-instance-lock": "Single Instance Lock",
