@@ -94,13 +94,21 @@ body.transparent-player {
    */
   &.blur-nav-bar ytmusic-app-layout[is-contained-content-layout-enabled] > #content {
     clip-path: inset(var(--menu-bar-height, 0px) 0 0 0);
-    /* Everything fades out across the header band */
+    /*
+     * Everything fades out under the header along an eased gradient that
+     * starts below it, so the header has no visible lower edge
+     */
     mask-image: linear-gradient(
       to bottom,
-      transparent
-        calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) * 0.5),
+      transparent var(--menu-bar-height, 0px),
+      rgb(0 0 0 / 0.08)
+        calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) * 0.4),
+      rgb(0 0 0 / 0.35)
+        calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) * 0.75),
+      rgb(0 0 0 / 0.75)
+        calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) + 12px),
       #000
-        calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) + 10px)
+        calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) + 40px)
     );
 
     /*

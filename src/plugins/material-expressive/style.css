@@ -189,13 +189,17 @@ html.pear-m3e {
     from var(--md-sys-color-surface-container-high) r g b / 0.94
   );
 
-  /* Opaque window: the page background is the scheme's surface */
+  /*
+   * Opaque window: the page background is the scheme's surface. With
+   * Transparent Player only the root paints the tint: <body> is shorter than
+   * the window and a second layer left a strip below the player bar.
+   */
   &:not(:has(> body.transparent-background-color)) {
     background: var(--md-sys-color-surface) !important;
-  }
 
-  body {
-    background-color: var(--m3e-surface) !important;
+    body {
+      background-color: var(--md-sys-color-surface) !important;
+    }
   }
 
   /* Tokens the site declares on the elements themselves */
@@ -223,10 +227,14 @@ html.pear-m3e {
     }
   }
 
-  /* Hero Play buttons: round when paused, rounded square while playing */
+  /*
+   * Play buttons share one shape: round when paused, a rounded square while
+   * loading or playing (a selected toggle in M3 Expressive), squished while
+   * pressed. Proportional corners keep the shape the same at every size.
+   */
   ytmusic-responsive-header-renderer ytmusic-play-button-renderer,
   ytmusic-guide-entry-renderer ytmusic-play-button-renderer {
-    border-radius: var(--md-sys-shape-corner-full) !important;
+    border-radius: 50% !important;
     background-color: var(--md-sys-color-primary) !important;
     transition:
       var(--m3e-shape-morph),
@@ -241,27 +249,20 @@ html.pear-m3e {
       color: var(--md-sys-color-on-primary) !important;
     }
 
-    &:hover,
-    &[state='playing'] {
-      border-radius: var(--md-sys-shape-corner-large-increased) !important;
+    &[state='playing'],
+    &[state='loading'] {
+      border-radius: 30% !important;
     }
 
     &:active {
-      border-radius: var(--md-sys-shape-corner-medium) !important;
-    }
-  }
-
-  ytmusic-guide-entry-renderer ytmusic-play-button-renderer {
-    &:hover,
-    &[state='playing'] {
-      border-radius: var(--md-sys-shape-corner-small) !important;
+      border-radius: 22% !important;
     }
   }
 
   .ytmusicPlayerControlsPlayPauseButton button.ytSpecButtonShapeNextHost {
-    width: 56px !important;
+    width: 48px !important;
     height: 48px !important;
-    border-radius: var(--md-sys-shape-corner-full) !important;
+    border-radius: 50% !important;
     background-color: var(--md-sys-color-primary) !important;
     color: var(--md-sys-color-on-primary) !important;
 
@@ -271,14 +272,14 @@ html.pear-m3e {
     }
 
     &:active {
-      border-radius: var(--md-sys-shape-corner-medium) !important;
+      border-radius: 22% !important;
     }
   }
 
-  &:has(#movie_player.playing-mode)
+  &:has(#movie_player:is(.playing-mode, .buffering-mode))
     .ytmusicPlayerControlsPlayPauseButton
-    button.ytSpecButtonShapeNextHost {
-    border-radius: var(--md-sys-shape-corner-large) !important;
+    button.ytSpecButtonShapeNextHost:not(:active) {
+    border-radius: 30% !important;
   }
 
   /* Like/dislike and Song/Video: connected button groups */
