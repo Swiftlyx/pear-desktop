@@ -7,15 +7,16 @@ An independent project, not affiliated with, authorized or endorsed by Google LL
 
 ## How it differs from upstream
 
-**Plugins.** 18 instead of 40: the ones that work and are worth keeping. On by default: Album Color Theme, Discord, Downloader, In-App Menu, Link Sanitizer, Navigation, Performance Improvement, Playlist Reorder, Precise Volume, Prefer Song, Synced Lyrics, Taskbar Media Control and Transparent Player (Windows).
+**Plugins.** 19 instead of 40: the ones that work and are worth keeping. On by default: Album Color Theme, Blur Navigation Bar, Discord, Downloader, In-App Menu, Link Sanitizer, Modern Design, Navigation, Performance Improvement, Playlist Reorder, Precise Volume, Prefer Song, Synced Lyrics, Taskbar Media Control and Transparent Player (Windows and macOS).
 
 | Plugin | Notes |
 |---|---|
 | Album Color Theme, Blur Navigation Bar, Discord, Downloader, In-App Menu, Navigation, Performance Improvement, Precise Volume, Synced Lyrics, Taskbar Media Control, Unobtrusive Player, Video Toggle | From upstream, with the fixes below |
 | Do Not Track | Ad/tracker blocker, off by default; filter list index pinned in the source |
-| Transparent Player | On by default on Windows (acrylic). Reworked: one even tint, content clipped under the header, readable menus; no stale frames on macOS/Linux |
+| Transparent Player | On by default: mica on Windows, native vibrancy on macOS. Reworked: one even tint, content clipped (or, with Blur Navigation Bar, faded) under the header, readable menus; no stale frames on macOS/Linux |
 | **Link Sanitizer** (new) | Strips the account-bound `si` and share tracking (`feature`, `pp`, `utm_*`) from shared and copied links |
 | **Playlist Reorder** (new) | Move a song to the top or bottom of your own playlist in one click |
+| **Modern Design** (new) | Material 3 Expressive shapes and motion with accents in the album colour: glass over the Transparent Player window, tonal surfaces without it |
 | **Prefer Song**, **Audio Only** | From [michei69/pear-desktop](https://github.com/michei69/pear-desktop): song instead of music video |
 
 **Fixes**
