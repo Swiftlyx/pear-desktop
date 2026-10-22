@@ -41,7 +41,7 @@ runWithOwner(reactiveOwner, () => {
         root.style.setProperty('--lyrics-padding', '2rem');
         root.style.setProperty(
           '--lyrics-animations',
-          'lyrics-glow var(--lyrics-glow-duration) forwards, lyrics-wobble var(--lyrics-wobble-duration) forwards',
+          'lyrics-wobble var(--lyrics-wobble-duration) forwards',
         );
 
         root.style.setProperty('--lyrics-inactive-font-weight', '700');

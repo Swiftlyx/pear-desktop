@@ -20,6 +20,10 @@ interface SyncedLineProps {
   status: 'upcoming' | 'current' | 'previous';
 }
 
+// The fancy effect draws its glow from a copy of each word (see style.css)
+const glowText = (word: string) =>
+  config()?.lineEffect === 'fancy' ? word : undefined;
+
 const EmptyLine = (props: SyncedLineProps) => {
   const states = createMemo(() => {
     const defaultText = config()?.defaultTextString ?? '';
@@ -33,6 +37,11 @@ const EmptyLine = (props: SyncedLineProps) => {
     const percentage = Math.min(1, progress / total);
     return Math.max(0, Math.floor((states().length - 1) * percentage));
   });
+
+  const shownText = () =>
+    states().length > 1
+      ? states().at(props.status === 'current' ? index() : -1)!
+      : states()[0];
 
   return (
     <div
@@ -54,7 +63,7 @@ const EmptyLine = (props: SyncedLineProps) => {
 
         <div class="text-lyrics">
           <span>
-            <span>
+            <span data-text={glowText(shownText())}>
               <Show
                 fallback={
                   <yt-formatted-string
@@ -139,6 +148,7 @@ export const SyncedLine = (props: SyncedLineProps) => {
                 {(word, index) => {
                   return (
                     <span
+                      data-text={glowText(word)}
                       style={{
                         'transition-delay': `${index() * 0.05}s`,
                         'animation-delay': `${index() * 0.05}s`,
@@ -166,6 +176,7 @@ export const SyncedLine = (props: SyncedLineProps) => {
                   {(word, index) => {
                     return (
                       <span
+                        data-text={glowText(word)}
                         style={{
                           'transition-delay': `${index() * 0.05}s`,
                           'animation-delay': `${index() * 0.05}s`,

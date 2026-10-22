@@ -1,8 +1,10 @@
+import { createEffect, createSignal, runWithOwner } from 'solid-js';
+
 import { createRenderer } from '@/utils';
 import { waitForElement } from '@/utils/wait-for-element';
 
-import { disposeReactiveRoot } from './reactive-root';
-import { setConfig, setCurrentTime } from './renderer';
+import { disposeReactiveRoot, reactiveOwner } from './reactive-root';
+import { isVisible, setConfig, setCurrentTime } from './renderer';
 import { fetchLyrics } from './store';
 import { selectors, tabStates } from './utils';
 
@@ -17,12 +19,34 @@ export let netFetch: (
   init?: RequestInit,
 ) => Promise<[number, string, Record<string, string>]>;
 
+const [isPlayerPageOpen, setIsPlayerPageOpen] = createSignal(false);
+const [isPageVisible, setIsPageVisible] = createSignal(!document.hidden);
+
+let clock: ReturnType<typeof setInterval> | undefined;
+
+const tick = () => setCurrentTime((_ytAPI?.getCurrentTime() ?? 0) * 1000);
+
+// Each tick can move the current line and restart its animations, which
+// costs style and layout work even under a closed player page, so the clock
+// only runs while the lyrics are on screen.
+const setClockRunning = (running: boolean) => {
+  if (running && !clock) {
+    tick();
+    clock = setInterval(tick, 100);
+  } else if (!running && clock) {
+    clearInterval(clock);
+    clock = undefined;
+  }
+};
+
+const onVisibilityChange = () => setIsPageVisible(!document.hidden);
+
 export const renderer = createRenderer<
   {
     observerCallback: MutationCallback;
     observer?: MutationObserver;
+    layoutObserver?: MutationObserver;
     videoDataChange: () => Promise<void>;
-    updateTimestampInterval?: NodeJS.Timeout | string | number;
   },
   SyncedLyricsPluginConfig
 >({
@@ -48,18 +72,29 @@ export const renderer = createRenderer<
   async onPlayerApiReady(api: MusicPlayer) {
     _ytAPI = api;
 
+    const layout = await waitForElement<HTMLElement>('ytmusic-app-layout');
+    const syncPlayerPage = () =>
+      setIsPlayerPageOpen(layout.hasAttribute('player-page-open'));
+    this.layoutObserver ??= new MutationObserver(syncPlayerPage);
+    this.layoutObserver.observe(layout, {
+      attributes: true,
+      attributeFilter: ['player-page-open'],
+    });
+    syncPlayerPage();
+
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    runWithOwner(reactiveOwner, () => {
+      createEffect(() =>
+        setClockRunning(isVisible() && isPlayerPageOpen() && isPageVisible()),
+      );
+    });
+
     api.addEventListener('videodatachange', this.videoDataChange);
 
     await this.videoDataChange();
   },
   async videoDataChange() {
-    if (!this.updateTimestampInterval) {
-      this.updateTimestampInterval = setInterval(
-        () => setCurrentTime((_ytAPI?.getCurrentTime() ?? 0) * 1000),
-        100,
-      );
-    }
-
     // prettier-ignore
     this.observer ??= new MutationObserver(this.observerCallback);
     this.observer.disconnect();
@@ -86,6 +121,9 @@ export const renderer = createRenderer<
   },
 
   stop() {
+    setClockRunning(false);
+    this.layoutObserver?.disconnect();
+    document.removeEventListener('visibilitychange', onVisibilityChange);
     disposeReactiveRoot();
   },
 });
