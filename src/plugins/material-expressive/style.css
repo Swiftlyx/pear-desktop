@@ -1,0 +1,472 @@
+/*
+ * Material 3 Expressive across the whole app.
+ *
+ * Colour: renderer code writes the --md-sys-color-* roles of a dynamic scheme
+ * grown from the current cover; this sheet maps the site's own tokens onto
+ * those roles, so every component the site draws follows them. With
+ * Transparent Player the surfaces let the window material through.
+ *
+ * Shape and motion: the M3 corner scale, shape morphing on press and state
+ * changes, and the M3 Expressive spring tokens written as linear() curves
+ * (mass 1; spatial springs overshoot, effects springs do not). Nothing is
+ * animated on list rows and nothing uses backdrop-filter, so long lists keep
+ * scrolling smoothly.
+ */
+
+html.pear-m3e {
+  --md-sys-shape-corner-extra-small: 4px;
+  --md-sys-shape-corner-small: 8px;
+  --md-sys-shape-corner-medium: 12px;
+  --md-sys-shape-corner-large: 16px;
+  --md-sys-shape-corner-large-increased: 20px;
+  --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-full: 9999px;
+
+  /* Spatial: damping 0.6 / stiffness 800, 0.8 / 380 */
+  --md-sys-motion-spring-fast-spatial-duration: 360ms;
+  --md-sys-motion-spring-fast-spatial: linear(
+    0, 0.0754, 0.2492, 0.458, 0.6588, 0.8269, 0.952, 1.0338, 1.0783, 1.0942,
+    1.0906, 1.0759, 1.0565, 1.037, 1.0201, 1.0072, 0.9984, 0.9934, 0.9912,
+    0.9912, 0.9924, 0.9942, 0.996, 0.9977, 1
+  );
+  --md-sys-motion-spring-default-spatial-duration: 435ms;
+  --md-sys-motion-spring-default-spatial: linear(
+    0, 0.0516, 0.1705, 0.3163, 0.4636, 0.598, 0.7123, 0.8044, 0.8751, 0.9271,
+    0.9636, 0.9877, 1.0026, 1.0108, 1.0144, 1.0151, 1.0141, 1.0122, 1.01,
+    1.0077, 1.0058, 1.0041, 1.0027, 1.0017, 1
+  );
+  /* Effects: critically damped, stiffness 3800 / 1600 */
+  --md-sys-motion-spring-fast-effects-duration: 150ms;
+  --md-sys-motion-spring-fast-effects: linear(
+    0, 0.0576, 0.1807, 0.3214, 0.4558, 0.5737, 0.6718, 0.7508, 0.8128, 0.8606,
+    0.897, 0.9244, 0.9448, 0.9599, 0.9709, 0.979, 0.9849, 0.9892, 0.9923,
+    0.9945, 0.9961, 0.9972, 0.998, 0.9986, 1
+  );
+  --md-sys-motion-spring-default-effects-duration: 231ms;
+  --md-sys-motion-spring-default-effects: linear(
+    0, 0.0576, 0.1805, 0.3211, 0.4555, 0.5733, 0.6714, 0.7504, 0.8125, 0.8604,
+    0.8968, 0.9242, 0.9446, 0.9597, 0.9708, 0.979, 0.9849, 0.9892, 0.9922,
+    0.9945, 0.9961, 0.9972, 0.998, 0.9986, 1
+  );
+
+  --m3e-shape-morph:
+    border-radius var(--md-sys-motion-spring-fast-spatial-duration)
+    var(--md-sys-motion-spring-fast-spatial);
+  --m3e-color-change:
+    background-color var(--md-sys-motion-spring-default-effects-duration)
+      var(--md-sys-motion-spring-default-effects),
+    color var(--md-sys-motion-spring-default-effects-duration)
+      var(--md-sys-motion-spring-default-effects);
+
+  /* Surfaces, translucent over the Transparent Player window */
+  --m3e-surface: rgb(
+    from var(--md-sys-color-surface) r g b / var(--m3e-surface-alpha, 1)
+  );
+  --m3e-surface-container-low: rgb(
+    from var(--md-sys-color-surface-container-low) r g b /
+      var(--m3e-container-alpha, 1)
+  );
+  --m3e-surface-container: rgb(
+    from var(--md-sys-color-surface-container) r g b /
+      var(--m3e-container-alpha, 1)
+  );
+  --m3e-surface-container-high: rgb(
+    from var(--md-sys-color-surface-container-high) r g b /
+      var(--m3e-container-alpha, 1)
+  );
+  --m3e-state-hover: rgb(from var(--md-sys-color-on-surface) r g b / 0.08);
+  --m3e-state-pressed: rgb(from var(--md-sys-color-on-surface) r g b / 0.1);
+
+  /* Site tokens: page and bars */
+  --ytmusic-background: var(--m3e-surface) !important;
+  --ytmusic-nav-bar: var(--m3e-surface) !important;
+  --ytmusic-color-black4: var(--m3e-surface) !important;
+  --ytmusic-color-blackpure: var(--m3e-surface) !important;
+  --ytmusic-general-background-c: var(--m3e-surface) !important;
+  --yt-spec-base-background: var(--m3e-surface) !important;
+  --yt-spec-general-background-b: var(--m3e-surface) !important;
+  --yt-spec-general-background-c: var(--m3e-surface) !important;
+  --yt-sys-color-baseline--base-background: var(--m3e-surface) !important;
+  --yt-sys-color-baseline--solid-background-inverse: var(--m3e-surface) !important;
+
+  /* Containers */
+  --ytmusic-color-black2: var(--m3e-surface-container-low) !important;
+  --ytmusic-general-background-a: var(--m3e-surface-container-low) !important;
+  --yt-spec-general-background-a: var(--m3e-surface-container-low) !important;
+  --ytmusic-color-black1: var(--m3e-surface-container) !important;
+  --ytmusic-player-bar-background: var(--m3e-surface-container) !important;
+  --yt-spec-raised-background: var(--m3e-surface-container) !important;
+  --yt-sys-color-baseline--raised-background: var(--m3e-surface-container) !important;
+  --ytmusic-color-black3: var(--m3e-surface-container-high) !important;
+  --yt-spec-menu-background: var(--md-sys-color-surface-container) !important;
+  --yt-sys-color-baseline--menu-background: var(--md-sys-color-surface-container) !important;
+  --paper-dialog-background-color: var(--md-sys-color-surface-container-high) !important;
+  --yt-sys-color-baseline--frosted-glass-desktop: rgb(
+    from var(--md-sys-color-surface-container) r g b / 0.9
+  ) !important;
+
+  /* Text and lines */
+  --ytmusic-text-primary: var(--md-sys-color-on-surface) !important;
+  --ytmusic-color-white1: var(--md-sys-color-on-surface) !important;
+  --yt-spec-text-primary: var(--md-sys-color-on-surface) !important;
+  --yt-sys-color-baseline--text-primary: var(--md-sys-color-on-surface) !important;
+  --yt-sys-color-baseline--touch-response: var(--md-sys-color-on-surface) !important;
+  --ytmusic-text-secondary: var(--md-sys-color-on-surface-variant) !important;
+  --ytmusic-color-grey2: var(--md-sys-color-on-surface-variant) !important;
+  --yt-spec-text-secondary: var(--md-sys-color-on-surface-variant) !important;
+  --yt-sys-color-baseline--text-secondary: var(--md-sys-color-on-surface-variant) !important;
+  --ytmusic-text-disabled: rgb(from var(--md-sys-color-on-surface) r g b / 0.38) !important;
+  --yt-sys-color-baseline--text-disabled: rgb(
+    from var(--md-sys-color-on-surface) r g b / 0.38
+  ) !important;
+  --yt-spec-10-percent-layer: var(--md-sys-color-outline-variant) !important;
+  --yt-sys-color-baseline--outline: var(--md-sys-color-outline-variant) !important;
+  --yt-sys-color-baseline--outline-opaque: var(--md-sys-color-outline-variant) !important;
+
+  /* The site's white filled buttons become primary buttons */
+  --yt-sys-color-baseline--inverted-background: var(--md-sys-color-primary) !important;
+  --yt-spec-inverted-background: var(--md-sys-color-primary) !important;
+  --yt-sys-color-baseline--inverted-background-hover: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) 92%,
+    var(--md-sys-color-on-primary)
+  ) !important;
+  --yt-sys-color-baseline--mono-filled-hover: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) 92%,
+    var(--md-sys-color-on-primary)
+  ) !important;
+  --yt-sys-color-baseline--text-primary-inverse: var(--md-sys-color-on-primary) !important;
+  --ytmusic-text-primary-inverse: var(--md-sys-color-on-primary) !important;
+  --yt-spec-filled-button-text: var(--md-sys-color-on-primary) !important;
+  --yt-spec-static-brand-black: var(--md-sys-color-on-primary) !important;
+
+  /* Tonal buttons and chips */
+  --yt-sys-color-baseline--tonal-background: var(--md-sys-color-secondary-container) !important;
+  --yt-sys-color-baseline--mono-tonal-hover: var(--md-sys-color-secondary-container) !important;
+  --yt-sys-color-baseline--button-chip-background-hover: color-mix(
+    in srgb,
+    var(--md-sys-color-secondary-container) 88%,
+    var(--md-sys-color-on-secondary-container)
+  ) !important;
+  --yt-sys-color-baseline--suggested-action: var(--md-sys-color-secondary-container) !important;
+  --yt-sys-color-baseline--additive-background: var(--m3e-state-pressed) !important;
+  --yt-sys-color-baseline--state-mono-standard-hovered: var(--m3e-state-hover) !important;
+  --yt-sys-color-baseline--state-mono-standard-pressed: var(--m3e-state-pressed) !important;
+  --yt-sys-color-baseline--state-mono-filled-hovered: rgb(
+    from var(--md-sys-color-on-primary) r g b / 0.08
+  ) !important;
+  --yt-sys-color-baseline--state-mono-filled-pressed: rgb(
+    from var(--md-sys-color-on-primary) r g b / 0.1
+  ) !important;
+
+  /* Accent: progress runs from primary to tertiary, links and actions */
+  --yt-sys-color-baseline--static-brand-red: var(--md-sys-color-primary) !important;
+  --yt-sys-color-baseline--static-magenta: var(--md-sys-color-tertiary) !important;
+  --yt-sys-color-baseline--call-to-action: var(--md-sys-color-primary) !important;
+  --yt-sys-color-baseline--overlay-call-to-action: var(--md-sys-color-primary) !important;
+  --yt-sys-color-baseline--call-to-action-hover: color-mix(
+    in srgb,
+    var(--md-sys-color-primary) 85%,
+    white
+  ) !important;
+  --ytmusic-brand-link-text: var(--md-sys-color-primary) !important;
+  --paper-slider-knob-color: var(--md-sys-color-primary) !important;
+  --paper-slider-active-color: var(--md-sys-color-primary) !important;
+  --paper-slider-container-color: var(--md-sys-color-secondary-container) !important;
+  --paper-progress-active-color: var(--md-sys-color-primary) !important;
+  --paper-tabs-selection-bar-color: var(--md-sys-color-primary) !important;
+  --paper-toggle-button-checked-bar-color: var(--md-sys-color-primary) !important;
+  --paper-toggle-button-checked-button-color: var(--md-sys-color-on-primary) !important;
+  --paper-checkbox-checked-color: var(--md-sys-color-primary) !important;
+  --paper-checkbox-checkmark-color: var(--md-sys-color-on-primary) !important;
+  --paper-toast-background-color: var(--md-sys-color-inverse-surface) !important;
+  --paper-toast-color: var(--md-sys-color-inverse-on-surface) !important;
+
+  /* Transparent Player tint and overlays follow the scheme */
+  --ytmd-transparent-player-transparency-color: var(--md-sys-color-surface);
+  --ytmd-transparent-player-overlay-background: rgb(
+    from var(--md-sys-color-surface-container-high) r g b / 0.94
+  );
+
+  /* Opaque window: the page background is the scheme's surface */
+  &:not(:has(> body.transparent-background-color)) {
+    background: var(--md-sys-color-surface) !important;
+  }
+
+  body {
+    background-color: var(--m3e-surface) !important;
+  }
+
+  /* Tokens the site declares on the elements themselves */
+  ytmusic-search-box {
+    --ytmusic-search-background: var(--m3e-surface-container-high) !important;
+    --ytmusic-search-border: transparent !important;
+  }
+
+  ytmusic-player-page {
+    --ytmusic-player-bar-background: var(--m3e-surface-container) !important;
+  }
+
+  /*
+   * Shape and motion
+   */
+
+  /* Buttons: pill shape that squishes while pressed (M3 Expressive) */
+  .ytSpecButtonShapeNextHost {
+    transition:
+      var(--m3e-shape-morph),
+      var(--m3e-color-change);
+
+    &:active {
+      border-radius: var(--md-sys-shape-corner-medium) !important;
+    }
+  }
+
+  /* Hero Play buttons: round when paused, rounded square while playing */
+  ytmusic-responsive-header-renderer ytmusic-play-button-renderer,
+  ytmusic-guide-entry-renderer ytmusic-play-button-renderer {
+    border-radius: var(--md-sys-shape-corner-full) !important;
+    background-color: var(--md-sys-color-primary) !important;
+    transition:
+      var(--m3e-shape-morph),
+      var(--m3e-color-change);
+
+    .content-wrapper {
+      border-radius: inherit !important;
+    }
+
+    .icon,
+    yt-icon {
+      color: var(--md-sys-color-on-primary) !important;
+    }
+
+    &:hover,
+    &[state='playing'] {
+      border-radius: var(--md-sys-shape-corner-large-increased) !important;
+    }
+
+    &:active {
+      border-radius: var(--md-sys-shape-corner-medium) !important;
+    }
+  }
+
+  ytmusic-guide-entry-renderer ytmusic-play-button-renderer {
+    &:hover,
+    &[state='playing'] {
+      border-radius: var(--md-sys-shape-corner-small) !important;
+    }
+  }
+
+  .ytmusicPlayerControlsPlayPauseButton button.ytSpecButtonShapeNextHost {
+    width: 56px !important;
+    height: 48px !important;
+    border-radius: var(--md-sys-shape-corner-full) !important;
+    background-color: var(--md-sys-color-primary) !important;
+    color: var(--md-sys-color-on-primary) !important;
+
+    yt-touch-feedback-shape,
+    .ytSpecTouchFeedbackShapeFill {
+      border-radius: inherit !important;
+    }
+
+    &:active {
+      border-radius: var(--md-sys-shape-corner-medium) !important;
+    }
+  }
+
+  &:has(#movie_player.playing-mode)
+    .ytmusicPlayerControlsPlayPauseButton
+    button.ytSpecButtonShapeNextHost {
+    border-radius: var(--md-sys-shape-corner-large) !important;
+  }
+
+  /* Like/dislike and Song/Video: connected button groups */
+  segmented-like-dislike-button-view-model button {
+    background-color: var(--md-sys-color-secondary-container) !important;
+    color: var(--md-sys-color-on-secondary-container) !important;
+  }
+
+  ytmusic-av-toggle .av-toggle {
+    padding: 2px;
+    gap: 2px;
+    border-radius: var(--md-sys-shape-corner-full) !important;
+    background-color: var(--md-sys-color-surface-container-highest) !important;
+
+    button {
+      margin: 0 !important;
+      border-radius: var(--md-sys-shape-corner-full) !important;
+      background-color: transparent !important;
+      color: var(--md-sys-color-on-surface-variant) !important;
+      transition:
+        var(--m3e-shape-morph),
+        var(--m3e-color-change);
+    }
+
+    button[aria-pressed='true'] {
+      border-radius: var(--md-sys-shape-corner-medium) !important;
+      background-color: var(--md-sys-color-secondary-container) !important;
+      color: var(--md-sys-color-on-secondary-container) !important;
+    }
+  }
+
+  /* Chips: small corners, outlined until selected */
+  ytmusic-chip-cloud-chip-renderer a.yt-simple-endpoint {
+    border-radius: var(--md-sys-shape-corner-small) !important;
+    background-color: transparent !important;
+    box-shadow: inset 0 0 0 1px var(--md-sys-color-outline-variant);
+    color: var(--md-sys-color-on-surface-variant) !important;
+    transition: var(--m3e-color-change);
+
+    &:hover {
+      background-color: var(--m3e-state-hover) !important;
+    }
+  }
+
+  ytmusic-chip-cloud-chip-renderer[is-selected] a.yt-simple-endpoint {
+    background-color: var(--md-sys-color-secondary-container) !important;
+    box-shadow: none;
+    color: var(--md-sys-color-on-secondary-container) !important;
+  }
+
+  /* Search bar */
+  ytmusic-search-box:not([opened]) .search-box {
+    border-radius: var(--md-sys-shape-corner-full) !important;
+  }
+
+  ytmusic-search-box[opened] .search-container {
+    overflow: hidden;
+    border-radius: var(--md-sys-shape-corner-extra-large) !important;
+    background-color: var(--md-sys-color-surface-container-high) !important;
+  }
+
+  /* Navigation drawer: pill indicator for the current destination */
+  tp-yt-paper-item.ytmusic-guide-entry-renderer,
+  tp-yt-paper-item.ytmusic-guide-entry-renderer::before {
+    border-radius: var(--md-sys-shape-corner-full) !important;
+  }
+
+  tp-yt-paper-item.ytmusic-guide-entry-renderer {
+    transition: var(--m3e-color-change);
+
+    &:hover {
+      background-color: var(--m3e-state-hover) !important;
+    }
+
+    &[aria-current='true'],
+    &[aria-current='page'] {
+      background-color: var(--md-sys-color-secondary-container) !important;
+      color: var(--md-sys-color-on-secondary-container) !important;
+    }
+  }
+
+  /* Tabs */
+  tp-yt-paper-tab.iron-selected {
+    color: var(--md-sys-color-primary) !important;
+  }
+
+  /* Artwork: M3 corners; round avatars stay round */
+  ytmusic-two-row-item-renderer:not([has-circle-cropped-thumbnail])
+    a.image-wrapper {
+    overflow: hidden;
+    border-radius: var(--md-sys-shape-corner-large);
+    transition: var(--m3e-shape-morph);
+
+    &:hover {
+      border-radius: var(--md-sys-shape-corner-extra-large);
+    }
+  }
+
+  /* The play overlay sits over the thumbnail and needs the same corners */
+  ytmusic-responsive-list-item-renderer
+    ytmusic-thumbnail-renderer:not(
+      [thumbnail-crop='MUSIC_THUMBNAIL_CROP_CIRCLE']
+    ),
+  ytmusic-responsive-list-item-renderer .left-items > .thumbnail-overlay {
+    overflow: hidden;
+    border-radius: var(--md-sys-shape-corner-small);
+  }
+
+  ytmusic-responsive-list-item-renderer
+    .left-items
+    > [thumbnail-crop='MUSIC_THUMBNAIL_CROP_CIRCLE']
+    ~ .thumbnail-overlay {
+    border-radius: 50%;
+  }
+
+  ytmusic-responsive-header-renderer
+    ytmusic-thumbnail-renderer:not(
+      [thumbnail-crop='MUSIC_THUMBNAIL_CROP_CIRCLE']
+    ) {
+    overflow: hidden;
+    border-radius: var(--md-sys-shape-corner-extra-large);
+  }
+
+  ytmusic-player#player {
+    border-radius: var(--md-sys-shape-corner-extra-large) !important;
+  }
+
+  /* Lists: rounded rows, the playing one on a secondary container */
+  ytmusic-responsive-list-item-renderer,
+  ytmusic-player-queue-item {
+    border-radius: var(--md-sys-shape-corner-medium);
+  }
+
+  ytmusic-player-queue-item {
+    overflow: hidden;
+
+    &[play-button-state='playing'],
+    &[play-button-state='paused'] {
+      background-color: var(--md-sys-color-secondary-container) !important;
+    }
+  }
+
+  /* Menus, dialogs, snackbars */
+  ytmusic-menu-popup-renderer,
+  ul[data-ytmd-sub-panel] {
+    overflow: hidden;
+    border-radius: var(--md-sys-shape-corner-large) !important;
+    background-color: var(--md-sys-color-surface-container) !important;
+    box-shadow: 0 6px 20px rgb(0 0 0 / 0.35) !important;
+  }
+
+  tp-yt-paper-dialog {
+    border-radius: var(--md-sys-shape-corner-extra-large) !important;
+  }
+
+  tp-yt-paper-toast {
+    border-radius: var(--md-sys-shape-corner-small) !important;
+  }
+
+  /* Seek bar: M3 Expressive slider with a rounded track and a bar handle */
+  .ytMusicMiniPlayerProgressBar {
+    border-radius: var(--md-sys-shape-corner-full);
+
+    &::-webkit-slider-thumb {
+      width: 4px !important;
+      height: 16px !important;
+      margin-top: -6.5px !important;
+      border-radius: 2px !important;
+      background-color: var(--md-sys-color-primary) !important;
+      box-shadow: none !important;
+    }
+
+    &:hover::-webkit-slider-thumb,
+    &:active::-webkit-slider-thumb {
+      margin-top: -5.5px !important;
+    }
+  }
+
+  /* Scrollbars in the scheme */
+  ::-webkit-scrollbar-thumb {
+    background-color: rgb(
+      from var(--md-sys-color-on-surface-variant) r g b / 0.35
+    ) !important;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(
+      from var(--md-sys-color-on-surface-variant) r g b / 0.6
+    ) !important;
+  }
+}

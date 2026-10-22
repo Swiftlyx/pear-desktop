@@ -53,6 +53,9 @@ importers:
       '@jellybrick/electron-better-web-request':
         specifier: 2.0.0
         version: 2.0.0
+      '@material/material-color-utilities':
+        specifier: ^0.4.0
+        version: 0.4.0
       '@mdui/icons':
         specifier: 1.0.3
         version: 1.0.3
@@ -765,6 +768,9 @@ packages:
 
   '@material/material-color-utilities@0.3.0':
     resolution: {integrity: sha512-ztmtTd6xwnuh2/xu+Vb01btgV8SQWYCaK56CkRK8gEkWe5TuDyBcYJ0wgkMRn+2VcE9KUmhvkz+N9GHrqw/C0g==}
+
+  '@material/material-color-utilities@0.4.0':
+    resolution: {integrity: sha512-dlq6VExJReb8dhjj3a/yTigr3ncNwoFmL5Iy2ENtbDX03EmNeOEdZ+vsaGrj7RTuO+mB7L58II4LCsl4NpM8uw==}
 
   '@mdui/icons@1.0.3':
     resolution: {integrity: sha512-Jq9juUqIJMBvIRSTr0qBKiqnlbY5pVUzUP20EHSN8dT7GcqN7bq0AL8MASL5DxKs09kgcERq+z5bHJOkz/VDlA==}
@@ -4431,6 +4437,8 @@ snapshots:
       - supports-color
 
   '@material/material-color-utilities@0.3.0': {}
+
+  '@material/material-color-utilities@0.4.0': {}
 
   '@mdui/icons@1.0.3':
     dependencies:

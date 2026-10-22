@@ -358,9 +358,9 @@
       "description": "Removes account and tracking identifiers (si, feature, utm_*) from copied and shared links",
       "name": "Link Sanitizer"
     },
-    "modern-design": {
-      "description": "Rounder shapes, springy motion and accents in the album colour: glass over the Transparent Player window, Material 3 Expressive without it",
-      "name": "Modern Design"
+    "material-expressive": {
+      "description": "The whole app in Material 3 Expressive: colours from the cover, shapes that morph, spring motion. Works with Transparent Player",
+      "name": "Material 3 Expressive"
     },
     "navigation": {
       "description": "Next/Back navigation arrows directly integrated in the interface, like in your favorite browser",

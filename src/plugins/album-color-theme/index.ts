@@ -116,6 +116,11 @@ export default createPlugin({
 
       const fastAverageColor = new FastAverageColor();
 
+      // Material 3 Expressive owns the colours when it is on
+      if (await window.mainConfig.plugins.isEnabled('material-expressive')) {
+        return;
+      }
+
       document.addEventListener('videodatachange', async (event) => {
         if (event.detail.name !== 'dataloaded') return;
 
