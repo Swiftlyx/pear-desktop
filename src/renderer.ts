@@ -40,6 +40,9 @@ async function listenForApiLoad() {
   if (!isApiLoaded) {
     api = document.querySelector('#movie_player');
     if (api) {
+      // Latch before the async setup, so the DOM observer in initObserver
+      // cannot run onApiLoaded a second time and register every handler twice
+      isApiLoaded = true;
       await onApiLoaded();
 
       return;
