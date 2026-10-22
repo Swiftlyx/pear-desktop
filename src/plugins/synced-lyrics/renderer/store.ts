@@ -68,8 +68,23 @@ const withTimeout = <T>(promise: Promise<T>, providerName: string) =>
     ),
   ]);
 
+// Keeps the results of the most recent songs only; a radio session would
+// otherwise hold every song's lyrics from every provider for the app's lifetime
+const MAX_CACHED_SONGS = 50;
+
 // TODO: Maybe use localStorage for the cache.
 const searchCache = new Map<VideoId, SearchCache>();
+
+const rememberSearch = (videoId: VideoId, cache: SearchCache) => {
+  // Re-insert so the Map's insertion order doubles as recency order
+  searchCache.delete(videoId);
+  searchCache.set(videoId, cache);
+
+  for (const oldest of searchCache.keys()) {
+    if (searchCache.size <= MAX_CACHED_SONGS) break;
+    searchCache.delete(oldest);
+  }
+};
 export const fetchLyrics = (info: SongInfo) => {
   if (searchCache.has(info.videoId)) {
     const cache = searchCache.get(info.videoId)!;
@@ -94,7 +109,7 @@ export const fetchLyrics = (info: SongInfo) => {
     data: initialData(),
   };
 
-  searchCache.set(info.videoId, cache);
+  rememberSearch(info.videoId, cache);
   if (getSongInfo().videoId === info.videoId) {
     setLyricsStore('lyrics', () => {
       // weird bug with solid-js
@@ -152,7 +167,7 @@ export const fetchLyrics = (info: SongInfo) => {
 
   cache.settled = Promise.allSettled(tasks).then(() => {
     cache.state = 'done';
-    searchCache.set(info.videoId, cache);
+    rememberSearch(info.videoId, cache);
   });
 };
 
