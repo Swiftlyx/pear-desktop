@@ -225,6 +225,10 @@
       },
       "name": "Album Color Theme"
     },
+    "audio-only": {
+      "description": "Always plays the song (audio) version instead of the music video: keeps the player in song mode, hides the video and uses the lowest video quality when a video cannot be avoided",
+      "name": "Audio Only"
+    },
     "blur-nav-bar": {
       "description": "Makes navigation bar transparent and blurry",
       "name": "Blur Navigation Bar"
@@ -400,6 +404,10 @@
           "title": "Volume Steps"
         }
       }
+    },
+    "prefer-song": {
+      "description": "When playing an album, replaces music videos with the song version of the track",
+      "name": "Prefer Song"
     },
     "synced-lyrics": {
       "description": "Provides synced lyrics to songs, using providers like LRClib.",
