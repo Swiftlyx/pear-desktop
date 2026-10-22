@@ -1,86 +1,96 @@
-# Pear Desktop — personal fork
+# Pear Desktop — Swiftlyx fork
 
-A trimmed and hardened fork of [pear-devs/pear-desktop](https://github.com/pear-devs/pear-desktop),
-the desktop wrapper for YouTube Music with plugins.
+A leaner, fixed and hardened fork of [pear-devs/pear-desktop](https://github.com/pear-devs/pear-desktop),
+the YouTube Music desktop app with plugins.
 
-This project is not affiliated with, authorized or endorsed by Google LLC or YouTube.
-"Google" and "YouTube Music" are trademarks of their respective owners.
+Not affiliated with, authorized or endorsed by Google LLC or YouTube.
 
-## What is different from upstream
+## How it differs from upstream
 
-- **Only the plugins that are actually used are kept:** Album Color Theme, Blur Navigation Bar,
-  Discord Rich Presence, Do Not Track (ad/tracker blocker, off by default), Downloader,
-  In-App Menu, Link Sanitizer, Navigation, Performance Improvement, Playlist Reorder,
-  Precise Volume, Synced Lyrics, Unobtrusive Player. The other 30 plugins and their dependencies
-  are removed.
-- **English and Ukrainian only.** Other translations are removed; the language follows the system
-  locale and can be changed in *Options → Language*.
-- **Unobtrusive Player fix.** YouTube Music now renders a second, hidden player bar. The plugin
-  clicked its toggle, so the player page stayed open but invisible and could not be expanded.
-- **Link Sanitizer (new, on by default).** Removes the account-bound `si` parameter and share
-  tracking (`feature`, `pp`, `utm_*`) from the share dialog, from every copy to the clipboard and
-  from *Navigation → Copy current URL*.
-- **Playlist Reorder (new, on by default).** Hover a song in one of your own playlists to move it
-  to the top or the bottom in one click.
-- **Synced Lyrics fix.** Musixmatch answers unknown and instrumental tracks with a decoy song and
-  made-up lyrics, so many songs showed the same text. Musixmatch and Genius hits are now checked
-  against the playing song, and a provider that never answers times out.
-- **Handlers no longer register twice.** A race could run the player setup twice, doubling every
-  IPC handler and plugin hook.
-- **Update notifications in the portable build**, which electron-updater does not support.
-- **Security hardening**
-  - Electron 44 (42 is out of support).
-  - Only YouTube/Google pages can be loaded in the app window. Popups, links and redirects to other
-    sites open in the default browser, so they never get the app's IPC bridge.
-  - The Content-Security-Policy is removed from the player only. Google sign-in pages keep theirs.
-  - Electron fuses: cookies are encrypted at rest, `RunAsNode`, `NODE_OPTIONS` and `--inspect` are
-    disabled, and only the integrity-checked `app.asar` is loaded.
-  - The Synced Lyrics network helper is limited to Musixmatch (it used to proxy any URL, including
-    `localhost`).
-  - `youtubemusic://` protocol links can only control playback (no likes, queue edits or searches).
-  - The Do Not Track filter list index is pinned in the source instead of being downloaded from a
-    third-party repository.
-- **Less work at runtime.** Audio is no longer routed through a Web Audio graph that only the
-  removed equalizer/visualizer plugins needed, and the renderer bundle shrank from 6.5 MB to 3.8 MB.
+**Plugins.** 18 instead of 40: the ones that work and are worth keeping.
+
+| Plugin | Notes |
+|---|---|
+| Album Color Theme, Blur Navigation Bar, Discord, Downloader, In-App Menu, Navigation, Performance Improvement, Precise Volume, Synced Lyrics, Taskbar Media Control, Unobtrusive Player, Video Toggle | From upstream, with the fixes below |
+| Do Not Track | Ad/tracker blocker, off by default; filter list index pinned in the source |
+| Transparent Player | Fixed: no stale frames on macOS/Linux, no double tint |
+| **Link Sanitizer** (new) | Strips the account-bound `si` and share tracking (`feature`, `pp`, `utm_*`) from shared and copied links |
+| **Playlist Reorder** (new) | Move a song to the top or bottom of your own playlist in one click |
+| **Prefer Song**, **Audio Only** | From [michei69/pear-desktop](https://github.com/michei69/pear-desktop): song instead of music video |
+
+**Fixes**
+- Unobtrusive Player left the player page open but invisible, so it could not be expanded.
+- Synced Lyrics showed the same made-up lyrics ("Wob gopini den…") for many songs: Musixmatch answers
+  unknown tracks with a decoy. Every hit is now checked against the playing song, Musixmatch uses its
+  working mobile API, and the lyrics cache is capped (it used to grow for the whole session).
+- Player setup could run twice and register every handler twice; plugins could hang until a song played.
+- Precise Volume works with the new YouTube Music player UI.
+- Memory and lifecycle fixes across plugins (listeners and observers released on disable).
+
+**Security**
+- Electron 44 (upstream ships 42, now out of support) and no known vulnerable dependencies.
+- Chromium sandbox enabled for the page.
+- Only YouTube/Google pages load inside the app; other links open in your browser.
+- Google sign-in pages keep their Content-Security-Policy.
+- Cookies are encrypted on disk; `RunAsNode`, `NODE_OPTIONS` and `--inspect` are disabled.
+- `youtubemusic://` links can only control playback; the lyrics network helper only reaches Musixmatch.
+
+**Other**
+- English and Ukrainian only.
+- Releases for Windows (x64, arm64: web installer and portable) and macOS on Apple Silicon.
+- Update notifications also work in the portable and macOS builds.
+
+## Install
+
+Download the latest build from [Releases](https://github.com/Swiftlyx/pear-desktop/releases/latest).
+
+The macOS build is not signed. After moving it to Applications, run once:
+
+```bash
+xattr -cr "/Applications/YouTube Music.app"
+```
 
 ## Build
 
-Requirements: Node.js 24 LTS (or 22.22+ / 26+) and pnpm 11 (`npm install -g pnpm@11`).
+Node.js 24 LTS and pnpm 11.
 
 ```bash
 pnpm install
-pnpm dev              # run from source with hot reload
-pnpm dist:win:portable  # build the portable Windows exe into ./pack
-pnpm dist:win          # Windows web installer + portable (x64, ia32, arm64)
-pnpm dist:mac          # macOS dmg (run on macOS)
-pnpm dist:linux        # AppImage, deb, rpm, snap, flatpak, tar.gz (run on Linux)
+pnpm dev                 # run from source
+pnpm dist:win:portable   # portable Windows exe in ./pack
+pnpm dist:mac            # Apple Silicon dmg (on macOS)
 ```
 
-Checks: `pnpm lint`, `pnpm typecheck`, `pnpm playwright test clean-url matching lrc`.
+Checks: `pnpm lint`, `pnpm typecheck`, `pnpm test`.
 
-## Release
-
-1. Bump `version` in `package.json` and commit.
-2. Tag and push: `git tag v3.12.1 && git push origin master --tags`.
-3. GitHub Actions builds Windows, macOS and Linux packages, like upstream, and uploads them to a
-   **draft** release. Publish the draft on GitHub.
+To release, bump `version` in `package.json`, then push a matching tag (`git tag v3.12.1 && git push --tags`).
+GitHub Actions builds Windows and macOS packages into a draft release.
 
 ## Sync with upstream
 
 ```bash
 git fetch upstream
 git merge upstream/master
-```
-
-Upstream keeps updating translations and the removed plugins, so a merge usually reports
-modify/delete conflicts for those files. Keep them deleted:
-
-```bash
+# keep files this fork removed (translations, dropped plugins) deleted
 git status --porcelain | awk '/^DU / {print $2}' | xargs -r git rm -q
 ```
 
-Resolve any remaining conflicts, then run the checks above before committing.
+## Credits
+
+- [th-ch](https://github.com/th-ch) and the [pear-devs](https://github.com/pear-devs/pear-desktop)
+  contributors, for the app this fork is built on.
+- [Mikey (michei69)](https://github.com/michei69) and the contributors of
+  [michei69/pear-desktop](https://github.com/michei69/pear-desktop), whose work is included here:
+  - Prefer Song by [omarcinkonis](https://github.com/omarcinkonis), Audio Only by
+    [EmreSoyak](https://github.com/EmreSoyak)
+  - Codebase audit, Musixmatch mobile API, Taskbar like/dislike buttons, player setup and Synced Lyrics
+    fixes by Mikey (with Kairo)
+  - Precise Volume support for the new player UI by [WoWfff](https://github.com/WoWfff)
+  - In-App Menu performance by [gothmiku](https://github.com/gothmiku)
+  - Optional YouTube Music lyrics proxy by Volodymyr Tymchenko
+  - Album Color Theme home page fix by [Chaganti-Reddy](https://github.com/Chaganti-Reddy) and
+    Navigation cleanup by Mykhailo Balaker
 
 ## License
 
-MIT. Original work © th-ch and the pear-devs contributors, see [license](license).
+MIT, see [license](license).
