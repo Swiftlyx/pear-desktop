@@ -42,6 +42,10 @@ import musicPlayerCss from '@/music-player.css?inline';
 import { fileExists, injectCSS, injectCSSAsFile } from '@/plugins/utils/main';
 import { restart, setupAppControls } from '@/providers/app-controls';
 import {
+  isNewerReleaseAvailable,
+  isPortableBuild,
+} from '@/providers/portable-update';
+import {
   APP_PROTOCOL,
   handleProtocol,
   setupProtocolHandler,
@@ -808,11 +812,7 @@ app.whenReady().then(async () => {
   });
 
   if (!is.dev() && config.get('options.autoUpdates')) {
-    const updateTimeout = setTimeout(() => {
-      electronUpdater.autoUpdater.checkForUpdatesAndNotify();
-      clearTimeout(updateTimeout);
-    }, 2000);
-    electronUpdater.autoUpdater.on('update-available', () => {
+    const showUpdateAvailableDialog = () => {
       const downloadLink =
         'https://github.com/Swiftlyx/pear-desktop/releases/latest';
       const dialogOptions: Electron.MessageBoxOptions = {
@@ -855,7 +855,21 @@ app.whenReady().then(async () => {
           }
         }
       });
-    });
+    };
+
+    const updateTimeout = setTimeout(async () => {
+      // electron-updater has no update metadata for the portable exe
+      if (isPortableBuild()) {
+        if (await isNewerReleaseAvailable()) showUpdateAvailableDialog();
+      } else {
+        electronUpdater.autoUpdater.checkForUpdatesAndNotify();
+      }
+      clearTimeout(updateTimeout);
+    }, 2000);
+    electronUpdater.autoUpdater.on(
+      'update-available',
+      showUpdateAvailableDialog,
+    );
   }
 
   if (config.get('options.hideMenu') && !config.get('options.hideMenuWarned')) {
