@@ -1,3 +1,5 @@
+import { isSameSong } from './matching';
+
 import type { LyricProvider, LyricResult, SearchSongInfo } from '../types';
 
 const preloadedStateRegex = /__PRELOADED_STATE__ = JSON\.parse\('(.*?)'\);/;
@@ -9,7 +11,8 @@ export class LyricsGenius implements LyricProvider {
   private domParser = new DOMParser();
 
   // prettier-ignore
-  async search({ title, artist }: SearchSongInfo): Promise<LyricResult | null> {
+  async search(info: SearchSongInfo): Promise<LyricResult | null> {
+    const { title, artist } = info;
     const query = new URLSearchParams({
       q: `${artist} ${title}`,
       page: '1',
@@ -22,7 +25,16 @@ export class LyricsGenius implements LyricProvider {
     }
 
     const data = (await response.json()) as LyricsGeniusSearch;
-    const hits = data.response.sections[0].hits;
+    // Genius search is fuzzy and always returns something; drop unrelated songs
+    const hits = data.response.sections[0].hits.filter(({ result }) =>
+      isSameSong(info, {
+        title: result.title,
+        artists: [
+          ...result.primary_artists.map(({ name }) => name),
+          ...result.featured_artists.map(({ name }) => name),
+        ],
+      }),
+    );
 
     hits.sort(
       ({

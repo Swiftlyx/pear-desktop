@@ -51,7 +51,22 @@ type SearchCacheData = Record<ProviderName, ProviderState>;
 interface SearchCache {
   state: 'loading' | 'done';
   data: SearchCacheData;
+  settled?: Promise<void>;
 }
+
+// A provider that never answers would otherwise keep its song "loading" forever
+const PROVIDER_TIMEOUT_MS = 20_000;
+
+const withTimeout = <T>(promise: Promise<T>, providerName: string) =>
+  Promise.race([
+    promise,
+    new Promise<never>((_, reject) =>
+      setTimeout(
+        () => reject(new Error(`${providerName} timed out`)),
+        PROVIDER_TIMEOUT_MS,
+      ),
+    ),
+  ]);
 
 // TODO: Maybe use localStorage for the cache.
 const searchCache = new Map<VideoId, SearchCache>();
@@ -60,9 +75,7 @@ export const fetchLyrics = (info: SongInfo) => {
     const cache = searchCache.get(info.videoId)!;
 
     if (cache.state === 'loading') {
-      setTimeout(() => {
-        fetchLyrics(info);
-      });
+      cache.settled?.then(() => fetchLyrics(info));
       return;
     }
 
@@ -101,8 +114,7 @@ export const fetchLyrics = (info: SongInfo) => {
     const pCache = cache.data[providerName];
 
     tasks.push(
-      provider
-        .search(info)
+      withTimeout(provider.search(info), providerName)
         .then((res) => {
           pCache.state = 'done';
           pCache.data = res;
@@ -138,7 +150,7 @@ export const fetchLyrics = (info: SongInfo) => {
     );
   }
 
-  Promise.allSettled(tasks).then(() => {
+  cache.settled = Promise.allSettled(tasks).then(() => {
     cache.state = 'done';
     searchCache.set(info.videoId, cache);
   });

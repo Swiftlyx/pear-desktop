@@ -43,7 +43,7 @@ pnpm dev              # run from source with hot reload
 pnpm dist:win:x64     # build the Windows installer into ./pack
 ```
 
-Checks: `pnpm lint`, `pnpm typecheck`, `pnpm playwright test tests/clean-url.test.ts`.
+Checks: `pnpm lint`, `pnpm typecheck`, `pnpm playwright test clean-url matching lrc`.
 
 ## Release
 

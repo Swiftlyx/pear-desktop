@@ -48,7 +48,7 @@ jobs:
       - name: Unit tests
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
-        run: pnpm playwright test tests/clean-url.test.ts
+        run: pnpm playwright test clean-url matching lrc
 
   release:
     name: Windows installer

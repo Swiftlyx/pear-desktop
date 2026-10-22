@@ -1,5 +1,7 @@
 import * as z from 'zod';
 
+import { isSameSong } from './matching';
+
 import { LRC } from '../parsers/lrc';
 import { netFetch } from '../renderer';
 
@@ -35,8 +37,14 @@ export class MusixMatch implements LyricProvider {
     const lyrics = getter('track.lyrics.get')?.lyrics?.lyrics_body;
     const subtitle = getter('track.subtitles.get')?.subtitle_list?.[0];
 
-    // either no track found, or musixmatch's algorithm returned "Coldplay - Paradise" for no reason whatsoever
-    if (!track || track.track_id === 115264642) return null;
+    // Musixmatch answers unmatched queries with a decoy track and made-up lyrics
+    // (e.g. "Coldplay - Paradise", later "Drake - NOKIA"), so verify the match
+    if (
+      !track ||
+      !isSameSong(info, { title: track.track_name, artists: [track.artist_name] })
+    ) {
+      return null;
+    }
 
     return {
       title: track.track_name,
