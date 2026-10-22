@@ -1,3 +1,4 @@
+import { type BrowserWindow, nativeTheme } from 'electron';
 import is from 'electron-is';
 
 import { createBackend } from '@/utils';
@@ -10,7 +11,6 @@ import {
 } from './types';
 
 import type { BackendContext } from '@/types/contexts';
-import type { BrowserWindow } from 'electron';
 
 const setWindowTransparency = (window: BrowserWindow, material: MaterialType, opacity: number) => {
   // Background materials are only supported on macOS and Windows
@@ -44,6 +44,9 @@ export const backend = createBackend({
   async start({ window, getConfig }: BackendContext<TransparentPlayerConfig>) {
     const config = await getConfig();
     this.window = window;
+    // Materials follow the window theme; a light one under the always dark
+    // page would leave white text on a light background
+    nativeTheme.themeSource = 'dark';
     setWindowTransparency(window, config.type, config.opacity);
   },
   onConfigChange(newConfig) {
@@ -52,6 +55,7 @@ export const backend = createBackend({
   },
   stop({ window }) {
     setWindowTransparency(window, MaterialType.NONE, 1);
+    nativeTheme.themeSource = 'system';
     this.window = null;
   },
 });

@@ -4,107 +4,92 @@
     from var(--ytmd-transparent-player-transparency-color) r g b /
       var(--ytmd-transparent-player-opacity, 0.5)
   );
-  --ytmd-transparent-player-transparent-background-dark: rgb(
-    from var(--ytmd-transparent-player-transparency-color) r g b / 0.8
+  /* Menus, dialogs and suggestions float over content and cannot be blurred */
+  --ytmd-transparent-player-overlay-background: color-mix(
+    in srgb,
+    rgba(var(--ytmusic-album-color-dark, 17, 17, 17), 0.92) 40%,
+    rgba(17, 17, 17, 0.92)
   );
-  --ytmd-transparent-player-backdrop-blur: blur(20px);
 }
 
+/* The whole window shares one tint, so overlapping surfaces never add up */
 body.transparent-background-color {
   background-color: var(
     --ytmd-transparent-player-transparent-background
   ) !important;
-}
 
-body.transparent-player-backdrop-filter {
-  #layout {
-    #nav-bar-background,
-    #player-bar-background {
-      backdrop-filter: var(--ytmd-transparent-player-backdrop-blur) !important;
-    }
-  }
-
-  #search-page {
-    #tabs {
-      &.stuck {
-        backdrop-filter: var(
-          --ytmd-transparent-player-backdrop-blur
-        ) !important;
-      }
-    }
-  }
-
-  ytmusic-menu-popup-renderer {
-    backdrop-filter: var(--ytmd-transparent-player-backdrop-blur) !important;
-  }
-
-  #ytmd-title-bar-main-panel {
-    backdrop-filter: var(--ytmd-transparent-player-backdrop-blur) !important;
+  /* Album Color Theme supplies the tint (at the plugin's opacity) */
+  &.transparent-player-album-tint {
+    background-color: var(--ytmusic-background) !important;
   }
 }
 
+/*
+ * backdrop-filter has no effect in a window with a transparent background:
+ * it only darkens its area. Nothing may rely on blur here, so surfaces stay
+ * clear, scrolled content is clipped below the header and overlays are dense.
+ */
 body.transparent-player {
-  ytmusic-app {
-    ytmusic-app-layout[player-page-open] {
-      #nav-bar-background.ytmusic-app-layout,
-      #player-bar-background.ytmusic-app-layout {
-        opacity: 0 !important;
-      }
+  *,
+  *::before,
+  *::after {
+    backdrop-filter: none !important;
+  }
+
+  #nav-bar-background,
+  #player-bar-background,
+  #guide-wrapper,
+  #mini-guide-background,
+  ytmusic-player-bar,
+  nav[data-ytmd-main-panel],
+  .background-gradient {
+    background: transparent !important;
+  }
+
+  #mini-guide-background,
+  #guide-wrapper {
+    border: 0 !important;
+  }
+
+  /*
+   * Content scrolls in #content; keep it out of the clear header. The height
+   * is resolved here: the layout overrides the root's nav bar height.
+   */
+  ytmusic-app-layout[is-contained-content-layout-enabled] {
+    > #content,
+    #guide-wrapper {
+      clip-path: inset(
+        calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height)) 0 0 0
+      );
     }
 
-    #layout {
-      #nav-bar-background,
-      #player-bar-background {
-        background: var(
-          --ytmd-transparent-player-transparent-background-dark
-        ) !important;
-      }
-
-      #mini-guide-background {
-        background: none !important;
-        border: 0 !important;
-      }
-
-      #guide {
-        #guide-wrapper {
-          background: none !important;
-          border: 0 !important;
-        }
-      }
-
-      ytmusic-player-bar {
-        background: none !important;
-      }
-
-      #player-page {
-        background: none !important;
-      }
-
-      #search-page {
-        #tabs {
-          &.stuck {
-            background: var(
-              --ytmd-transparent-player-transparent-background
-            ) !important;
-          }
-        }
-      }
-
-      #browse-page {
-        #background {
-          display: none !important;
-        }
-
-        .background-gradient {
-          background: none !important;
-        }
-      }
+    #player-page {
+      background: transparent !important;
     }
   }
 
-  /* Window Top Panel */
-  nav[data-ytmd-main-panel] {
-    background-color: transparent !important;
+  /* The classic player page slides over the content, so it keeps a tint */
+  ytmusic-app-layout:not([is-contained-content-layout-enabled]) #player-page {
+    background: var(--ytmd-transparent-player-overlay-background) !important;
+  }
+
+  ytmusic-menu-popup-renderer,
+  ytmusic-multi-select-menu-renderer,
+  tp-yt-paper-dialog,
+  ytmusic-search-box[opened] .search-container,
+  ytmusic-search-suggestions-section,
+  ul[data-ytmd-sub-panel] {
+    background: var(--ytmd-transparent-player-overlay-background) !important;
+  }
+
+  /* Sticky search tabs sit over scrolled results */
+  #search-page #tabs.stuck {
+    background: var(--ytmd-transparent-player-overlay-background) !important;
+  }
+
+  /* Album Color Theme keeps the page artwork, dimmed */
+  &:not(.transparent-player-album-tint) #browse-page #background {
+    display: none !important;
   }
 
   /* Video Toggle Plugin */

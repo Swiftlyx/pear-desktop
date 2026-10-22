@@ -6,10 +6,17 @@ import { onMenu } from './menu';
 import style from './style.css?inline';
 import { MaterialType, type TransparentPlayerConfig } from './types';
 
+// The page world of the sandboxed renderer has no `process`
+const isWindows =
+  typeof process !== 'undefined' && process.platform
+    ? process.platform === 'win32'
+    : /windows/i.test(globalThis.navigator?.userAgent ?? '');
+
+// On by default only where the acrylic material exists (Windows)
 const defaultConfig: TransparentPlayerConfig = {
-  enabled: false,
-  opacity: 0.5,
-  type: MaterialType.NONE,
+  enabled: isWindows,
+  opacity: 0.1,
+  type: isWindows ? MaterialType.ACRYLIC : MaterialType.NONE,
 };
 
 export default createPlugin({
@@ -31,11 +38,13 @@ export default createPlugin({
       const config = await getConfig();
       this.props = config;
       if (config.enabled) {
-        document.body.classList.add('transparent-background-color');
-        document.body.classList.add('transparent-player-backdrop-filter');
+        document.body.classList.add(
+          'transparent-background-color',
+          'transparent-player',
+        );
 
-        if (!(await window.mainConfig.plugins.isEnabled('album-color-theme'))) {
-          document.body.classList.add('transparent-player');
+        if (await window.mainConfig.plugins.isEnabled('album-color-theme')) {
+          document.body.classList.add('transparent-player-album-tint');
         }
         this.applyVariables();
       }
@@ -45,9 +54,11 @@ export default createPlugin({
       this.applyVariables();
     },
     stop() {
-      document.body.classList.remove('transparent-background-color');
-      document.body.classList.remove('transparent-player-backdrop-filter');
-      document.body.classList.remove('transparent-player');
+      document.body.classList.remove(
+        'transparent-background-color',
+        'transparent-player',
+        'transparent-player-album-tint',
+      );
       document.documentElement.style.removeProperty(
         '--ytmd-transparent-player-opacity',
       );
