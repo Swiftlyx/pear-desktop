@@ -26,6 +26,9 @@ An independent project, not affiliated with, authorized or endorsed by Google LL
 - Player setup could run twice and register every handler twice; plugins could hang until a song played.
 - Precise Volume works with the new player UI.
 - Memory and lifecycle fixes across plugins (listeners and observers released on disable).
+- Performance Improvement kept the page redrawing on every display frame (about a third of a CPU core
+  even when idle); Synced Lyrics kept animating under a closed player page and repainted its glow on
+  every frame. Idle CPU dropped from 39% to 2.5% of a core, playback with lyrics from 42% to 15%.
 
 **Security**
 - Electron 44 (upstream ships 42, now out of support) and no known vulnerable dependencies.
