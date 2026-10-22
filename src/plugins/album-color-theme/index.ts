@@ -32,8 +32,8 @@ export default createPlugin({
   description: () => t('plugins.album-color-theme.description'),
   restartNeeded: false,
   config: {
-    enabled: false,
-    ratio: 0.5,
+    enabled: true,
+    ratio: 1,
     enableSeekbar: true,
   } satisfies Config as Config,
   stylesheets: [style],

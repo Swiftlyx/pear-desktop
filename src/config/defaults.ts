@@ -52,7 +52,7 @@ export const defaultConfig: DefaultConfig = {
   },
   'url': 'https://music.\u0079\u006f\u0075\u0074\u0075\u0062\u0065.com',
   'options': {
-    tray: false,
+    tray: true,
     appVisible: true,
     autoUpdates: true,
     alwaysOnTop: false,

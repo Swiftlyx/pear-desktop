@@ -15,7 +15,7 @@ export default createPlugin({
   description: () => t('plugins.prefer-song.description'),
   restartNeeded: true,
   config: {
-    enabled: false,
+    enabled: true,
   } as PreferSongPluginConfig,
   preload: {
     async start() {
