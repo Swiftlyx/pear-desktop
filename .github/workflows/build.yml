@@ -106,16 +106,30 @@ jobs:
             exit 1
           fi
 
-      # electron-builder uploads every artifact and the update metadata
-      # (latest*.yml) to a draft release of this repository
-      - name: Build and publish (macOS)
+      - name: Build (macOS)
         if: startsWith(matrix.os, 'macos')
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pnpm release:mac
+        run: pnpm dist:mac
 
-      - name: Build and publish (Windows)
+      - name: Build (Windows)
         if: startsWith(matrix.os, 'windows')
+        run: pnpm dist:win
+
+      # electron-builder's own upload finds the draft by listing releases, which
+      # sometimes misses a draft created moments before and opens a second one.
+      # Uploading by tag always targets the draft made by the draft job. Spaces
+      # become hyphens, as in the links inside latest*.yml.
+      - name: Upload to the draft release
+        shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pnpm release:win
+        run: |
+          mkdir upload
+          find pack -maxdepth 2 -type f \
+            \( -name '*.exe' -o -name '*.7z' -o -name '*.dmg' -o -name '*.blockmap' -o -name 'latest*.yml' \) \
+            ! -path '*-unpacked*' ! -name '*__uninstaller*' -print0 |
+            while IFS= read -r -d '' file; do
+              name=$(basename "$file")
+              cp "$file" "upload/${name// /-}"
+            done
+          ls -l upload
+          gh release upload "$GITHUB_REF_NAME" upload/* --clobber -R "$GITHUB_REPOSITORY"

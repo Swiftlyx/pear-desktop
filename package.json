@@ -34,9 +34,6 @@
     "lint": "pnpm oxlint --type-aware src",
     "format": "pnpm oxfmt --write src",
     "format:check": "pnpm oxfmt --check src",
-    "release:linux": "pnpm clean && pnpm build && pnpm electron-builder --linux -p always -c.snap.publish=github",
-    "release:mac": "pnpm clean && pnpm build && pnpm electron-builder --mac -p always",
-    "release:win": "pnpm clean && pnpm build && pnpm electron-builder --win nsis-web --x64 --arm64 -p always && pnpm electron-builder --win portable --x64 -p always && pnpm electron-builder --win portable --arm64 -p always",
     "typecheck": "pnpm tsc -p tsconfig.json --noEmit",
     "check": "pnpm lint && pnpm format:check && pnpm typecheck",
     "dist:win:portable": "pnpm clean && pnpm build && pnpm electron-builder --win portable:x64 -p never"
