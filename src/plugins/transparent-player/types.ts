@@ -33,3 +33,7 @@ export type TransparentPlayerConfig = {
   opacity: number;
   type: MaterialType;
 };
+
+// Shared with Album Color Theme, which reads the stored value and needs the
+// default when the user never changed it
+export const DEFAULT_OPACITY = 0.1;

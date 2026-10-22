@@ -7,6 +7,9 @@ export default createPlugin({
   name: () => t('plugins.blur-nav-bar.name'),
   description: () => t('plugins.blur-nav-bar.description'),
   restartNeeded: false,
+  config: {
+    enabled: true,
+  },
   renderer: {
     styleSheet: null as CSSStyleSheet | null,
 
@@ -18,9 +21,12 @@ export default createPlugin({
         ...document.adoptedStyleSheets,
         this.styleSheet,
       ];
+      // Transparent Player shows the effect differently (no blur there)
+      document.body.classList.add('blur-nav-bar');
     },
     async stop() {
       await this.styleSheet?.replace('');
+      document.body.classList.remove('blur-nav-bar');
     },
   },
 });

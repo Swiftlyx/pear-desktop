@@ -12,16 +12,20 @@
   );
 }
 
-/* The whole window shares one tint, so overlapping surfaces never add up */
-body.transparent-background-color {
+/*
+ * The whole window shares one tint, painted by the root element so it covers
+ * the full viewport: <body> is shorter than the window and painting both
+ * left a lighter strip below the player bar. Album Color Theme sets its own
+ * tint on the root element (at the plugin's opacity).
+ */
+html:has(> body.transparent-background-color) {
   background-color: var(
     --ytmd-transparent-player-transparent-background
   ) !important;
+}
 
-  /* Album Color Theme supplies the tint (at the plugin's opacity) */
-  &.transparent-player-album-tint {
-    background-color: var(--ytmusic-background) !important;
-  }
+body.transparent-background-color {
+  background-color: transparent !important;
 }
 
 /*
@@ -66,6 +70,36 @@ body.transparent-player {
     #player-page {
       background: transparent !important;
     }
+
+    /*
+     * The player page slides over the content and the site hides the content
+     * only once the slide ends, so it showed through the clear page. Hide it
+     * as the page starts to open; bring it back after the page has left.
+     */
+    > #content {
+      transition: opacity 200ms ease 180ms;
+    }
+
+    &[player-page-open] > #content {
+      opacity: 0;
+      transition: opacity 100ms ease;
+    }
+  }
+
+  /* Blur Navigation Bar: content fades under the clear header instead */
+  &.blur-nav-bar ytmusic-app-layout[is-contained-content-layout-enabled] {
+    > #content {
+      clip-path: none;
+      mask-image: linear-gradient(
+        to bottom,
+        transparent
+          calc(
+            var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) * 0.55
+          ),
+        #000
+          calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height) + 12px)
+      );
+    }
   }
 
   /* The classic player page slides over the content, so it keeps a tint */
@@ -92,8 +126,20 @@ body.transparent-player {
     display: none !important;
   }
 
-  /* Video Toggle Plugin */
+  /*
+   * Song/Video switch: its buttons overlap by a few pixels and the unselected
+   * one is opaque, which only blends in on an opaque container. Make it one
+   * segmented control on a clear track.
+   */
   .av-toggle.ytmusic-av-toggle {
-    background-color: var(--ytmd-transparent-player-transparent-background);
+    background-color: rgba(255, 255, 255, 0.08) !important;
+
+    button {
+      background-color: transparent !important;
+    }
+
+    button[aria-pressed='true'] {
+      background-color: rgba(255, 255, 255, 0.16) !important;
+    }
   }
 }

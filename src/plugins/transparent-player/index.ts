@@ -4,19 +4,33 @@ import { createPlugin } from '@/utils';
 import { backend } from './backend';
 import { onMenu } from './menu';
 import style from './style.css?inline';
-import { MaterialType, type TransparentPlayerConfig } from './types';
+import {
+  DEFAULT_OPACITY,
+  MaterialType,
+  type TransparentPlayerConfig,
+} from './types';
 
 // The page world of the sandboxed renderer has no `process`
-const isWindows =
+const platform =
   typeof process !== 'undefined' && process.platform
-    ? process.platform === 'win32'
-    : /windows/i.test(globalThis.navigator?.userAgent ?? '');
+    ? process.platform
+    : /windows/i.test(globalThis.navigator?.userAgent ?? '')
+      ? 'win32'
+      : /macintosh/i.test(globalThis.navigator?.userAgent ?? '')
+        ? 'darwin'
+        : 'linux';
 
-// On by default only where the acrylic material exists (Windows)
+// On by default where the system has a native material: mica on Windows,
+// the window-background vibrancy on macOS
+const defaultType: Partial<Record<string, MaterialType>> = {
+  win32: MaterialType.MICA,
+  darwin: MaterialType.UNDER_WINDOW,
+};
+
 const defaultConfig: TransparentPlayerConfig = {
-  enabled: isWindows,
-  opacity: 0.1,
-  type: isWindows ? MaterialType.ACRYLIC : MaterialType.NONE,
+  enabled: platform in defaultType,
+  opacity: DEFAULT_OPACITY,
+  type: defaultType[platform] ?? MaterialType.NONE,
 };
 
 export default createPlugin({

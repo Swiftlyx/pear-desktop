@@ -2,6 +2,7 @@ import Color, { type ColorInstance } from 'color';
 import { FastAverageColor } from 'fast-average-color';
 
 import { t } from '@/i18n';
+import { DEFAULT_OPACITY } from '@/plugins/transparent-player/types';
 import { createPlugin } from '@/utils';
 
 import style from './style.css?inline';
@@ -9,6 +10,19 @@ import style from './style.css?inline';
 const COLOR_KEY = '--ytmusic-album-color';
 const DARK_COLOR_KEY = '--ytmusic-album-color-dark';
 const RATIO_KEY = '--ytmusic-album-color-ratio';
+const ACCENT_KEY = '--ytmusic-album-accent';
+const ON_ACCENT_KEY = '--ytmusic-album-on-accent';
+
+// Text and icons drawn on light surfaces (filled buttons, knobs, progress)
+// stay opaque; only surfaces take the Transparent Player opacity
+const OPAQUE_VARIABLES = new Set([
+  '--yt-spec-filled-button-text',
+  '--yt-spec-static-brand-black',
+  '--yt-spec-inverted-background',
+  '--paper-slider-knob-color',
+  '--paper-progress-active-color-1',
+  '--paper-progress-active-color-2',
+]);
 
 type Config = {
   enabled: boolean;
@@ -117,13 +131,29 @@ export default createPlugin({
             return null;
           });
 
+        let alpha = 1;
+        if (await window.mainConfig.plugins.isEnabled('transparent-player')) {
+          const value: unknown = window.mainConfig.get(
+            'plugins.transparent-player.opacity',
+          );
+          alpha =
+            typeof value === 'number' && value >= 0 && value <= 1
+              ? value
+              : DEFAULT_OPACITY;
+        }
+
+        // Opaque surfaces take a dark tone of the album hue so white text stays
+        // readable; a translucent tint over a transparent window needs a
+        // lighter tone to show at all
+        const maxLuminosity = alpha < 1 ? 0.5 : 0.03;
+
         if (albumColor) {
           const target = Color(albumColor.hex);
 
           this.darkColor = target.darken(0.3).rgb();
           this.color = target.darken(0.15).rgb();
 
-          while (this.color.luminosity() > 0.5) {
+          while (this.color.luminosity() > maxLuminosity) {
             this.color = this.color?.darken(0.05);
             this.darkColor = this.darkColor?.darken(0.05);
           }
@@ -136,21 +166,26 @@ export default createPlugin({
             DARK_COLOR_KEY,
             `${~~this.darkColor.red()}, ${~~this.darkColor.green()}, ${~~this.darkColor.blue()}`,
           );
+
+          // A light, saturated accent with a dark foreground for primary
+          // buttons such as Play
+          const accent = target
+            .saturationl(Math.max(target.saturationl(), 35))
+            .lightness(72)
+            .rgb();
+          document.documentElement.style.setProperty(
+            ACCENT_KEY,
+            `${~~accent.red()}, ${~~accent.green()}, ${~~accent.blue()}`,
+          );
+          document.documentElement.style.setProperty(ON_ACCENT_KEY, '#0d0d0d');
         } else {
           document.documentElement.style.setProperty(COLOR_KEY, '0, 0, 0');
           document.documentElement.style.setProperty(DARK_COLOR_KEY, '0, 0, 0');
+          document.documentElement.style.removeProperty(ACCENT_KEY);
+          document.documentElement.style.removeProperty(ON_ACCENT_KEY);
         }
 
-        let alpha: number | null = null;
-        if (await window.mainConfig.plugins.isEnabled('transparent-player')) {
-          const value: unknown = window.mainConfig.get(
-            'plugins.transparent-player.opacity',
-          );
-          if (typeof value === 'number' && value >= 0 && value <= 1) {
-            alpha = value;
-          }
-        }
-        (this as Renderer).updateColor(alpha ?? 1);
+        (this as Renderer).updateColor(alpha);
       });
     },
     onConfigChange(config) {
@@ -238,10 +273,11 @@ export default createPlugin({
       Object.entries(variableMap).map(([variable, color]) => {
         const key = colorKeyMap[variable] ?? COLOR_KEY;
         const ratio = ratioMap[variable] ?? undefined;
+        const variableAlpha = OPAQUE_VARIABLES.has(variable) ? 1 : alpha;
 
         document.documentElement.style.setProperty(
           variable,
-          getMixedColor(color, key, alpha, ratio),
+          getMixedColor(color, key, variableAlpha, ratio),
           'important',
         );
       });
