@@ -45,6 +45,7 @@ body.transparent-player {
   #guide-wrapper,
   #mini-guide-background,
   ytmusic-player-bar,
+  ytmusic-miniplayer,
   nav[data-ytmd-main-panel],
   .background-gradient {
     background: transparent !important;
@@ -74,15 +75,36 @@ body.transparent-player {
     /*
      * The player page slides over the content and the site hides the content
      * only once the slide ends, so it showed through the clear page. Hide it
-     * as the page starts to open; bring it back after the page has left.
+     * as the page starts to open; bring it back as the page fades out.
      */
     > #content {
-      transition: opacity 200ms ease 180ms;
+      transition: opacity 200ms ease 60ms;
     }
 
     &[player-page-open] > #content {
       opacity: 0;
       transition: opacity 100ms ease;
+    }
+
+    /*
+     * The page also slides down behind the clear player bar when it closes:
+     * it fades in while opening, and on closing it fades out before it
+     * starts to move, so it is gone before it reaches the bar.
+     */
+    &[player-page-open] #player-page {
+      transition:
+        transform 0.3s,
+        background-color 0.3s cubic-bezier(0.2, 0, 0.6, 1),
+        opacity 200ms cubic-bezier(0.2, 0, 0, 1) !important;
+    }
+
+    &:not([player-page-open])
+      #player-page:not(:has(ytmusic-player[player-ui-state='MINIPLAYER'])) {
+      opacity: 0;
+      transition:
+        transform 0.3s cubic-bezier(0.3, 0, 0.8, 0.15),
+        background-color 0.3s cubic-bezier(0.2, 0, 0.6, 1),
+        opacity 70ms cubic-bezier(0, 0, 0.2, 1) !important;
     }
   }
 
@@ -112,14 +134,17 @@ body.transparent-player {
     );
 
     /*
-     * Rows of vertical lists also blur on their way under it. A view timeline
-     * follows the nearest scroller, so items inside horizontal carousels would
-     * track those instead; they only fade.
+     * Rows of vertical lists, chip rows and shelf titles also blur on their
+     * way under it. A view timeline follows the nearest scroller, so items
+     * inside horizontal carousels would track those instead; they only fade.
+     * Tall elements stay out: the blur covers the whole element at once.
      */
     :is(
       ytmusic-playlist-shelf-renderer #contents > ytmusic-responsive-list-item-renderer,
       ytmusic-shelf-renderer #contents > ytmusic-responsive-list-item-renderer,
-      ytmusic-grid-renderer #items > ytmusic-two-row-item-renderer
+      ytmusic-grid-renderer #items > ytmusic-two-row-item-renderer,
+      ytmusic-chip-cloud-renderer,
+      ytmusic-carousel-shelf-basic-header-renderer
     ) {
       animation: transparent-player-under-header linear forwards;
       animation-timeline: view(

@@ -359,7 +359,7 @@
       "name": "Link Sanitizer"
     },
     "material-expressive": {
-      "description": "The whole app in Material 3 Expressive: colours from the cover, shapes that morph, spring motion. Works with Transparent Player",
+      "description": "The whole app in Material 3 Expressive: colours from the cover, shapes that morph, spring motion, Inter typeface. Works with Transparent Player",
       "name": "Material 3 Expressive"
     },
     "navigation": {

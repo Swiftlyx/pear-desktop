@@ -115,10 +115,30 @@ ytmusic-player-queue #contents {
   padding-bottom: 16px;
 }
 
-/* Thin translucent scrollbars without arrow buttons for every scroller */
-html {
-  /* A standard scrollbar-color (the site sets one) disables the rules below */
+/*
+ * Thin translucent scrollbars without arrow buttons for every scroller.
+ * A standard scrollbar-color or a thin scrollbar-width turns the rules below
+ * off and brings back the native scrollbar with arrows: the site sets the
+ * colour on the root and on shelves (inherited by their scrollers) and the
+ * width on a few containers. Widths of none stay.
+ */
+* {
   scrollbar-color: auto !important;
+}
+
+ytmusic-carousel,
+ytmusic-two-column-browse-results-renderer,
+.ytFlexibleActionsViewModelScrollable,
+.ytmusicMultiPageMenuRendererMenuContainer,
+.ytwChannelBlocksViewModelListWrapper {
+  scrollbar-width: auto !important;
+}
+
+/* Shelves and chip rows show their thumb only while hovered, as the site does */
+:is(ytmusic-carousel #items, ytmusic-chip-cloud-renderer #chips):not(
+    :hover
+  )::-webkit-scrollbar-thumb {
+  background-color: transparent !important;
 }
 
 ::-webkit-scrollbar {

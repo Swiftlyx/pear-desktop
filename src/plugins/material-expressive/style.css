@@ -213,6 +213,23 @@ html.pear-m3e {
   }
 
   /*
+   * Typeface: Inter everywhere (registered by the renderer); its optical
+   * size axis follows the font size. Times use tabular figures so they do
+   * not shift while counting.
+   */
+  &,
+  *:not(code, pre, kbd, samp) {
+    font-family:
+      'Pear Inter', Roboto, 'Noto Naskh Arabic UI', Arial, sans-serif !important;
+  }
+
+  .ytMusicMiniPlayerTimeInfo,
+  ytmusic-player-queue-item .duration,
+  ytmusic-responsive-list-item-renderer .fixed-column {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /*
    * Shape and motion
    */
 
@@ -228,9 +245,9 @@ html.pear-m3e {
   }
 
   /*
-   * Play buttons share one shape: round when paused, a rounded square while
-   * loading or playing (a selected toggle in M3 Expressive), squished while
-   * pressed. Proportional corners keep the shape the same at every size.
+   * Play buttons share one shape: round until the song plays, then a rounded
+   * square (a selected toggle in M3 Expressive), squished while pressed.
+   * Proportional corners keep the shape the same at every size.
    */
   ytmusic-responsive-header-renderer ytmusic-play-button-renderer,
   ytmusic-guide-entry-renderer ytmusic-play-button-renderer {
@@ -249,8 +266,12 @@ html.pear-m3e {
       color: var(--md-sys-color-on-primary) !important;
     }
 
-    &[state='playing'],
-    &[state='loading'] {
+    /* The site lays a spinner over the icon while the song loads */
+    .loading-indicator {
+      display: none !important;
+    }
+
+    &[state='playing'] {
       border-radius: 30% !important;
     }
 
@@ -282,12 +303,47 @@ html.pear-m3e {
     border-radius: 30% !important;
   }
 
-  /* Like/dislike and Song/Video: connected button groups */
-  segmented-like-dislike-button-view-model button {
-    background-color: var(--md-sys-color-secondary-container) !important;
-    color: var(--md-sys-color-on-secondary-container) !important;
+  /*
+   * Like/dislike: a connected button group in the same neutral tone as the
+   * volume and menu buttons next to it. Segments meet with small inner
+   * corners and no divider; the selected one turns tonal and fully round.
+   */
+  segmented-like-dislike-button-view-model {
+    .ytSegmentedLikeDislikeButtonViewModelSegmentedButtonsWrapper {
+      gap: 2px;
+    }
+
+    button.ytSpecButtonShapeNextHost {
+      background-color: var(--m3e-state-pressed) !important;
+      color: var(--md-sys-color-on-surface) !important;
+
+      &::after {
+        display: none !important;
+      }
+
+      yt-touch-feedback-shape,
+      .ytSpecTouchFeedbackShapeStroke,
+      .ytSpecTouchFeedbackShapeFill {
+        border-radius: inherit !important;
+      }
+    }
+
+    button.ytSpecButtonShapeNextSegmentedStart {
+      border-radius: 16px 4px 4px 16px !important;
+    }
+
+    button.ytSpecButtonShapeNextSegmentedEnd {
+      border-radius: 4px 16px 16px 4px !important;
+    }
+
+    button[aria-pressed='true'] {
+      border-radius: 16px !important;
+      background-color: var(--md-sys-color-secondary-container) !important;
+      color: var(--md-sys-color-on-secondary-container) !important;
+    }
   }
 
+  /* Song/Video: connected button group */
   ytmusic-av-toggle .av-toggle {
     padding: 2px;
     gap: 2px;
@@ -407,7 +463,11 @@ html.pear-m3e {
     border-radius: var(--md-sys-shape-corner-extra-large) !important;
   }
 
-  /* Lists: rounded rows, the playing one on a secondary container */
+  /*
+   * Lists: rounded rows, the playing one on a secondary container. M3 lists
+   * separate rows by space, not dividers: a divider under a rounded row bends
+   * up at its corners.
+   */
   ytmusic-responsive-list-item-renderer,
   ytmusic-player-queue-item {
     border-radius: var(--md-sys-shape-corner-medium);
@@ -415,6 +475,8 @@ html.pear-m3e {
 
   ytmusic-player-queue-item {
     overflow: hidden;
+    margin-bottom: 2px;
+    border-bottom: 0 !important;
 
     &[play-button-state='playing'],
     &[play-button-state='paused'] {

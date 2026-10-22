@@ -57,7 +57,12 @@ export default createPlugin({
           'transparent-player',
         );
 
-        if (await window.mainConfig.plugins.isEnabled('album-color-theme')) {
+        // Material 3 Expressive takes over from Album Color Theme: no page
+        // artwork, so the header and the page share the window material
+        if (
+          (await window.mainConfig.plugins.isEnabled('album-color-theme')) &&
+          !(await window.mainConfig.plugins.isEnabled('material-expressive'))
+        ) {
           document.body.classList.add('transparent-player-album-tint');
         }
         this.applyVariables();
