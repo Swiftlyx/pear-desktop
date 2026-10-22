@@ -1,6 +1,6 @@
 import '@total-typescript/ts-reset';
 
-import type * as config from './config';
+import type * as config from './config/preload';
 import type { t } from '@/i18n';
 import type { VideoDataChanged } from '@/types/video-data-changed';
 import type { ipcRenderer as electronIpcRenderer } from 'electron';

@@ -48,7 +48,6 @@ import {
 import { setupSongInfo } from '@/providers/song-info';
 import { setUpTray } from '@/tray';
 import { LoggerPrefix } from '@/utils';
-import { isTesting } from '@/utils/testing';
 import { isExternalWebUrl, isTrustedAppUrl } from '@/utils/trusted-hosts';
 
 import type { PluginConfig } from '@/types/plugins';
@@ -163,6 +162,12 @@ ipcMain.handle('peard:get-main-plugin-names', async () =>
   Object.keys(await mainPlugins()),
 );
 
+// Sandboxed preloads cannot read the config file: they get this snapshot,
+// then a `peard:config-updated` broadcast after every change
+ipcMain.on('peard:get-config-snapshot', (event) => {
+  event.returnValue = config.getAll();
+});
+
 const initHook = async (win: BrowserWindow) => {
   const allPluginStubs = await allPlugins();
 
@@ -179,6 +184,10 @@ const initHook = async (win: BrowserWindow) => {
   );
 
   config.watch((newValue, oldValue) => {
+    if (!win.isDestroyed()) {
+      win.webContents.send('peard:config-updated', newValue);
+    }
+
     const newPluginConfigList = (newValue?.plugins ?? {}) as Record<
       string,
       unknown
@@ -341,13 +350,8 @@ async function createMainWindow() {
     webPreferences: {
       contextIsolation: true,
       preload: path.join(__dirname, '..', 'preload', 'preload.cjs'),
-      ...(isTesting()
-        ? undefined
-        : {
-            // Sandbox is only enabled in tests for now
-            // See https://www.electronjs.org/docs/latest/tutorial/sandbox#preload-scripts
-            sandbox: false,
-          }),
+      // The preload only uses sandbox-safe Electron APIs and reads config over IPC
+      sandbox: true,
     },
     ...decorations,
   };
