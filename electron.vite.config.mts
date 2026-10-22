@@ -88,6 +88,10 @@ export default defineConfig(({ mode }) => {
       rolldownOptions: {
         external: mainAndPreloadExcludes,
         input: './src/preload.ts',
+        output: {
+          // A sandboxed preload cannot require other files, so it must be a single bundle
+          codeSplitting: false,
+        },
       },
       minify: !isDev,
       cssMinify: !isDev,
@@ -95,7 +99,10 @@ export default defineConfig(({ mode }) => {
       externalizeDeps: false,
     },
     resolve: {
-      alias: resolveAlias,
+      alias: {
+        ...resolveAlias,
+        'electron-is': resolve(__dirname, './src/utils/electron-is-sandbox.ts'),
+      },
     },
   };
 

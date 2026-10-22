@@ -1,7 +1,8 @@
 import { deepmerge } from 'deepmerge-ts';
-import { allPlugins, preloadPlugins } from 'virtual:plugins';
+import { ipcRenderer } from 'electron';
+import { preloadPlugins } from 'virtual:plugins';
 
-import * as config from '@/config';
+import * as config from '@/config/preload';
 import { t } from '@/i18n';
 import { LoggerPrefix, startPlugin, stopPlugin } from '@/utils';
 
@@ -13,17 +14,10 @@ const loadedPluginMap: Record<
   PluginDef<unknown, unknown, unknown>
 > = {};
 const createContext = (id: string): PreloadContext<PluginConfig> => ({
-  getConfig: async () =>
-    deepmerge(
-      (await allPlugins())[id].config ?? { enabled: false },
-      config.get(`plugins.${id}`) ?? {},
-    ) as PluginConfig,
+  getConfig: () =>
+    ipcRenderer.invoke('peard:get-config', id) as Promise<PluginConfig>,
   setConfig: async (newConfig) => {
-    config.setPartial(
-      `plugins.${id}`,
-      newConfig,
-      (await allPlugins())[id].config,
-    );
+    await ipcRenderer.invoke('peard:set-config', id, newConfig);
   },
 });
 

@@ -44,6 +44,12 @@ test('Pear Desktop App - With default settings, app is launched and visible', as
     ),
   ).toBe(true);
 
+  // The preload runs sandboxed and only exposes the config bridge if it loaded
+  await window.waitForLoadState('domcontentloaded');
+  expect(await window.evaluate(() => typeof window.mainConfig?.get)).toBe(
+    'function',
+  );
+
   await app.close();
   fs.rmSync(userDataDir, { recursive: true, force: true });
 });

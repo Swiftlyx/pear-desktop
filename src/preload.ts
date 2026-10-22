@@ -9,7 +9,7 @@ import is from 'electron-is';
 import { loadI18n, setLanguage } from '@/i18n';
 import { isTrustedAppUrl } from '@/utils/trusted-hosts';
 
-import * as config from './config';
+import * as config from './config/preload';
 import {
   forceLoadPreloadPlugin,
   forceUnloadPreloadPlugin,
