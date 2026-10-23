@@ -78,6 +78,8 @@ html.pear-m3e {
   --m3e-state-pressed: rgb(from var(--md-sys-color-on-surface) r g b / 0.1);
   /* Opaque window: the darker frame the drawer and the player bar sit on */
   --m3e-frame: var(--md-sys-color-surface-container-lowest);
+  /* Popup panels: solid, dense glass in the transparent window (below) */
+  --m3e-popup-surface: var(--md-sys-color-surface-container-high);
   /* Neutral tonal container for secondary buttons and groups */
   --m3e-neutral-container: rgb(from var(--md-sys-color-on-surface) r g b / 0.1);
   --m3e-neutral-container-hover: rgb(
@@ -236,6 +238,10 @@ html.pear-m3e {
   /* Focus rings in the scheme (M3 uses secondary) instead of the site's blue */
   :focus-visible {
     outline-color: var(--md-sys-color-secondary) !important;
+  }
+
+  &:has(> body.transparent-background-color) {
+    --m3e-popup-surface: var(--ytmd-transparent-player-overlay-background);
   }
 
   /* Tokens the site declares on the elements themselves */
@@ -537,10 +543,48 @@ html.pear-m3e {
     border-radius: var(--md-sys-shape-corner-full) !important;
   }
 
-  ytmusic-search-box[opened] .search-container {
-    overflow: hidden;
-    border-radius: var(--md-sys-shape-corner-extra-large) !important;
-    background-color: var(--md-sys-color-surface-container-high) !important;
+  /*
+   * Search opened: the field and its suggestions are one panel (M3 search
+   * view) with extra large corners at its top and bottom. The site draws a
+   * field with small top corners above a separate list with small bottom
+   * corners, its shadow around the field only. [role] outranks Transparent
+   * Player's overlay rules.
+   */
+  ytmusic-search-box[opened][role] {
+    .search-container {
+      box-shadow: none !important;
+      background: transparent !important;
+    }
+
+    .search-box,
+    #suggestion-list {
+      background: var(--m3e-popup-surface) !important;
+    }
+
+    .search-box {
+      border-radius: var(--md-sys-shape-corner-extra-large) !important;
+    }
+
+    #suggestion-list {
+      overflow: hidden;
+      border-radius: 0 0 var(--md-sys-shape-corner-extra-large)
+        var(--md-sys-shape-corner-extra-large) !important;
+    }
+
+    ytmusic-search-suggestions-section,
+    ytmusic-search-suggestion {
+      background: transparent !important;
+    }
+
+    ytmusic-search-suggestion:is(:hover, [selected]) {
+      background: var(--m3e-state-hover) !important;
+    }
+  }
+
+  /* With suggestions below it the field keeps its top corners only */
+  ytmusic-search-box[opened][role]:has(ytmusic-search-suggestion) .search-box {
+    border-radius: var(--md-sys-shape-corner-extra-large)
+      var(--md-sys-shape-corner-extra-large) 0 0 !important;
   }
 
   /* Navigation drawer: pill indicator for the current destination */

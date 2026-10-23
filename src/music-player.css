@@ -142,21 +142,15 @@ ytmusic-two-column-browse-results-renderer,
 }
 
 /*
- * Popup menus scroll with the wheel when they do not fit. Their scrollbar
- * shows only while the pointer is over them (at rest it ran their full
- * height for a few pixels of overflow), and its gutter is reserved: taken
- * from items sized without it, its width made them scroll sideways. overflow
+ * Popup menus scroll with the wheel when they do not fit, without a
+ * scrollbar: shown, it stood apart from the rounded menu, and its width,
+ * taken from items sized without it, made them scroll sideways. overflow
  * must stay auto: the menu's scroll lock lets the wheel through only to
  * elements whose overflow is exactly auto or scroll.
  */
-html ytmusic-menu-popup-renderer,
-html ytmusic-multi-select-menu-renderer {
-  scrollbar-gutter: stable;
-
-  /* html outranks the scheme's thumb colour in Material 3 Expressive */
-  &:not(:hover)::-webkit-scrollbar-thumb {
-    background-color: transparent !important;
-  }
+ytmusic-menu-popup-renderer,
+ytmusic-multi-select-menu-renderer {
+  scrollbar-width: none;
 }
 
 /* A click on a queue row plays it (renderer.ts); rows still drag to reorder */

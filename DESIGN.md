@@ -27,7 +27,10 @@ this list before building, and extend the list when a new rule is settled.
   they read as panels of their own; off, everything is one surface. No band where
   the header meets the page. Page artwork (cover glows) stays off: it
   starts under the header and turns it into a panel.
-- Containers: menus, dialogs and cards use the surface-container roles. In
+- Containers: menus, dialogs and cards use the surface-container roles.
+  Parts the site draws separately that belong together (the search field and
+  its suggestions) become one panel: one background, outer corners only.
+  Menus scroll without a visible scrollbar. In
   the transparent window, overlays that sit on content (menus, dialogs, search
   suggestions) use `--ytmd-transparent-player-overlay-background` (dense).
 - Accents: primary for the main action (Play), the seek bar and the active
