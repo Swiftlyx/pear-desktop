@@ -142,28 +142,51 @@ ytmusic-two-column-browse-results-renderer,
 }
 
 /*
- * Popup menus scroll with the wheel when they do not fit. Their scrollbar is
- * a thin pill inside the menu: a narrow reserved gutter (taken from items
- * sized without it, a scrollbar made them scroll sideways), a thumb inset
- * from the edge, and a track that stops short of the rounded corners.
- * overflow must stay auto: the menu's scroll lock lets the wheel through only
- * to elements whose overflow is exactly auto or scroll.
+ * Popup menus scroll with the wheel when they do not fit. A native scrollbar
+ * always takes a column of its own beside the items; instead the dropdown
+ * draws a thin pill over the menu's right edge, moved by the menu's scroll
+ * position (a scroll timeline) and shown only while the menu can scroll: a
+ * timeline without overflow is inactive and the pill keeps its hidden base
+ * style. The timeline goes through a variable: the minifier would fold a
+ * plain name into the animation shorthand, where it reads as a name. overflow
+ * must stay auto: the menu's scroll lock lets the wheel through only to
+ * elements whose overflow is exactly auto or scroll.
  */
 ytmusic-menu-popup-renderer,
 ytmusic-multi-select-menu-renderer {
-  scrollbar-gutter: stable;
+  scrollbar-width: none;
+  scroll-timeline: --pear-menu block;
+}
 
-  &::-webkit-scrollbar {
-    width: 8px;
+tp-yt-iron-dropdown {
+  timeline-scope: --pear-menu;
+
+  &::after {
+    --pear-menu-timeline: --pear-menu;
+    content: '';
+    position: absolute;
+    top: 16px;
+    right: 4px;
+    width: 4px;
+    height: 48px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.3);
+    opacity: 0;
+    pointer-events: none;
+    animation: pear-menu-scroll linear both;
+    animation-timeline: var(--pear-menu-timeline);
+  }
+}
+
+@keyframes pear-menu-scroll {
+  from {
+    top: 16px;
+    opacity: 1;
   }
 
-  &::-webkit-scrollbar-track {
-    margin-block: 16px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-width: 0 3px 0 1px;
-    border-radius: 4px;
+  to {
+    top: calc(100% - 64px);
+    opacity: 1;
   }
 }
 

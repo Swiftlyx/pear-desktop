@@ -799,6 +799,11 @@ html.pear-m3e {
     }
   }
 
+  /* The menus' scroll indicator (music-player.css) in the scheme */
+  tp-yt-iron-dropdown::after {
+    background: rgb(from var(--md-sys-color-on-surface-variant) r g b / 0.5);
+  }
+
   /* Scrollbars in the scheme */
   ::-webkit-scrollbar-thumb {
     background-color: rgb(

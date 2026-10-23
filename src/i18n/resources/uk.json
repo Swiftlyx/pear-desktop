@@ -361,6 +361,15 @@
     "material-expressive": {
       "description": "Весь додаток у стилі Material 3 Expressive: кольори з обкладинки, форми, що змінюються, пружні анімації. Працює разом з прозорим плеєром",
       "menu": {
+        "colour-strength": {
+          "label": "Сила кольорів обкладинки",
+          "submenu": {
+            "subtle": "Легка",
+            "medium": "Середня",
+            "strong": "Сильна",
+            "vivid": "Яскрава"
+          }
+        },
         "separate-panels": "Бічна панель і плеєр окремими панелями"
       },
       "name": "Material 3 Expressive"

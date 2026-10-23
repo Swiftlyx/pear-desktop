@@ -15,6 +15,10 @@ this list before building, and extend the list when a new rule is settled.
   tokens derived from them (`--m3e-*`), never literal colours. The site's own
   tokens (`--yt-sys-color-baseline--*`, `--ytmusic-*`, `--yt-spec-*`) are
   mapped onto roles in one place, at the top of `style.css`.
+- "Cover colour strength" (menu: subtle, medium, strong, vivid; default
+  medium) gives the surface roles a share of the cover's chroma at their own
+  tones, so they take on the cover's colour while contrast with the text on
+  them stays. Black and white covers stay grey.
 - Every role used in CSS is registered with `@property` (`<color>`), so the
   next song's scheme fades in (600 ms). A role newly used in CSS is
   registered too.
@@ -30,8 +34,9 @@ this list before building, and extend the list when a new rule is settled.
 - Containers: menus, dialogs and cards use the surface-container roles.
   Parts the site draws separately that belong together (the search field and
   its suggestions) become one panel: one background, outer corners only.
-  Menus that scroll show a thin pill scrollbar inside them, inset from the
-  edge and clear of the rounded corners, in a narrow reserved gutter. In
+  Menus that scroll show a thin pill over their right edge, inside the menu
+  (no native scrollbar: it always takes a column of its own), moved by a
+  scroll timeline and hidden when the menu does not scroll. In
   the transparent window, overlays that sit on content (menus, dialogs, search
   suggestions) use `--ytmd-transparent-player-overlay-background` (dense).
 - Accents: primary for the main action (Play), the seek bar and the active

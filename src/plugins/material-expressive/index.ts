@@ -5,9 +5,12 @@ import { createPlugin } from '@/utils';
 import {
   applyScheme,
   clearScheme,
+  COLOUR_STRENGTHS,
   createScheme,
   FALLBACK_SOURCE,
   sourceColorFromUrl,
+  type ColourStrength,
+  type SourceColor,
 } from './colors';
 import style from './style.css?inline';
 
@@ -23,6 +26,8 @@ export type MaterialExpressiveConfig = {
   enabled: boolean;
   /** With an opaque window, the drawer and the player bar read as panels */
   separatePanels: boolean;
+  /** How strongly the surfaces take on the cover's colour */
+  colourStrength: ColourStrength;
 };
 
 export default createPlugin({
@@ -33,12 +38,26 @@ export default createPlugin({
   config: {
     enabled: true,
     separatePanels: true,
+    colourStrength: 'medium',
   } as MaterialExpressiveConfig,
   stylesheets: [style],
   menu: async ({ getConfig, setConfig }) => {
     const config = await getConfig();
 
     return [
+      {
+        label: t('plugins.material-expressive.menu.colour-strength.label'),
+        submenu: COLOUR_STRENGTHS.map((colourStrength) => ({
+          label: t(
+            `plugins.material-expressive.menu.colour-strength.submenu.${colourStrength}`,
+          ),
+          type: 'radio',
+          checked: config.colourStrength === colourStrength,
+          click() {
+            setConfig({ colourStrength });
+          },
+        })),
+      },
       {
         label: t('plugins.material-expressive.menu.separate-panels'),
         type: 'checkbox',
@@ -51,13 +70,18 @@ export default createPlugin({
   },
   renderer: {
     lastThumbnail: null as string | null,
+    // The current cover's colour and the strength, to re-apply on a change
+    source: FALLBACK_SOURCE as SourceColor,
+    strength: 'medium' as ColourStrength,
     onVideoDataChange: null as EventListener | null,
 
     async start({ getConfig }) {
       const root = document.documentElement;
       root.classList.add(ROOT_CLASS);
-      root.classList.toggle(PANELS_CLASS, (await getConfig()).separatePanels);
-      applyScheme(createScheme(FALLBACK_SOURCE));
+      const config = await getConfig();
+      root.classList.toggle(PANELS_CLASS, config.separatePanels);
+      this.strength = config.colourStrength;
+      applyScheme(createScheme(FALLBACK_SOURCE), this.strength);
       // Later schemes (a new song) fade in; the first one applies at once
       requestAnimationFrame(() =>
         requestAnimationFrame(() => root.classList.add(ANIMATE_CLASS)),
@@ -85,6 +109,10 @@ export default createPlugin({
         PANELS_CLASS,
         newConfig.separatePanels,
       );
+      if (newConfig.colourStrength !== this.strength) {
+        this.strength = newConfig.colourStrength;
+        applyScheme(createScheme(this.source), this.strength);
+      }
     },
     onPlayerApiReady(playerApi) {
       this.onVideoDataChange = ((event: CustomEvent<VideoDataChanged>) => {
@@ -98,7 +126,9 @@ export default createPlugin({
         sourceColorFromUrl(thumbnail)
           .then((source) => {
             // A newer song may have started while the cover was decoding
-            if (this.lastThumbnail === thumbnail) applyScheme(createScheme(source));
+            if (this.lastThumbnail !== thumbnail) return;
+            this.source = source;
+            applyScheme(createScheme(source), this.strength);
           })
           .catch((error: unknown) => console.error(error));
       }) as EventListener;

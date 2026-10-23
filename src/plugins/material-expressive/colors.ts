@@ -7,6 +7,7 @@ import {
   SchemeContent,
   SchemeMonochrome,
   Score,
+  Variant,
   type DynamicScheme,
 } from '@material/material-color-utilities';
 
@@ -92,10 +93,55 @@ export const sourceColorFromUrl = async (url: string): Promise<SourceColor> => {
 const kebab = (role: string) =>
   role.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
 
-export const applyScheme = (scheme: DynamicScheme) => {
+/** How strongly the surfaces take on the cover's colour (plugin menu) */
+export type ColourStrength = 'subtle' | 'medium' | 'strong' | 'vivid';
+
+export const COLOUR_STRENGTHS: ColourStrength[] = [
+  'subtle',
+  'medium',
+  'strong',
+  'vivid',
+];
+
+// Share of the cover's chroma given to the surfaces; subtle keeps the
+// scheme's own. Tones stay, so contrast with the text on them stays too.
+const SURFACE_CHROMA: Record<ColourStrength, number> = {
+  subtle: 0,
+  medium: 0.25,
+  strong: 0.4,
+  vivid: 0.6,
+};
+
+const SURFACE_ROLES = new Set<string>([
+  'surface',
+  'surfaceDim',
+  'surfaceBright',
+  'surfaceContainerLowest',
+  'surfaceContainerLow',
+  'surfaceContainer',
+  'surfaceContainerHigh',
+  'surfaceContainerHighest',
+]);
+
+export const applyScheme = (
+  scheme: DynamicScheme,
+  strength: ColourStrength = 'subtle',
+) => {
   const { style } = document.documentElement;
+  const source = scheme.sourceColorHct;
+  // Black and white covers keep their greys
+  const chroma =
+    scheme.variant === Variant.MONOCHROME
+      ? 0
+      : source.chroma * SURFACE_CHROMA[strength];
+
   for (const role of ROLES) {
-    style.setProperty(`--md-sys-color-${kebab(role)}`, hexFromArgb(scheme[role]));
+    let argb = scheme[role];
+    if (chroma && SURFACE_ROLES.has(role)) {
+      const hct = Hct.fromInt(argb);
+      argb = Hct.from(source.hue, Math.max(hct.chroma, chroma), hct.tone).toInt();
+    }
+    style.setProperty(`--md-sys-color-${kebab(role)}`, hexFromArgb(argb));
   }
 };
 
