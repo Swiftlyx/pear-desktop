@@ -380,6 +380,12 @@ html.pear-m3e {
       background-color: var(--m3e-neutral-container) !important;
       color: var(--md-sys-color-on-surface) !important;
       transition: var(--m3e-color-change);
+      /*
+       * A layer of its own: the group sits at a fractional position, and
+       * repainted in place as its colours follow the scheme, its anti-aliased
+       * corners left stale pixels just outside the buttons
+       */
+      will-change: transform;
 
       &::after {
         display: none !important;

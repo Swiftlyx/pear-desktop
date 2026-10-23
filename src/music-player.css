@@ -142,15 +142,29 @@ ytmusic-two-column-browse-results-renderer,
 }
 
 /*
- * Popup menus scroll with the wheel when they do not fit, without a
- * scrollbar: shown, it stood apart from the rounded menu, and its width,
- * taken from items sized without it, made them scroll sideways. overflow
- * must stay auto: the menu's scroll lock lets the wheel through only to
- * elements whose overflow is exactly auto or scroll.
+ * Popup menus scroll with the wheel when they do not fit. Their scrollbar is
+ * a thin pill inside the menu: a narrow reserved gutter (taken from items
+ * sized without it, a scrollbar made them scroll sideways), a thumb inset
+ * from the edge, and a track that stops short of the rounded corners.
+ * overflow must stay auto: the menu's scroll lock lets the wheel through only
+ * to elements whose overflow is exactly auto or scroll.
  */
 ytmusic-menu-popup-renderer,
 ytmusic-multi-select-menu-renderer {
-  scrollbar-width: none;
+  scrollbar-gutter: stable;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    margin-block: 16px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-width: 0 3px 0 1px;
+    border-radius: 4px;
+  }
 }
 
 /* A click on a queue row plays it (renderer.ts); rows still drag to reorder */

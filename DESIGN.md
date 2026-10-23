@@ -30,7 +30,8 @@ this list before building, and extend the list when a new rule is settled.
 - Containers: menus, dialogs and cards use the surface-container roles.
   Parts the site draws separately that belong together (the search field and
   its suggestions) become one panel: one background, outer corners only.
-  Menus scroll without a visible scrollbar. In
+  Menus that scroll show a thin pill scrollbar inside them, inset from the
+  edge and clear of the rounded corners, in a narrow reserved gutter. In
   the transparent window, overlays that sit on content (menus, dialogs, search
   suggestions) use `--ytmd-transparent-player-overlay-background` (dense).
 - Accents: primary for the main action (Play), the seek bar and the active
@@ -108,6 +109,12 @@ this list before building, and extend the list when a new rule is settled.
 - Page transitions fade with a small scale or rise (M3 fade through / shared
   axis): enter up to 350 ms with emphasized decelerate, exit up to 150 ms with
   emphasized accelerate. Nothing may pass visibly under the clear player bar.
+
+- Something that sits at a fractional position and whose colours animate
+  (they follow the scheme) can leave stale anti-aliased pixels just outside
+  its rounded corners: repaints cover its box, not the 1 px the edge bleeds
+  into. Give it a layer of its own (`will-change: transform`); DevTools
+  screenshots do not show these pixels, only a capture of the window does.
 
 ## Transparent window
 
