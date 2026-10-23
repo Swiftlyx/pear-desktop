@@ -6,7 +6,21 @@ import { t } from '@/i18n';
 import { LitElementWrapper } from '@/solit';
 import { createPlugin } from '@/utils';
 
-export default createPlugin({
+type NavigationConfig = {
+  enabled: boolean;
+};
+
+export default createPlugin<
+  unknown,
+  unknown,
+  {
+    buttonContainer: HTMLDivElement;
+    navBarObserver: MutationObserver | null;
+    waitTimer: ReturnType<typeof setTimeout> | undefined;
+    attach: () => void;
+  },
+  NavigationConfig
+>({
   name: () => t('plugins.navigation.name'),
   description: () => t('plugins.navigation.description'),
   restartNeeded: false,
@@ -15,6 +29,8 @@ export default createPlugin({
   },
   renderer: {
     buttonContainer: document.createElement('div'),
+    navBarObserver: null,
+    waitTimer: undefined,
     start() {
       if (!this.buttonContainer) {
         this.buttonContainer = document.createElement('div');
@@ -65,10 +81,30 @@ export default createPlugin({
         ),
         this.buttonContainer,
       );
-      const menu = document.querySelector('#right-content');
-      menu?.prepend(this.buttonContainer);
+      this.attach();
+    },
+    // The nav bar can render after start and re-render later, which dropped
+    // the buttons for the rest of the session: they go back whenever missing
+    attach() {
+      const navBar = document.querySelector('ytmusic-nav-bar');
+      if (!navBar) {
+        this.waitTimer = setTimeout(() => this.attach(), 500);
+        return;
+      }
+      const place = () => {
+        const menu = navBar.querySelector('#right-content');
+        if (menu && this.buttonContainer.parentElement !== menu) {
+          menu.prepend(this.buttonContainer);
+        }
+      };
+      place();
+      this.navBarObserver = new MutationObserver(place);
+      this.navBarObserver.observe(navBar, { childList: true, subtree: true });
     },
     stop() {
+      clearTimeout(this.waitTimer);
+      this.navBarObserver?.disconnect();
+      this.navBarObserver = null;
       this.buttonContainer.remove();
       this.buttonContainer.replaceChildren();
     },

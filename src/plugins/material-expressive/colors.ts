@@ -3,6 +3,7 @@ import {
   argbFromRgb,
   Hct,
   hexFromArgb,
+  lstarFromArgb,
   QuantizerCelebi,
   SchemeContent,
   SchemeMonochrome,
@@ -62,7 +63,14 @@ export const createScheme = (source: SourceColor): DynamicScheme =>
     ? new SchemeMonochrome(Hct.fromInt(FALLBACK_SOURCE), true, 0, '2025')
     : new SchemeContent(Hct.fromInt(source), true, 0, '2025');
 
-export const sourceColorFromUrl = async (url: string): Promise<SourceColor> => {
+/** What the scheme takes from a cover */
+export type CoverColours = {
+  source: SourceColor;
+  /** Mean lightness of the cover, L* 0-100 */
+  lightness: number;
+};
+
+export const coverColoursFromUrl = async (url: string): Promise<CoverColours> => {
   const image = new Image();
   image.crossOrigin = 'anonymous';
   image.src = url;
@@ -78,16 +86,22 @@ export const sourceColorFromUrl = async (url: string): Promise<SourceColor> => {
 
   // Same pipeline as sourceColorFromImage, with a fallback that can be told apart
   const pixels: number[] = [];
+  let lightness = 0;
   for (let i = 0; i < bytes.length; i += 4) {
     if (bytes[i + 3] === 255) {
-      pixels.push(argbFromRgb(bytes[i], bytes[i + 1], bytes[i + 2]));
+      const argb = argbFromRgb(bytes[i], bytes[i + 1], bytes[i + 2]);
+      pixels.push(argb);
+      lightness += lstarFromArgb(argb);
     }
   }
   const [best] = Score.score(QuantizerCelebi.quantize(pixels, 128), {
     desired: 1,
     fallbackColorARGB: NO_SOURCE,
   });
-  return best === NO_SOURCE ? null : best;
+  return {
+    source: best === NO_SOURCE ? null : best,
+    lightness: pixels.length ? lightness / pixels.length : 0,
+  };
 };
 
 const kebab = (role: string) =>
@@ -112,6 +126,17 @@ const SURFACE_CHROMA: Record<ColourStrength, number> = {
   vivid: 0.6,
 };
 
+// Light covers (mostly white) lift the surfaces from near black towards dark
+// grey, by up to this many tones; text roles keep theirs and stay readable
+const MAX_SURFACE_LIFT = 12;
+const LIFT_FROM_LIGHTNESS = 60;
+
+const surfaceLift = (lightness: number) =>
+  Math.min(
+    Math.max((lightness - LIFT_FROM_LIGHTNESS) / (100 - LIFT_FROM_LIGHTNESS), 0),
+    1,
+  ) * MAX_SURFACE_LIFT;
+
 const SURFACE_ROLES = new Set<string>([
   'surface',
   'surfaceDim',
@@ -126,6 +151,7 @@ const SURFACE_ROLES = new Set<string>([
 export const applyScheme = (
   scheme: DynamicScheme,
   strength: ColourStrength = 'subtle',
+  lightness = 0,
 ) => {
   const { style } = document.documentElement;
   const source = scheme.sourceColorHct;
@@ -134,12 +160,17 @@ export const applyScheme = (
     scheme.variant === Variant.MONOCHROME
       ? 0
       : source.chroma * SURFACE_CHROMA[strength];
+  const lift = surfaceLift(lightness);
 
   for (const role of ROLES) {
     let argb = scheme[role];
-    if (chroma && SURFACE_ROLES.has(role)) {
+    if ((chroma || lift) && SURFACE_ROLES.has(role)) {
       const hct = Hct.fromInt(argb);
-      argb = Hct.from(source.hue, Math.max(hct.chroma, chroma), hct.tone).toInt();
+      argb = Hct.from(
+        chroma ? source.hue : hct.hue,
+        Math.max(hct.chroma, chroma),
+        hct.tone + lift,
+      ).toInt();
     }
     style.setProperty(`--md-sys-color-${kebab(role)}`, hexFromArgb(argb));
   }

@@ -8,7 +8,7 @@ import {
   COLOUR_STRENGTHS,
   createScheme,
   FALLBACK_SOURCE,
-  sourceColorFromUrl,
+  coverColoursFromUrl,
   type ColourStrength,
   type SourceColor,
 } from './colors';
@@ -72,6 +72,7 @@ export default createPlugin({
     lastThumbnail: null as string | null,
     // The current cover's colour and the strength, to re-apply on a change
     source: FALLBACK_SOURCE as SourceColor,
+    lightness: 0,
     strength: 'medium' as ColourStrength,
     onVideoDataChange: null as EventListener | null,
 
@@ -111,7 +112,7 @@ export default createPlugin({
       );
       if (newConfig.colourStrength !== this.strength) {
         this.strength = newConfig.colourStrength;
-        applyScheme(createScheme(this.source), this.strength);
+        applyScheme(createScheme(this.source), this.strength, this.lightness);
       }
     },
     onPlayerApiReady(playerApi) {
@@ -123,12 +124,13 @@ export default createPlugin({
         if (!thumbnail || thumbnail === this.lastThumbnail) return;
         this.lastThumbnail = thumbnail;
 
-        sourceColorFromUrl(thumbnail)
-          .then((source) => {
+        coverColoursFromUrl(thumbnail)
+          .then(({ source, lightness }) => {
             // A newer song may have started while the cover was decoding
             if (this.lastThumbnail !== thumbnail) return;
             this.source = source;
-            applyScheme(createScheme(source), this.strength);
+            this.lightness = lightness;
+            applyScheme(createScheme(source), this.strength, lightness);
           })
           .catch((error: unknown) => console.error(error));
       }) as EventListener;

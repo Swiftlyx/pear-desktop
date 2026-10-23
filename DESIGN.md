@@ -19,6 +19,9 @@ this list before building, and extend the list when a new rule is settled.
   medium) gives the surface roles a share of the cover's chroma at their own
   tones, so they take on the cover's colour while contrast with the text on
   them stays. Black and white covers stay grey.
+- Light covers (mean L* above 60, mostly white) lift the surface roles from
+  near black towards dark grey, by up to 12 tones; text roles keep theirs, so
+  text stays readable.
 - Every role used in CSS is registered with `@property` (`<color>`), so the
   next song's scheme fades in (600 ms). A role newly used in CSS is
   registered too.
