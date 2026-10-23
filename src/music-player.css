@@ -142,15 +142,15 @@ ytmusic-two-column-browse-results-renderer,
 }
 
 /*
- * Popup menus scroll vertically when long; the vertical scrollbar then took
- * its width from items sized without it, which overflowed sideways. The
- * gutter is reserved up front instead. overflow must stay auto: the menu's
- * scroll lock lets the wheel through only to elements whose overflow is
- * exactly auto or scroll.
+ * Popup menus scroll with the wheel when they do not fit, often by a few
+ * pixels only: a scrollbar then ran their full height, and its width, taken
+ * from items sized without it, made them scroll sideways. They scroll without
+ * one. overflow must stay auto: the menu's scroll lock lets the wheel through
+ * only to elements whose overflow is exactly auto or scroll.
  */
 ytmusic-menu-popup-renderer,
 ytmusic-multi-select-menu-renderer {
-  scrollbar-gutter: stable;
+  scrollbar-width: none;
 }
 
 /* A click on a queue row plays it (renderer.ts); rows still drag to reorder */

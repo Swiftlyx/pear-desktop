@@ -507,9 +507,85 @@ const playQueueRowsOnClick = () => {
   });
 };
 
+type Dropdown = HTMLElement & {
+  opened?: boolean;
+  positionTarget?: Element;
+  close?: () => void;
+};
+
+const openDropdownsOf = (button: Element) =>
+  [...document.querySelectorAll<Dropdown>('tp-yt-iron-dropdown')].filter(
+    (dropdown) =>
+      dropdown.opened &&
+      dropdown.positionTarget &&
+      button.contains(dropdown.positionTarget),
+  );
+
+// A menu button clicked while its menu is open opened the menu again: the
+// click outside the menu closes it, then the button reopens it. That click
+// now only closes the menu. The menu is noted on press, before it closes.
+const closeMenusFromTheirButton = () => {
+  let pressedOpen: Element | null = null;
+
+  window.addEventListener(
+    'pointerdown',
+    (event) => {
+      const button = (event.target as Element | null)?.closest('button');
+      pressedOpen = button && openDropdownsOf(button).length ? button : null;
+    },
+    true,
+  );
+  window.addEventListener(
+    'click',
+    (event) => {
+      const button = (event.target as Element | null)?.closest('button');
+      if (!button || button !== pressedOpen) return;
+      pressedOpen = null;
+      event.stopPropagation();
+      event.preventDefault();
+      for (const dropdown of openDropdownsOf(button)) dropdown.close?.();
+    },
+    true,
+  );
+};
+
+// Popups lock the wheel to the popup that locked last, so a dialog opened
+// from a menu (Save to playlist) kept the menu's lock and its list never
+// scrolled. Inside an open popup, a wheel over something that can still
+// scroll that way never reaches the lock and scrolls natively; at the end of
+// the list the lock keeps the page behind it still.
+const scrollPopupsWithWheel = () => {
+  window.addEventListener(
+    'wheel',
+    (event) => {
+      const target = event.target as Element | null;
+      const popup = target?.closest('tp-yt-paper-dialog, tp-yt-iron-dropdown');
+      if (!popup || !event.deltaY) return;
+      for (
+        let element: Element | null = target;
+        element && element !== popup.parentElement;
+        element = element.parentElement
+      ) {
+        if (!/auto|scroll/.test(getComputedStyle(element).overflowY)) continue;
+        const room =
+          event.deltaY > 0
+            ? element.scrollHeight - element.clientHeight - element.scrollTop
+            : element.scrollTop;
+        if (room > 0) {
+          event.stopPropagation();
+          return;
+        }
+      }
+    },
+    { capture: true, passive: true },
+  );
+};
+
 const main = async () => {
   keepAutoscrollStoppable();
   playQueueRowsOnClick();
+  closeMenusFromTheirButton();
+  scrollPopupsWithWheel();
   await loadAllRendererPlugins();
   isPluginLoaded = true;
 

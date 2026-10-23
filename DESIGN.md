@@ -21,10 +21,11 @@ this list before building, and extend the list when a new rule is settled.
 - Transparent window: one clear surface. Title bar, header, page, drawer and
   player bar paint nothing; no panels, bands or edges between them, before
   or after scrolling. The seek bar is the only separator of the player bar.
-- Opaque window: title bar, header and page share `--m3e-surface`; the
-  drawer and the player bar sit on `--m3e-frame` (a darker shade of
-  surface-container-lowest), so they read as panels of their own. No band
-  where the header meets the page. Page artwork (cover glows) stays off: it
+- Opaque window: title bar, header and page share `--m3e-surface`. With
+  "separate panels" on (menu, default on) the drawer and the player bar sit
+  on `--m3e-frame` (surface-container-lowest, a few tones darker), so they
+  read as panels of their own; off, everything is one surface. No band where
+  the header meets the page. Page artwork (cover glows) stays off: it
   starts under the header and turns it into a panel.
 - Containers: menus, dialogs and cards use the surface-container roles. In
   the transparent window, overlays that sit on content (menus, dialogs, search

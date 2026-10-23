@@ -360,6 +360,9 @@
     },
     "material-expressive": {
       "description": "The whole app in Material 3 Expressive: colours from the cover, shapes that morph, spring motion. Works with Transparent Player",
+      "menu": {
+        "separate-panels": "Drawer and player bar as separate panels"
+      },
       "name": "Material 3 Expressive"
     },
     "navigation": {

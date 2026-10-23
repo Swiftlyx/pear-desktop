@@ -77,11 +77,7 @@ html.pear-m3e {
   --m3e-state-hover: rgb(from var(--md-sys-color-on-surface) r g b / 0.08);
   --m3e-state-pressed: rgb(from var(--md-sys-color-on-surface) r g b / 0.1);
   /* Opaque window: the darker frame the drawer and the player bar sit on */
-  --m3e-frame: color-mix(
-    in srgb,
-    var(--md-sys-color-surface-container-lowest) 60%,
-    black
-  );
+  --m3e-frame: var(--md-sys-color-surface-container-lowest);
   /* Neutral tonal container for secondary buttons and groups */
   --m3e-neutral-container: rgb(from var(--md-sys-color-on-surface) r g b / 0.1);
   --m3e-neutral-container-hover: rgb(
@@ -217,12 +213,15 @@ html.pear-m3e {
     body {
       background-color: var(--md-sys-color-surface) !important;
     }
+  }
 
-    /*
-     * The drawer and the player bar sit on a darker frame around the page,
-     * so they read as panels of their own; the title bar, header and page
-     * stay one surface. The transparent window keeps one clear surface.
-     */
+  /*
+   * Separate panels (menu option): the drawer and the player bar sit on a
+   * darker frame around the page, so they read as panels of their own; the
+   * title bar, header and page stay one surface. The transparent window
+   * keeps one clear surface.
+   */
+  &.pear-m3e-panels:not(:has(> body.transparent-background-color)) {
     --ytmusic-player-bar-background: var(--m3e-frame) !important;
 
     #guide-wrapper,
@@ -807,6 +806,12 @@ html.pear-m3e {
   initial-value: #000;
 }
 
+@property --md-sys-color-surface-container-lowest {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #000;
+}
+
 @property --md-sys-color-surface-container-low {
   syntax: '<color>';
   inherits: true;
@@ -876,6 +881,7 @@ html.pear-m3e.pear-m3e-animate {
     --md-sys-color-on-secondary-container,
     --md-sys-color-tertiary,
     --md-sys-color-surface,
+    --md-sys-color-surface-container-lowest,
     --md-sys-color-surface-container-low,
     --md-sys-color-surface-container,
     --md-sys-color-surface-container-high,

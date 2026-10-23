@@ -16,6 +16,14 @@ import type { VideoDataChanged } from '@/types/video-data-changed';
 const ROOT_CLASS = 'pear-m3e';
 // Turns on colour transitions between schemes (style.css)
 const ANIMATE_CLASS = 'pear-m3e-animate';
+// Drawer and player bar on a darker frame, opaque window only (style.css)
+const PANELS_CLASS = 'pear-m3e-panels';
+
+export type MaterialExpressiveConfig = {
+  enabled: boolean;
+  /** With an opaque window, the drawer and the player bar read as panels */
+  separatePanels: boolean;
+};
 
 export default createPlugin({
   name: () => t('plugins.material-expressive.name'),
@@ -24,15 +32,31 @@ export default createPlugin({
   restartNeeded: true,
   config: {
     enabled: true,
-  },
+    separatePanels: true,
+  } as MaterialExpressiveConfig,
   stylesheets: [style],
+  menu: async ({ getConfig, setConfig }) => {
+    const config = await getConfig();
+
+    return [
+      {
+        label: t('plugins.material-expressive.menu.separate-panels'),
+        type: 'checkbox',
+        checked: config.separatePanels,
+        click(item) {
+          setConfig({ separatePanels: item.checked });
+        },
+      },
+    ];
+  },
   renderer: {
     lastThumbnail: null as string | null,
     onVideoDataChange: null as EventListener | null,
 
-    async start() {
+    async start({ getConfig }) {
       const root = document.documentElement;
       root.classList.add(ROOT_CLASS);
+      root.classList.toggle(PANELS_CLASS, (await getConfig()).separatePanels);
       applyScheme(createScheme(FALLBACK_SOURCE));
       // Later schemes (a new song) fade in; the first one applies at once
       requestAnimationFrame(() =>
@@ -54,6 +78,12 @@ export default createPlugin({
       root.style.setProperty(
         '--m3e-container-alpha',
         `${surfaceAlpha < 1 ? Math.min(1, surfaceAlpha * 2.5) : 1}`,
+      );
+    },
+    onConfigChange(newConfig) {
+      document.documentElement.classList.toggle(
+        PANELS_CLASS,
+        newConfig.separatePanels,
       );
     },
     onPlayerApiReady(playerApi) {
@@ -79,7 +109,7 @@ export default createPlugin({
         document.removeEventListener('videodatachange', this.onVideoDataChange);
       }
       const root = document.documentElement;
-      root.classList.remove(ROOT_CLASS, ANIMATE_CLASS);
+      root.classList.remove(ROOT_CLASS, ANIMATE_CLASS, PANELS_CLASS);
       root.style.removeProperty('--m3e-surface-alpha');
       root.style.removeProperty('--m3e-container-alpha');
       clearScheme();
