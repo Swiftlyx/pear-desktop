@@ -25,6 +25,9 @@ const iconButton = cacheNoArgs(
     border: none;
 
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    /* A layer of its own: the press scale left stale edge pixels behind when
+       a temporary layer was dropped */
+    will-change: transform;
 
     &:hover {
       background: rgba(255, 255, 255, 0.1);

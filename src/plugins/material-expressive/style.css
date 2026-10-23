@@ -687,8 +687,13 @@ html.pear-m3e {
     border-radius: var(--md-sys-shape-corner-extra-large);
   }
 
+  /*
+   * No placeholder grey under the cover: painted in the same rounded clip, it
+   * shows through the cover's anti-aliased edge as light pixels.
+   */
   ytmusic-player#player {
     border-radius: var(--md-sys-shape-corner-extra-large) !important;
+    background-color: transparent !important;
   }
 
   /*

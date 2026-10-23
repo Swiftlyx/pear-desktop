@@ -66,6 +66,9 @@ this list before building, and extend the list when a new rule is settled.
   With equal edges the image's edge pixels show through as a light rim or
   dots, however the two are clipped: an overlay that fades is a layer of its
   own, and layers are anti-aliased separately.
+- Nothing opaque paints under artwork inside the same rounded clip (no
+  placeholder colour on the clipping box): it shows through the artwork's
+  anti-aliased edge as light pixels where the corners meet the sides.
 - Outlines are `outline` with a -1 px offset (or a border), never an inset
   box-shadow: its corners leave stray pixels next to a rounded background.
 - Hover on artwork morphs its shape: square artwork rounds (16 to 28 px),
@@ -121,7 +124,9 @@ this list before building, and extend the list when a new rule is settled.
 - Something that sits at a fractional position and whose colours animate
   (they follow the scheme) can leave stale anti-aliased pixels just outside
   its rounded corners: repaints cover its box, not the 1 px the edge bleeds
-  into. Give it a layer of its own (`will-change: transform`); DevTools
+  into. The same happens to something that scales while pressed, once its
+  temporary layer is dropped. Give it a layer of its own
+  (`will-change: transform`); DevTools
   screenshots do not show these pixels, only a capture of the window does.
 
 ## Transparent window
