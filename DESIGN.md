@@ -60,15 +60,14 @@ this list before building, and extend the list when a new rule is settled.
 - No dividers between rows: rows are separated by space (a line under a
   rounded row bends up at its corners). No borders on the drawer, header or
   player bar.
-- A 1 px `outline` marks outlined buttons; `outline-variant` is for quiet
-  borders, unselected chips included. Chips sit on a faint light tint
-  (on-surface 6 %, 12 % on hover): a dark fill reads as a hole in the clear
-  window.
+- Buttons and chips carry no outline: they sit on the neutral tonal
+  container (see States). A 1 px `outline-variant` is only for quiet borders
+  of containers. A dark fill reads as a hole in the clear window.
 
 ## States
 
-- Secondary buttons and button groups (More, Play all, carousel arrows,
-  like/dislike) are neutral tonal: `--m3e-neutral-container` (on-surface
+- Secondary buttons, chips and button groups (More, Play all, genre chips,
+  carousel arrows, like/dislike) are neutral tonal: `--m3e-neutral-container` (on-surface
   10 %, 16 % on hover), no outline; disabled ones keep a 4 % container and a
   38 % icon. Arrows that belong together form one connected capsule.
 - Hover is the state layer `--m3e-state-hover` (on-surface 8 %), pressed is

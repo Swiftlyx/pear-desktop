@@ -488,30 +488,22 @@ html.pear-m3e {
   }
 
   /*
-   * Chips: small corners, outlined until selected, on a faint light tint. A
-   * dark fill read as holes in the clear window.
+   * Chips: small corners, neutral tonal like the other secondary buttons
+   * (no outline); the selected one turns secondary
    */
   ytmusic-chip-cloud-chip-renderer a.yt-simple-endpoint {
     border-radius: var(--md-sys-shape-corner-small) !important;
-    background-color: rgb(
-      from var(--md-sys-color-on-surface) r g b / 0.06
-    ) !important;
-    /* An inset box-shadow left stray pixels where the corners start */
-    outline: 1px solid var(--md-sys-color-outline-variant);
-    outline-offset: -1px;
+    background-color: var(--m3e-neutral-container) !important;
     color: var(--md-sys-color-on-surface) !important;
     transition: var(--m3e-color-change);
 
     &:hover {
-      background-color: rgb(
-        from var(--md-sys-color-on-surface) r g b / 0.12
-      ) !important;
+      background-color: var(--m3e-neutral-container-hover) !important;
     }
   }
 
   ytmusic-chip-cloud-chip-renderer[is-selected] a.yt-simple-endpoint {
     background-color: var(--md-sys-color-secondary-container) !important;
-    outline-color: transparent;
     color: var(--md-sys-color-on-secondary-container) !important;
   }
 
