@@ -216,12 +216,13 @@ html.pear-m3e {
   }
 
   /*
-   * Separate panels (menu option): the drawer and the player bar sit on a
-   * darker frame around the page, so they read as panels of their own; the
-   * title bar, header and page stay one surface. The transparent window
+   * Separate panels (menu option): the title bar, the drawer and the player
+   * bar sit on a darker frame around the page, so they read as panels of
+   * their own; the header and page stay one surface. The transparent window
    * keeps one clear surface.
    */
   &.pear-m3e-panels:not(:has(> body.transparent-background-color)) {
+    --titlebar-background-color: var(--m3e-frame) !important;
     --ytmusic-player-bar-background: var(--m3e-frame) !important;
 
     #guide-wrapper,
@@ -425,15 +426,14 @@ html.pear-m3e {
   }
 
   /*
-   * Shelf headers: More (and Play all) are neutral tonal pills instead of
-   * outlined ones; the previous/next arrows form one connected capsule like
-   * like/dislike. Borders stay, transparent, so nothing changes size.
+   * The site's outlined buttons (More, Play all, Show all, Mix, Subscribe)
+   * are neutral tonal pills; shelf carousel arrows form one connected
+   * capsule like like/dislike. Borders stay, transparent, so nothing changes
+   * size.
    */
-  ytmusic-carousel-shelf-basic-header-renderer
-    button.ytSpecButtonShapeNextHost.ytSpecButtonShapeNextOutline {
+  button.ytSpecButtonShapeNextHost.ytSpecButtonShapeNextOutline {
     border-color: transparent !important;
     background-color: var(--m3e-neutral-container) !important;
-    color: var(--md-sys-color-on-surface) !important;
     transition:
       var(--m3e-shape-morph),
       var(--m3e-color-change);
@@ -532,7 +532,8 @@ html.pear-m3e {
   }
 
   /* Search bar */
-  ytmusic-search-box:not([opened]) .search-box {
+  /* The container casts the box's shadow (with a query): it has to be a pill too */
+  ytmusic-search-box:not([opened]) :is(.search-box, .search-container) {
     border-radius: var(--md-sys-shape-corner-full) !important;
   }
 
@@ -648,6 +649,10 @@ html.pear-m3e {
   ytmusic-responsive-list-item-renderer,
   ytmusic-player-queue-item {
     border-radius: var(--md-sys-shape-corner-medium);
+  }
+
+  ytmusic-responsive-list-item-renderer {
+    border-bottom: 0 !important;
   }
 
   ytmusic-player-queue-item {

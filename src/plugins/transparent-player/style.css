@@ -148,6 +148,30 @@ body.transparent-player {
     background: var(--ytmd-transparent-player-overlay-background) !important;
   }
 
+  /*
+   * Artist headers: the photo starts under the clear drawer, an overlay
+   * darkens the whole width, and the bottom fades into the page colour,
+   * which the clear window does not have: a dark block under the drawer and
+   * hard edges. The photo darkens itself and fades out at its left and
+   * bottom edges instead; the text above it is not masked.
+   */
+  ytmusic-immersive-header-renderer {
+    /* Its own tint and bottom gradient doubled the window tint into a box */
+    &,
+    .content-container-wrapper,
+    .gradient-container {
+      background: transparent !important;
+    }
+
+    ytmusic-fullbleed-thumbnail-renderer img.image {
+      filter: brightness(0.6);
+      mask-image:
+        linear-gradient(to bottom, #000 40%, transparent),
+        linear-gradient(to right, transparent, #000 160px) !important;
+      mask-composite: intersect !important;
+    }
+  }
+
   /* Album Color Theme keeps the page artwork, dimmed */
   &:not(.transparent-player-album-tint) #browse-page #background {
     display: none !important;

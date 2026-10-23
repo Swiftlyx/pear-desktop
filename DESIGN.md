@@ -21,10 +21,10 @@ this list before building, and extend the list when a new rule is settled.
 - Transparent window: one clear surface. Title bar, header, page, drawer and
   player bar paint nothing; no panels, bands or edges between them, before
   or after scrolling. The seek bar is the only separator of the player bar.
-- Opaque window: title bar, header and page share `--m3e-surface`. With
-  "separate panels" on (menu, default on) the drawer and the player bar sit
-  on `--m3e-frame` (surface-container-lowest, a few tones darker), so they
-  read as panels of their own; off, everything is one surface. No band where
+- Opaque window: header and page share `--m3e-surface`. With "separate
+  panels" on (menu, default on) the title bar, the drawer and the player bar
+  sit on `--m3e-frame` (surface-container-lowest, a few tones darker), so
+  they read as panels of their own; off, everything is one surface. No band where
   the header meets the page. Page artwork (cover glows) stays off: it
   starts under the header and turns it into a panel.
 - Containers: menus, dialogs and cards use the surface-container roles. In
@@ -70,8 +70,9 @@ this list before building, and extend the list when a new rule is settled.
 
 ## States
 
-- Secondary buttons, chips and button groups (More, Play all, genre chips,
-  carousel arrows, like/dislike) are neutral tonal: `--m3e-neutral-container` (on-surface
+- Secondary buttons, chips and button groups (every outlined site button:
+  More, Play all, Show all, Mix, Subscribe; genre chips, carousel arrows,
+  like/dislike) are neutral tonal: `--m3e-neutral-container` (on-surface
   10 %, 16 % on hover), no outline; disabled ones keep a 4 % container and a
   38 % icon. Arrows that belong together form one connected capsule.
 - Hover is the state layer `--m3e-state-hover` (on-surface 8 %), pressed is
@@ -110,6 +111,8 @@ this list before building, and extend the list when a new rule is settled.
 - backdrop-filter cannot blur in the clear window (it only darkens): never
   rely on it, and reset it explicitly where a plugin sets it with a stronger
   selector.
+- Images that extend under clear chrome (artist header photos) fade out at
+  those edges and darken themselves instead of carrying an overlay.
 - Content under clear chrome fades out instead: Blur Navigation Bar's mask
   gradient on `#content` plus a scroll-driven `view()` blur on vertical rows;
   lyric lines fade the same way under the provider picker. The opaque window

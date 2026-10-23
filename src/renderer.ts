@@ -507,19 +507,58 @@ const playQueueRowsOnClick = () => {
   });
 };
 
-type Dropdown = HTMLElement & {
+type Popup = HTMLElement & {
   opened?: boolean;
   positionTarget?: Element;
+  fitInto?: unknown;
   close?: () => void;
 };
 
+// A menu is anchored to its button, to an element inside it, or to the
+// button's own wrapper (row menus)
 const openDropdownsOf = (button: Element) =>
-  [...document.querySelectorAll<Dropdown>('tp-yt-iron-dropdown')].filter(
-    (dropdown) =>
-      dropdown.opened &&
-      dropdown.positionTarget &&
-      button.contains(dropdown.positionTarget),
+  [...document.querySelectorAll<Popup>('tp-yt-iron-dropdown')].filter(
+    ({ opened, positionTarget: anchor }) =>
+      opened &&
+      anchor &&
+      (button.contains(anchor) ||
+        (anchor.contains(button) &&
+          anchor.matches('yt-button-shape, yt-icon-button, ytmusic-menu-renderer'))),
   );
+
+// Menus and dialogs fit themselves into the whole window, but the in-app
+// menu bar covers its top: a tall menu opened under it with its first items
+// hidden. They fit into the area below the bar instead. They live in the
+// popup container, and positioning runs in an animation frame after a popup
+// is added, so setting it on insertion is in time.
+const fitPopupsBelowTheMenuBar = () => {
+  const area = {
+    getBoundingClientRect() {
+      const top =
+        document
+          .querySelector('nav[data-ytmd-main-panel]')
+          ?.getBoundingClientRect().bottom ?? 0;
+      return new DOMRect(0, top, innerWidth, innerHeight - top);
+    },
+  };
+  const watch = () => {
+    const container = document.querySelector('ytmusic-popup-container');
+    if (!container) {
+      setTimeout(watch, 1000);
+      return;
+    }
+    const adopt = () => {
+      for (const popup of container.querySelectorAll<Popup>(
+        'tp-yt-iron-dropdown, tp-yt-paper-dialog',
+      )) {
+        if (popup.fitInto !== area) popup.fitInto = area;
+      }
+    };
+    adopt();
+    new MutationObserver(adopt).observe(container, { childList: true });
+  };
+  watch();
+};
 
 // A menu button clicked while its menu is open opened the menu again: the
 // click outside the menu closes it, then the button reopens it. That click
@@ -586,6 +625,7 @@ const main = async () => {
   playQueueRowsOnClick();
   closeMenusFromTheirButton();
   scrollPopupsWithWheel();
+  fitPopupsBelowTheMenuBar();
   await loadAllRendererPlugins();
   isPluginLoaded = true;
 
