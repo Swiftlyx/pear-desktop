@@ -577,6 +577,14 @@ html.pear-m3e {
         var(--md-sys-shape-corner-extra-large) !important;
     }
 
+    /* With nothing to suggest (no search history) the site still draws an
+       empty list, a strip under the rounded field */
+    #suggestion-list:not(
+        :has(ytmusic-search-suggestion, ytmusic-responsive-list-item-renderer)
+      ) {
+      display: none !important;
+    }
+
     ytmusic-search-suggestions-section,
     ytmusic-search-suggestion {
       background: transparent !important;
@@ -588,7 +596,11 @@ html.pear-m3e {
   }
 
   /* With suggestions below it the field keeps its top corners only */
-  ytmusic-search-box[opened][role]:has(ytmusic-search-suggestion) .search-box {
+  ytmusic-search-box[opened][role]:has(
+      #suggestion-list
+        :is(ytmusic-search-suggestion, ytmusic-responsive-list-item-renderer)
+    )
+    .search-box {
     border-radius: var(--md-sys-shape-corner-extra-large)
       var(--md-sys-shape-corner-extra-large) 0 0 !important;
   }
