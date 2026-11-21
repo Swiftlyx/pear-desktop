@@ -507,6 +507,32 @@ const playQueueRowsOnClick = () => {
   });
 };
 
+// In the classic layout #content scrolls (music-player.css), and the site
+// does not reset it when it opens another page: the new page started where
+// the previous one was scrolled to. Back and forward keep their position;
+// opening or closing the player page (/watch) is no new page.
+const scrollNewPagesToTop = () => {
+  window.navigation?.addEventListener('navigate', (event) => {
+    if (event.navigationType !== 'push') return;
+    const from = new URL(location.href);
+    const to = new URL(event.destination.url);
+    if (
+      from.pathname === '/watch' ||
+      to.pathname === '/watch' ||
+      from.pathname + from.search === to.pathname + to.search
+    ) {
+      return;
+    }
+    requestAnimationFrame(() =>
+      document
+        .querySelector(
+          'ytmusic-app-layout:not([is-contained-content-layout-enabled]) > #content',
+        )
+        ?.scrollTo({ top: 0 }),
+    );
+  });
+};
+
 type Popup = HTMLElement & {
   opened?: boolean;
   positionTarget?: Element;
@@ -626,6 +652,7 @@ const main = async () => {
   closeMenusFromTheirButton();
   scrollPopupsWithWheel();
   fitPopupsBelowTheMenuBar();
+  scrollNewPagesToTop();
   await loadAllRendererPlugins();
   isPluginLoaded = true;
 

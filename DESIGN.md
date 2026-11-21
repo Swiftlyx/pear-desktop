@@ -146,6 +146,11 @@ this list before building, and extend the list when a new rule is settled.
   lyric lines fade the same way under the provider picker. The opaque window
   uses the same look. View timelines bind to the nearest scroller, so items in
   horizontal carousels only fade.
+- The site switches accounts between the contained layout and the classic
+  one (the window or the layout scrolls). The page always scrolls in
+  `#content`, between the title bar and the player bar (music-player.css),
+  so a rule never needs `[is-contained-content-layout-enabled]`; check both
+  layouts when the site changes.
 
 ## Typography
 

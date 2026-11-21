@@ -117,6 +117,30 @@ ytmusic-playlist-shelf-renderer #contents > ytmusic-responsive-list-item-rendere
   contain-intrinsic-size: auto 76px;
 }
 
+/*
+ * The classic layout scrolls the window (with the in-app menu, the layout):
+ * the page passed under the title bar, the header and the player bar, and a
+ * mask that fades it under the header would fade the header and the drawer
+ * too. #content scrolls instead, as in the contained layout, and ends at the
+ * player bar; plugins style both layouts alike.
+ */
+ytmusic-app-layout:not([is-contained-content-layout-enabled]) {
+  height: 100vh !important;
+  overflow: hidden !important;
+
+  /* The site's bottom padding made room for the bar over the page */
+  > #content {
+    box-sizing: border-box;
+    height: 100%;
+    padding-bottom: 24px !important;
+    overflow-y: auto;
+  }
+
+  &[player-visible] > #content {
+    height: calc(100% - var(--ytmusic-player-bar-height, 72px));
+  }
+}
+
 /* Room between the last row and the player bar */
 ytmusic-app-layout[is-contained-content-layout-enabled] > #content {
   padding-bottom: 24px;

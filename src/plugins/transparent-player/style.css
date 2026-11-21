@@ -71,10 +71,8 @@ body.transparent-player {
    * Navigation Bar fades it out there instead). The height is resolved here:
    * the layout overrides the root's nav bar height.
    */
-  &:not(.blur-nav-bar)
-    ytmusic-app-layout[is-contained-content-layout-enabled]
-    > #content,
-  ytmusic-app-layout[is-contained-content-layout-enabled] #guide-wrapper {
+  &:not(.blur-nav-bar) ytmusic-app-layout > #content,
+  ytmusic-app-layout #guide-wrapper {
     clip-path: inset(
       calc(var(--menu-bar-height, 0px) + var(--ytmusic-nav-bar-height)) 0 0 0
     );

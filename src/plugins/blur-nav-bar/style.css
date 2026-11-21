@@ -6,10 +6,10 @@
  * where backdrop-filter cannot blur text: the blurred copy of white text on
  * a clear window is itself nearly clear, so the sharp original shows through.
  *
- * Content scrolls in #content in the contained layout; the height is
- * resolved there: the layout overrides the root's nav bar height.
+ * Content scrolls in #content in both layouts (music-player.css); the
+ * height is resolved there: the layout overrides the root's nav bar height.
  */
-body.blur-nav-bar ytmusic-app-layout[is-contained-content-layout-enabled] {
+body.blur-nav-bar ytmusic-app-layout {
   #nav-bar-background {
     background: transparent !important;
     backdrop-filter: none !important;
@@ -65,10 +65,6 @@ body.blur-nav-bar ytmusic-app-layout[is-contained-content-layout-enabled] {
   }
 }
 
-/* The classic layout scrolls the window, which a mask cannot follow */
-body.blur-nav-bar
-  ytmusic-app-layout:not([is-contained-content-layout-enabled])
-  #nav-bar-background,
 #header.ytmusic-item-section-renderer {
   background: rgba(0, 0, 0, 0.3) !important;
   backdrop-filter: blur(8px) !important;
