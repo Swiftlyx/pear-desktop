@@ -816,6 +816,54 @@ html.pear-m3e {
     }
   }
 
+  /*
+   * The classic player bar's seek bar (a paper slider) in the same shape:
+   * rounded track, progress from primary to tertiary, a bar handle while the
+   * pointer is over the player bar. Album Color Theme's seek bar colours
+   * read variables it leaves unset while this plugin owns the colours, which
+   * fell back to the slider's default blue; these rules outrank them.
+   */
+  #progress-bar.ytmusic-player-bar {
+    --paper-slider-active-color: linear-gradient(
+      to right,
+      var(--md-sys-color-primary) 80%,
+      var(--md-sys-color-tertiary)
+    ) !important;
+    --paper-slider-container-color: var(
+      --md-sys-color-secondary-container
+    ) !important;
+    --paper-progress-container-border-radius: var(
+      --md-sys-shape-corner-full
+    ) !important;
+    --paper-progress-container-overflow: hidden !important;
+    --paper-slider-knob-color: transparent !important;
+    --paper-slider-knob-start-color: transparent !important;
+    --paper-slider-knob-start-border-color: transparent !important;
+
+    .slider-knob-inner {
+      width: 4px !important;
+      height: 16px !important;
+      margin: 8px 14px !important;
+      border: 0 !important;
+      border-radius: 2px !important;
+      transition: transform 150ms cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    /* Dragging: the handle narrows (M3 Expressive) instead of growing */
+    .expand .slider-knob-inner {
+      transform: scaleX(0.5) !important;
+    }
+  }
+
+  ytmusic-player-bar:hover #progress-bar.ytmusic-player-bar,
+  #progress-bar.ytmusic-player-bar[focused] {
+    --paper-slider-knob-color: var(--md-sys-color-primary) !important;
+    --paper-slider-knob-start-color: var(--md-sys-color-primary) !important;
+    --paper-slider-knob-start-border-color: var(
+      --md-sys-color-primary
+    ) !important;
+  }
+
   /* The menus' scroll indicator (music-player.css) in the scheme */
   tp-yt-iron-dropdown::after {
     background: rgb(from var(--md-sys-color-on-surface-variant) r g b / 0.5);
