@@ -96,6 +96,17 @@ html.pear-autoscroll *::before {
 }
 
 /*
+ * The site's press feedback inside every button keeps a will-change layer of
+ * its own: on History (like, dislike and menu buttons on each row) that was
+ * about 1000 layers, and splitting the page into them took ~250 ms a frame.
+ * The feedback only animates while pressed; it needs no layer at rest.
+ */
+.ytSpecTouchFeedbackShapeStroke,
+.ytSpecTouchFeedbackShapeFill {
+  will-change: auto !important;
+}
+
+/*
  * Long playlists: rows out of view skip style, layout and paint. Each loaded
  * batch of 100 rows froze scrolling for less, and steady scrolling got
  * smoother (Liked music, 445 rows: 155 -> 180 fps). The placeholder height

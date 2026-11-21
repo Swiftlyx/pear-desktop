@@ -128,6 +128,11 @@ this list before building, and extend the list when a new rule is settled.
   temporary layer is dropped. Give it a layer of its own
   (`will-change: transform`); DevTools
   screenshots do not show these pixels, only a capture of the window does.
+- Layers of their own are for single elements, never for something repeated
+  in every row: the page is split into its layers on every frame. The site's
+  press feedback kept one per button, about 1000 on History, and a frame took
+  250 ms; `backface-visibility: hidden` on the scroller split the rows into
+  layers too. Check a long page (History, a playlist) with a layer count.
 
 ## Transparent window
 

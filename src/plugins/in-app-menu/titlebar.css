@@ -9,9 +9,6 @@ ytmusic-app-layout {
      here was an empty strip next to it */
   overflow: auto;
   height: calc(100vh - var(--menu-bar-height, 36px));
-
-  /* fixes laggy list scrolling in large playlists */
-  backface-visibility: hidden;
 }
 ytmusic-app-layout#layout {
   --ytmusic-nav-bar-offset: 0px;

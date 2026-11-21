@@ -315,8 +315,7 @@ export const TitleBar = (props: TitleBarProps) => {
     // thousands of heavy native rows sharing this same scroll
     // container, that unthrottled read/write pair is layout-thrashing
     // on every scroll tick — this is the actual source of "laggy list
-    // scrolling in large playlists" that backface-visibility: hidden
-    // (see titlebar.css) only partially papered over.
+    // scrolling in large playlists".
     let wasScrolled = false;
     scrollListener = () => {
       if (scrollRafHandle !== null) return; // already scheduled this frame
